@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html class="no-js">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>ryanjoneil.github.io</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width">
+
+        <link rel="stylesheet" href="/static/css/bootstrap.css">
+        <style>
+            body {
+                padding-top: 50px;
+                padding-bottom: 20px;
+            }
+        </style>
+        <link rel="stylesheet" href="/static/css/bootstrap-theme.css">
+        <link rel="stylesheet" href="/static/css/main.css">
+        <script src="/static/js/vendor/modernizr-2.6.2.js"></script>
+
+        <link rel="alternate" type="application/rss+xml" title="RSS Feed" href="/rss.xml">
+
+        <!-- MathJax -->
+        <script type="text/x-mathjax-config">
+          MathJax.Hub.Config({
+            tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+          });
+        </script>
+        <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    </head>
+
+    <body>
+    <div class="navbar navbar navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/index.html">ryanjoneil.github.io</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class=""><a href="/index.html">/</a></li>
+            <li class=""><a href="/blog.html">blog</a></li>
+            <li><a href="/rss.xml" target="_blank"><span class="fa fa-rss"></span></a></li>
+            <li><a href="https://twitter.com/ryanjoneil" target="_blank"><span class="fa fa-twitter"></span></a></li>
+            <li><a href="https://github.com/ryanjoneil" target="_blank"><span class="fa fa-github"></span></a></li>
+            <li><a href="https://www.linkedin.com/in/ryan-j-o-neil-59b6ab83" target="_blank"><span class="fa fa-linkedin"></span></a></li>
+          </ul>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+    
+<div class="jumbotron">
+  <div class="container">
+    <h1>adventures in optimization</h1>
+    <p>The charming adventures of <a href="mailto:ryanjoneil@gmail.com">a data scientist</a> and his solver.</p>
+  </div>
+</div>
+
+<div class="container">
+  <div class="content-outer">
+  	<div class="content-header">
+		
+			<a href='/posts/2011-02-16-data-fitting-part-2a-very-very-simple-linear-regression-in-r.html'>&laquo;</a>
+		
+
+	   	Wednesday, February 23, 2011
+
+		
+			<a href='/posts/2011-04-01-reformed-japhs-in-python-alphabetic-indexing.html'>&raquo;</a>
+		
+  	</div>
+
+	<div class="content-inner">
+		<h2>Simulating GDP Growth</h2>
+      <p><em>Writing and interpreting simulations about GDP growth in R.</em></p>
+	  	
+
+<p><i>[2011-02-24 This post has been corrected.  Near the end it stated that we could be 95% confident China's GDP would overtake the USA between 2057 and 2059.  It should have stated that we could be 95% confident the mean of that year would be between 2057 and 2059.  Thanks to my overbearing subconscious for pointing this out.]</i></p>
+
+<p>I hope you saw <a href="http://www.washingtonpost.com/wp-srv/special/business/china-growth/">China’s way to the top</a> on the Post's website recently.  It's a very clear presentation of their statement and is certainly worth a look.</p>
+
+<p>So say you're an economist and you actually do need to produce a realistic estimate of when China's GDP surpasses that of the USA.  Can you use such an approach?  Not really.  There are several simplifying assumptions the Post made that are perfectly reasonable.  However, if the goal is an analytical output from a highly random system such as GDP growth, one should not assume the inputs are fixed. <i>(I'm not saying I have any gripe with their interactive.  This post has a different purpose.)</i></p>
+
+<p>Why is this?  The short answer is that randomness in any system can change its output drastically from one run to the next.  Even if the mean from a deterministic analysis is correct, it tells us nothing about the variance of our output.  We really need a confidence interval of years when China is likely to overtake the USA.</p>
+
+<p>We'll move in the great tradition of all simulation studies.  First we pepare our input.  A CSV of GDP in current US dollars for both countries from 1960 to 2009 is available from the World Bank <a href="http://data.worldbank.org/country/china">data</a> <a href="http://data.worldbank.org/country/usa">files</a> <i>(thanks, <a href="http://twitter.com/#!/kelsosCorner">Kelso</a>)</i>.  We read this into a data frame and calculate their growth rates year over year.  Note that the first value for growth has to be NA.</p>
+
+<pre><code class="r">gdp <- read.csv('gdp.csv')
+gdp$USA.growth <- rep(NA, length(gdp$USA))
+gdp$China.growth <- rep(NA, length(gdp$China))
+for (i in 2:length(gdp$USA)) {
+    gdp$USA.growth[i] <- 100 * (gdp$USA[i] - gdp$USA[i-1]) / gdp$USA[i-1]
+    gdp$China.growth[i] <- 100 * (gdp$China[i] - gdp$China[i-1]) / gdp$China[i-1]
+}</code></pre>
+
+<p>We now analyze our inputs and assign probability distributions to the annual growth rates.  In a full study this would involve comparing a number of different distributions and choosing the one that fits the input data best, but that's well beyond the scope of this post.  Instead, we'll use the poor man's way out: plot histograms and visually verify what we hope to be true, that the distributions are normal.</p>
+
+<div class="row">
+  <div class="col-md-6">
+  	<center><img border="0" height="319" src="/static/images/2011/gdp-growth/us-gdp-percent-growth-histogram.png" width="320" /></center>
+  </div>
+  <div class="col-md-6">
+  	<center><img border="0" height="320" width="320" src="/static/images/2011/gdp-growth/china-gdp-percent-growth-histogram.png" /></center>
+  </div>
+</div>
+
+<p>And they pretty much are.  That's good enough for our purposes.  Now all we need are the distribution parameters, which are mean and standard deviation for normal distributions.</p>
+
+<pre><code class="r">mean(gdp$USA.growth[!is.na(gdp$USA.growth)])
+[1] 7.00594
+sd(gdp$USA.growth[!is.na(gdp$USA.growth)])
+[1] 2.889808
+mean(gdp$China.growth[!is.na(gdp$China.growth)])
+[1] 9.90896
+sd(gdp$China.growth[!is.na(gdp$China.growth)])
+[1] 10.5712</code></pre>
+
+<p>Now our input analysis is done.  These are the inputs:</p>
+
+<p><center>USA Growth ~ N(7.00594, 2.889808<sup>2</sup>)<br />China Growth ~ N(9.90896, 10.5712<sup>2</sup>)</center></p>
+
+<p>This should make the advantage of such an approach much more obvious.  Compare the standard deviations for the two countries.  China is a lot more likely to have negative GDP growth in any given year.  They're also more likely to have astronomical growth.</p>
+
+<p>We now build and run our simulation study.  The more times we run the simulation the tighter we can make our confidence interval <i>(to a point)</i>, so we'll pick a pretty big number somewhat arbitrarily.  If we want to, we can be fairly scientific about determining how many iterations are necessary after we've done some runs, but we have to start somewhere.</p>
+
+<pre><code class="r">repetitions <- 10000</code></pre>
+
+<p>This is the code for our simulation.  For each iteration, it starts both countries at their 2009 GDPs.  It then iterates, changing GDP randomly until China's GDP is at least the same value as the USA's.  When that happens, it records the current year.</p>
+
+<pre><code class="r">results <- rep(NA, repetitions)
+for (i in 1:repetitions) {
+    usa <- gdp$USA[length(gdp$USA)]
+    china <- gdp$China[length(gdp$China)]
+    year <- gdp$Year[length(gdp$Year)]
+
+    while (TRUE) {
+        year <- year + 1
+
+        usa.growth <- rnorm(1, 7.00594, 2.889808)
+        china.growth <- rnorm(1, 9.90896, 10.5712)
+
+        usa <- usa * (1 + (usa.growth / 100))
+        china <- china * (1 + (china.growth / 100))
+
+        if (china >= usa) {
+            results[i] <- year
+            break
+        }
+    }
+}</code></pre>
+
+<p>From the results vector we see that, given the data and assumptions for this model, China should surpass the USA in 2058.  We also see that we can be 95% confident that the mean year this will happen is between 2057 and 2059.  This is not quite the same as saying we are confident this will actually happen between those years.  The result of our simulation is a probability distribution and we are discovering information about it.</p>
+
+<pre><code class="r">mean(results)
+[1] 2058.494
+mean(results) + (sd(results) / sqrt(length(results)) * qnorm(0.025))
+[1] 2057.873
+mean(results) + (sd(results) / sqrt(length(results)) * qnorm(0.975))
+[1] 2059.114</code></pre>
+
+<p>So what's wrong with this model?  Well, we had to make a number of assumptions:<ol>  <li>We assume we actually used the right data set.  This was more of a how-to than a proper analysis, so that wasn't too much of a concern.</li>  <li>We assume future growth for the next 40-50 years resembles past growth from 1960-2009.  This is a bit ridiculous, of course, but that's the problem with forecasting.</li>  <li>We assume growth is normally distributed and that we don't encounter heavy-tailed behaviors in our distributions.</li>  <li>We assume each year's growth is independent of the year before it.  See the last exercise.</li></ol></p>
+
+<p>Here are some good simulation exercises if you're looking to do more:<ol>  <li>Note how the outputs are quite a bit different from the Post graphic.  I expect that's largely due to the inclusion of data back to 1960.  Try running the simulation for yourself using just the past 10, 20, and 30 years and see how that changes the result.</li>  <li>Write a simulation to determine the probability China's GDP surpasses the USA's in the next 25 years.  Now plot the mean GDP and 95% confidence intervals for each country per year.</li>  <li>Assume that there are actually two distributions for growth for each country: one when the previous year had positive growth and another when it was negative.  How does that change the output?</li></ol></p>
+
+
+  	</div>
+  </div>
+</div>
+
+
+    <script src="/static/js/vendor/jquery-1.10.1.js"></script>
+    <script src="/static/js/vendor/bootstrap.js"></script>
+    <script src="/static/js/main.js"></script>
+
+    <!-- highight.js -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.8.0/styles/default.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.8.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+
+    <!-- Google Analytics -->
+    <script>
+      if (window.location.href.startsWith('http://ryanjoneil.github.io')) {
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-67607976-1', 'auto');
+        ga('send', 'pageview');
+      }
+    </script>
+  </body>
+
+  
+  
+</html>

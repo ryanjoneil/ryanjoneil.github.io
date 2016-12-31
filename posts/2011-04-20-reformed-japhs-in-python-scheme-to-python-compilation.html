@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html class="no-js">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>ryanjoneil.github.io</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width">
+
+        <link rel="stylesheet" href="/static/css/bootstrap.css">
+        <style>
+            body {
+                padding-top: 50px;
+                padding-bottom: 20px;
+            }
+        </style>
+        <link rel="stylesheet" href="/static/css/bootstrap-theme.css">
+        <link rel="stylesheet" href="/static/css/main.css">
+        <script src="/static/js/vendor/modernizr-2.6.2.js"></script>
+
+        <link rel="alternate" type="application/rss+xml" title="RSS Feed" href="/rss.xml">
+
+        <!-- MathJax -->
+        <script type="text/x-mathjax-config">
+          MathJax.Hub.Config({
+            tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+          });
+        </script>
+        <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    </head>
+
+    <body>
+    <div class="navbar navbar navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/index.html">ryanjoneil.github.io</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class=""><a href="/index.html">/</a></li>
+            <li class=""><a href="/blog.html">blog</a></li>
+            <li><a href="/rss.xml" target="_blank"><span class="fa fa-rss"></span></a></li>
+            <li><a href="https://twitter.com/ryanjoneil" target="_blank"><span class="fa fa-twitter"></span></a></li>
+            <li><a href="https://github.com/ryanjoneil" target="_blank"><span class="fa fa-github"></span></a></li>
+            <li><a href="https://www.linkedin.com/in/ryan-j-o-neil-59b6ab83" target="_blank"><span class="fa fa-linkedin"></span></a></li>
+          </ul>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+    
+<div class="jumbotron">
+  <div class="container">
+    <h1>adventures in optimization</h1>
+    <p>The charming adventures of <a href="mailto:ryanjoneil@gmail.com">a data scientist</a> and his solver.</p>
+  </div>
+</div>
+
+<div class="container">
+  <div class="content-outer">
+  	<div class="content-header">
+		
+			<a href='/posts/2011-04-18-reformed-japhs-in-python-turing-machine.html'>&laquo;</a>
+		
+
+	   	Wednesday, April 20, 2011
+
+		
+			<a href='/posts/2011-04-27-affine-scaling-in-r.html'>&raquo;</a>
+		
+  	</div>
+
+	<div class="content-inner">
+		<h2>Reformed JAPHs in Python - Scheme to Python Compilation</h2>
+      <p><em>Scheme to Python compilation.</em></p>
+	  	
+
+<p>I believe this is the final JAPH in this series. I actually didn't have the heart to obfuscate it. It starts with a Scheme program that prints 'just another scheme hacker', tokenizes it, parses the token stream, compiles that into Python 3.2, and executes the resulting string. If anybody else wants to obfuscate it, be my guest. Otherwise I'll just let it speak for itself.</p>
+
+<pre><code class="py">import re
+
+def tokenize(input):
+    '''Tokenizes an input stream into a list of recognizable tokens'''
+    token_res = (
+        r'\(',      # open paren -> starts expression
+        r'\)',      # close paren -> ends expression
+        r'"[^"]*"', # quoted string (don't support \" yet)
+        r'[\w?]+'   # atom
+    )
+    return re.findall(r'(' + '|'.join(token_res) + ')', input)
+
+def parse(stream):
+    '''Parses a token stream into a syntax tree'''
+    if not stream:
+        return []
+
+    else:
+        # Build a list of arguments (possibly expressions) at this level
+        args = []
+        while True:
+            # Get the next token
+            try:
+                x = stream.pop(0)
+            except IndexError:
+                return args
+
+            # ( and ) control the level of the tree we're at
+            if x == '(':
+                args.append(parse(stream))
+            elif x == ')':
+                return args
+            else:
+                args.append(x)
+
+def compile(tree):
+    '''Compiles an Scheme Abstract Syntax Tree into near-Python'''
+    def compile_expr(indent, expr):
+        indent += 1
+
+        lines = [] # these will have [(indent, statement), ...] structure
+        while expr:
+            # Two options: expr is a string like "'" or it is a list
+            if isinstance(expr, str):
+                return [(
+                    indent,
+                    expr.replace('scheme', 'python').replace('\n', '\\n')
+                )]
+
+            else:
+                start = expr.pop(0)
+
+                if start == 'define':
+                    signature = expr.pop(0)
+                    lines.append((indent,
+                        'def %s(%s):' % (
+                            signature[0],
+                            ', '.join(signature[1:])
+                        )
+                    ))
+                    while expr:
+                        lines.extend(compile_expr(indent, expr.pop(0)))
+
+                elif start == 'if':
+                    # We don't support multi-clause conditionals yet
+                    clause = compile_expr(indent, expr.pop(0))[0][1]
+                    lines.append((indent, 'if %s:' % clause))
+
+                    if_true_lines = compile_expr(indent, expr.pop(0))
+                    if_false_lines = compile_expr(indent, expr.pop(0))
+
+                    lines.extend(if_true_lines)
+                    lines.append((indent, 'else:'))
+                    lines.extend(if_false_lines)
+
+                elif start == 'null?':
+                    # Only supports conditionals of the form (null? foo)
+                    if isinstance(expr[0], str):
+                        condition = expr.pop(0)
+                    else:
+                        condition = compile_expr(indent, expr.pop(0))[0][1]
+                    return [(indent, 'not %s' % condition)]
+
+                elif start == 'begin':
+                    # This is just a series of statements, so don't indent
+                    while expr:
+                        lines.extend(compile_expr(indent-1, expr.pop(0)))
+
+                elif start == 'display':
+                    arguments = []
+                    while expr:
+                        arguments.append(
+                            compile_expr(indent, expr.pop(0))[0][1]
+                        )
+                    lines.append((
+                        indent,
+                        "print(%s, end='')" % (', '.join(arguments))
+                    ))
+
+                elif start == 'car':
+                    lines.append((indent, '%s[0]' % expr.pop(0)))
+
+                elif start == 'cdr':
+                    lines.append((indent, '%s[1:]' % expr.pop(0)))
+
+                elif start == 'list':
+                    arguments = []
+                    while expr:
+                        arguments.append(
+                            compile_expr(indent, expr.pop(0))[0][1]
+                        )
+                    lines.append((indent, '[%s]' % ', '.join(arguments)))
+
+                else:
+                    # Assume this is a function call
+                    arguments = []
+                    while expr:
+                        arguments.append(
+                            compile_expr(indent, expr.pop(0))[0][1]
+                        )
+                    lines.append((
+                        indent,
+                        "%s(%s)" % (start, ', '.join(arguments))
+                    ))
+
+        return lines
+
+    return [compile_expr(-1, expr) for expr in tree]
+
+if __name__ == '__main__':
+    scheme = '''
+        (define (output x)
+            (if (null? x)
+                ""
+                (begin (display (car x))
+                       (if (null? (cdr x))
+                           (display "\n")
+                           (begin (display " ")
+                                  (output (cdr x)))))))
+        (output (list "just" "another" "scheme" "hacker"))
+    '''
+    python = ''
+    for expr in compile(parse(tokenize(scheme))):
+        python += '\n'.join([(' ' * 4 * x[0]) + x[1] for x in expr]) + '\n\n'
+    exec(python)
+</code></pre>
+
+
+  	</div>
+  </div>
+</div>
+
+
+    <script src="/static/js/vendor/jquery-1.10.1.js"></script>
+    <script src="/static/js/vendor/bootstrap.js"></script>
+    <script src="/static/js/main.js"></script>
+
+    <!-- highight.js -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.8.0/styles/default.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.8.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+
+    <!-- Google Analytics -->
+    <script>
+      if (window.location.href.startsWith('http://ryanjoneil.github.io')) {
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-67607976-1', 'auto');
+        ga('send', 'pageview');
+      }
+    </script>
+  </body>
+
+  
+  
+</html>

@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html class="no-js">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>ryanjoneil.github.io</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width">
+
+        <link rel="stylesheet" href="/static/css/bootstrap.css">
+        <style>
+            body {
+                padding-top: 50px;
+                padding-bottom: 20px;
+            }
+        </style>
+        <link rel="stylesheet" href="/static/css/bootstrap-theme.css">
+        <link rel="stylesheet" href="/static/css/main.css">
+        <script src="/static/js/vendor/modernizr-2.6.2.js"></script>
+
+        <link rel="alternate" type="application/rss+xml" title="RSS Feed" href="/rss.xml">
+
+        <!-- MathJax -->
+        <script type="text/x-mathjax-config">
+          MathJax.Hub.Config({
+            tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+          });
+        </script>
+        <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    </head>
+
+    <body>
+    <div class="navbar navbar navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/index.html">ryanjoneil.github.io</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class=""><a href="/index.html">/</a></li>
+            <li class=""><a href="/blog.html">blog</a></li>
+            <li><a href="/rss.xml" target="_blank"><span class="fa fa-rss"></span></a></li>
+            <li><a href="https://twitter.com/ryanjoneil" target="_blank"><span class="fa fa-twitter"></span></a></li>
+            <li><a href="https://github.com/ryanjoneil" target="_blank"><span class="fa fa-github"></span></a></li>
+            <li><a href="https://www.linkedin.com/in/ryan-j-o-neil-59b6ab83" target="_blank"><span class="fa fa-linkedin"></span></a></li>
+          </ul>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+    
+<div class="jumbotron">
+  <div class="container">
+    <h1>adventures in optimization</h1>
+    <p>The charming adventures of <a href="mailto:ryanjoneil@gmail.com">a data scientist</a> and his solver.</p>
+  </div>
+</div>
+
+<div class="container">
+  <div class="content-outer">
+  	<div class="content-header">
+		
+			<a href='/posts/2012-03-26-a-few-thoughts-on-music-and-computer-programming.html'>&laquo;</a>
+		
+
+	   	Saturday, September 22, 2012
+
+		
+			<a href='/posts/2013-07-29-network-splitting.html'>&raquo;</a>
+		
+  	</div>
+
+	<div class="content-inner">
+		<h2>Lagrangian Relaxation with gurobipy</h2>
+      <p><em>Solving integer programs with Lagrangian relaxation and Gurobi.</em></p>
+	  	
+
+<p><i>Note: this is still a new technique to me, so please point out any errors and I will correct them in the post.</i></p>
+<p><i>Correction: $b_{ij}$ is now $b_j$ in the second set of constraints.</i></p>
+
+<p>We've been studying Lagrangian Relaxation (LR) in <a href="http://seor.gmu.edu/syllabi/12F/OR782.pdf">the combinatorial optimization course I'm taking this term</a>, and I had some difficulty finding a simple example covering its application. In case anyone else finds it useful, I'm posting a Python version for solving the <a href="http://en.wikipedia.org/wiki/Generalized_assignment_problem">Generalized Assignment Problem</a> (GAP). This won't discuss the theory of LR at all, just give example code using Gurobi 5.0.1.</p>
+
+<p>The GAP as defined by Wolsey consists of a maximization problem subject to a set of set packing constraints followed by a set of knapsack constraints:</p>
+
+<center>
+max $\sum_i \sum_j c_{ij} x_{ij}$<br>
+subject to $\sum_j x_{ij} \leq 1 \forall i$<br>
+$\sum_i a_{ij} x_{ij} \leq b_{ij} \forall j$<br>
+$x_{ij} \in \{0, 1\}$
+</center>
+
+<p>An unadulterated version of this BIP using gurobipy might look like the following:</p>
+
+<pre><code class="py">#!/usr/bin/env python
+
+# This is the GAP per Wolsey, pg 182
+
+from gurobipy import GRB, Model
+
+model = Model('GAP per Wolsey')
+model.modelSense = GRB.MAXIMIZE
+model.setParam('OutputFlag', False) # turns off solver chatter
+
+b = [15, 15, 15]
+c = [
+    [ 6, 10,  1],
+    [12, 12,  5],
+    [15,  4,  3],
+    [10,  3,  9],
+    [ 8,  9,  5]
+]
+a = [
+    [ 5,  7,  2],
+    [14,  8,  7],
+    [10,  6, 12],
+    [ 8,  4, 15],
+    [ 6, 12,  5]
+]
+
+# x[i][j] = 1 if i is assigned to j
+x = []
+for i in range(len(c)):
+    x_i = []
+    for j in c[i]:
+        x_i.append(model.addVar(vtype=GRB.BINARY))
+    x.append(x_i)
+
+# We have to update the model so it knows about new variables
+model.update()
+
+# sum j: x_ij <= 1 for all i
+for x_i in x:
+    model.addConstr(sum(x_i) <= 1)
+
+# sum i: a_ij * x_ij <= b[j] for all j
+for j in range(len(b)):
+    model.addConstr(sum(a[i][j] * x[i][j] for i in range(len(x))) <= b[j])
+
+# max sum i,j: c_ij * x_ij
+model.setObjective(
+    sum(
+        sum(c_ij * x_ij for c_ij, x_ij in zip(c_i, x_i))
+        for c_i, x_i in zip(c, x)
+    )
+)
+model.optimize()
+
+# Pull objective and variable values out of model
+print 'objective =', model.objVal
+print 'x = ['
+for x_i in x:
+    print '   ', [1 if x_ij.x >= 0.5 else 0 for x_ij in x_i]
+print ']'
+</code></pre>
+
+<p>The solver quickly finds the following optimal solution of this toy problem:</p>
+
+<pre>objective = 46.0
+x = [
+    [0, 1, 0]
+    [0, 1, 0]
+    [1, 0, 0]
+    [0, 0, 1]
+    [0, 0, 0]
+]
+</pre>
+
+<p>There are two sets of constraints we can dualize. It can be beneficial to apply Lagrangian Relaxation against problems composed of knapsack constraints, so we will dualize the set packing ones. The first thing we do is replace the constraints generated in lines 39-40 with a new set of variables, <i>penalties</i>, which take the values of the slacks on the set packing constraints. We then modify the objective function, adding Lagrangian multipliers times these penalties.</p>
+
+<p>Instead of optimizing once, we do so iteratively. An important consideration is we may get nothing more than a dual bound from this process. Any integer solution is not guaranteed to be primal feasible unless it satisfies complementary slackness conditions -- for each dualized constraint either its multiplier or penalty must be zero.</p>
+
+<p>Setting the intial multiplier values to 2 and using subgradient optimization with a step size of 1 / (iteration #) to adjust them, we arrive at the following model:</p>
+
+<pre><code class="py">#!/usr/bin/env python
+
+# This is the GAP per Wolsey, pg 182, using Lagrangian Relaxation
+
+from gurobipy import GRB, Model
+
+model = Model('GAP per Wolsey with Lagrangian Relaxation')
+model.modelSense = GRB.MAXIMIZE
+model.setParam('OutputFlag', False) # turns off solver chatter
+
+b = [15, 15, 15]
+c = [
+    [ 6, 10,  1],
+    [12, 12,  5],
+    [15,  4,  3],
+    [10,  3,  9],
+    [ 8,  9,  5]
+]
+a = [
+    [ 5,  7,  2],
+    [14,  8,  7],
+    [10,  6, 12],
+    [ 8,  4, 15],
+    [ 6, 12,  5]
+]
+
+# x[i][j] = 1 if i is assigned to j
+x = []
+for i in range(len(c)):
+    x_i = []
+    for j in c[i]:
+        x_i.append(model.addVar(vtype=GRB.BINARY))
+    x.append(x_i)
+
+# As stated, the GAP has these following constraints. We dualize these into
+# penalties instead, using variables so we can easily extract their values.
+penalties = [model.addVar() for _ in x]
+model.update()
+
+# Dualized constraints: sum j: x_ij <= 1 for all i
+for p, x_i in zip(penalties, x):
+    model.addConstr(p == 1 - sum(x_i))
+
+# sum i: a_ij * x_ij <= b[j] for all j
+for j in range(len(b)):
+    model.addConstr(sum(a[i][j] * x[i][j] for i in range(len(x))) <= b[j])
+
+# u[i] = Lagrangian Multiplier for the set packing contraint i
+u = [2.0] * len(x)
+
+# Re-optimize until either we have run a certain number of iterations
+# or complementary slackness conditions apply.
+for k in range(1, 101):
+    # max sum i,j: c_ij * x_ij
+    model.setObjective(
+        sum(
+            # Original objective function
+            sum(c_ij * x_ij for c_ij, x_ij in zip(c_i, x_i))
+            for c_i, x_i in zip(c, x)
+        ) + sum (
+            # Penalties for dualized constraints
+            u_j * p_j for u_j, p_j in zip(u, penalties)
+        )
+    )
+    model.optimize()
+
+    print 'iteration', k, 'obj =', model.objVal, \
+        'u =', u, 'penalties =', [p.x for p in penalties]
+
+    # Test for complementary slackness
+    stop = True
+    eps = 10e-6
+    for u_i, p_i in zip(u, penalties):
+        if abs(u_i) > eps and abs(p_i.x) > eps:
+            stop = False
+            break
+
+    if stop:
+        print 'primal feasible & optimal'
+        break
+
+    else:
+        s = 1.0 / k
+        for i in range(len(x)):
+            u[i] = max(u[i] - s*(penalties[i].x), 0.0)
+
+# Pull objective and variable values out of model
+print 'objective =', model.objVal
+print 'x = ['
+for x_i in x:
+    print '   ', [1 if x_ij.x >= 0.5 else 0 for x_ij in x_i]
+print ']'
+</code></pre>
+
+<p>On this problem LR converges very quickly to an optimal solution, as we can see here:</p>
+
+<pre>
+iteration 1 obj = 48.0 u = [2.0, 2.0, 2.0, 2.0, 2.0] penalties = [0.0, 0.0, 0.0, 0.0, 1.0]
+iteration 2 obj = 47.0 u = [2.0, 2.0, 2.0, 2.0, 1.0] penalties = [0.0, 0.0, 0.0, 0.0, 1.0]
+iteration 3 obj = 46.5 u = [2.0, 2.0, 2.0, 2.0, 0.5] penalties = [0.0, 0.0, 0.0, 0.0, 1.0]
+iteration 4 obj = 46.1666666667 u = [2.0, 2.0, 2.0, 2.0, 0.16666666666666669] penalties = [0.0, 0.0, 0.0, 0.0, 1.0]
+iteration 5 obj = 46.0 u = [2.0, 2.0, 2.0, 2.0, 0.0] penalties = [0.0, 0.0, 0.0, 0.0, 1.0]
+primal feasible & optimal
+objective = 46.0
+x = [
+    [0, 1, 0]
+    [0, 1, 0]
+    [1, 0, 0]
+    [0, 0, 1]
+    [0, 0, 0]
+]
+</pre>
+
+<p>Exercise for the reader: change the script to dualize the knapsack constraints instead of the set packing constraints. What is the result of this change in terms of convergence?</p>
+
+
+  	</div>
+  </div>
+</div>
+
+
+    <script src="/static/js/vendor/jquery-1.10.1.js"></script>
+    <script src="/static/js/vendor/bootstrap.js"></script>
+    <script src="/static/js/main.js"></script>
+
+    <!-- highight.js -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.8.0/styles/default.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.8.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+
+    <!-- Google Analytics -->
+    <script>
+      if (window.location.href.startsWith('http://ryanjoneil.github.io')) {
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-67607976-1', 'auto');
+        ga('send', 'pageview');
+      }
+    </script>
+  </body>
+
+  
+  
+</html>

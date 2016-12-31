@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html class="no-js">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>ryanjoneil.github.io</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width">
+
+        <link rel="stylesheet" href="/static/css/bootstrap.css">
+        <style>
+            body {
+                padding-top: 50px;
+                padding-bottom: 20px;
+            }
+        </style>
+        <link rel="stylesheet" href="/static/css/bootstrap-theme.css">
+        <link rel="stylesheet" href="/static/css/main.css">
+        <script src="/static/js/vendor/modernizr-2.6.2.js"></script>
+
+        <link rel="alternate" type="application/rss+xml" title="RSS Feed" href="/rss.xml">
+
+        <!-- MathJax -->
+        <script type="text/x-mathjax-config">
+          MathJax.Hub.Config({
+            tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+          });
+        </script>
+        <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    </head>
+
+    <body>
+    <div class="navbar navbar navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/index.html">ryanjoneil.github.io</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class=""><a href="/index.html">/</a></li>
+            <li class=""><a href="/blog.html">blog</a></li>
+            <li><a href="/rss.xml" target="_blank"><span class="fa fa-rss"></span></a></li>
+            <li><a href="https://twitter.com/ryanjoneil" target="_blank"><span class="fa fa-twitter"></span></a></li>
+            <li><a href="https://github.com/ryanjoneil" target="_blank"><span class="fa fa-github"></span></a></li>
+            <li><a href="https://www.linkedin.com/in/ryan-j-o-neil-59b6ab83" target="_blank"><span class="fa fa-linkedin"></span></a></li>
+          </ul>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+    
+<div class="jumbotron">
+  <div class="container">
+    <h1>adventures in optimization</h1>
+    <p>The charming adventures of <a href="mailto:ryanjoneil@gmail.com">a data scientist</a> and his solver.</p>
+  </div>
+</div>
+
+<div class="container">
+  <div class="content-outer">
+  	<div class="content-header">
+		
+			<a href='/posts/2014-02-03-chebyshev-centers-of-polygons-with-gurobipy.html'>&laquo;</a>
+		
+
+	   	Friday, February 14, 2014
+
+		
+			<a href='/posts/2014-05-28-preprocessing-for-routing-problems-part-1.html'>&raquo;</a>
+		
+  	</div>
+
+	<div class="content-inner">
+		<h2>Capturing stdout in a Python Child Process</h2>
+      <p><em>How to capture standard output when running a child process in Python.</em></p>
+	  	
+
+<p>Lately at work I've been putting together a web management console that handles execution of some of our
+long running Gurobi models. This makes a lot of sense to do since the models run on Gurobi Cloud for hours
+or even days before achieving their desired optimality gaps. Gurobi Cloud requires a persistent connection,
+so we use a server to handle that instead of solving models from our desktop machines. In a sense, this is
+a bit of a throwback to the time sharing systems from before the PC era.</p>
+
+<p>As a result, I've had to update my dormant (and, to be honest, never particularly acute) administration
+and systems programming skills. There are always some interesting gotchas that come up in this sort of work.
+This time I ran into the following conundrum: I have a cron job that is responsible for constructing
+model instances in a child process, handing them off to Gurobi Cloud, and saving their results. Its output is
+redirected to a file so I can <a href="http://en.wikipedia.org/wiki/Tail_(Unix)">tail</a> it in real time and
+store it for later. For the web console, I also want to store the output to a database so I can easily display
+it. And I'd like to do this in as generic a manner as possible, so I can add other types of models
+(custom heuristics, for instance) and also capture anything they write to standard output and standard error.</p>
+
+<p>There are a number of threads available on capturing standard output. Some of the advice I found
+recommended using <a href="http://docs.python.org/2/library/os.html#os.dup2">os.dup2</a> to clone the
+stdout file descriptor into another file. The problem with this approach is it requires having an open
+file, which is inconvenient, and it ends up closing the existing stdout. So the output does get
+redirected, but then it disappears from my log. Also, I could only seem to capture it once. I wanted to
+do this repeatedly.</p>
+
+<p>Other advice got me closer to the mark: Replace sys.stdout with an instance of
+<a href="http://docs.python.org/2/library/stringio.html#module-StringIO">StringIO</a>, then just
+read its contents later. This allowed me to do redirections in serial, but once again meant
+that standard output was essentially shut off.</p>
+
+<p>The final solution was to subclass StringIO and override its write method. Every time write is called,
+it writes to both the in-memory string and a canonical reference to stdout. Example code is given
+below that captures stdout and stderr from a child process while still letting their messages be visible.</p>
+
+<pre><code class="py">from StringIO import StringIO
+from multiprocessing import Process, Queue
+import sys
+
+# Proxy classes that both write to and capture strings
+# sent to stdout or stderr, respectively.
+class TeeOut(StringIO):
+    def write(self, s):
+        StringIO.write(self, s)
+        sys.__stdout__.write(s)
+
+class TeeErr(StringIO):
+    def write(self, s):
+        StringIO.write(self, s)
+        sys.__stderr__.write(s)
+
+class Parent(object):
+    def run(self):
+        # Start child process.
+        queue = Queue()
+        child = Process(target=self.spawn, args=(queue,))
+        child.start()
+        child.join()
+
+        # Do someting with out and err...
+        out = queue.get()
+        err = queue.get()
+
+    def spawn(self, queue):
+        # Save everything that would otherwise go to stdout.
+        out = TeeOut()
+        sys.stdout = out
+
+        err = TeeErr()
+        sys.stderr = err
+
+        try:
+            # Do something...
+            print 'out 1'
+            print 'out 2'
+            sys.stderr.write('error 1\n')
+            print 'out 3'
+            sys.stderr.write('error 2\n')
+
+        finally:
+            # Restore stdout, stderr and send their contents.
+            sys.stdout = sys.__stdout__
+            sys.stderr = sys.__stderr__
+            queue.put(out.getvalue())
+            queue.put(err.getvalue())
+
+if __name__ == '__main__':
+    Parent().run()
+</code></pre>
+
+<p>A few minor points:
+<ul>
+    <li>StringIO can't be subclassed like object-based types, thus lines 9 and 14 can't use
+        <a href="http://docs.python.org/2/library/functions.html#super">super</a>.</li>
+    <li>The sys module keeps two references to stdout: sys.stdout and sys.__stdout__. We use the latter to recover the former after processing.</li>
+    <li>The contents of standard out and standard error are transmitted from the child process to its parent
+        at the end of processing. A smarter implementation might transfer chunks of them
+        periodically, but I'm not expecting them to be large.</li>
+    <li>The transfer happens in a finally block. Thus any run time exception in the child will not
+        interfere with logging.</li>
+</ul>
+</p>
+
+
+  	</div>
+  </div>
+</div>
+
+
+    <script src="/static/js/vendor/jquery-1.10.1.js"></script>
+    <script src="/static/js/vendor/bootstrap.js"></script>
+    <script src="/static/js/main.js"></script>
+
+    <!-- highight.js -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.8.0/styles/default.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.8.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+
+    <!-- Google Analytics -->
+    <script>
+      if (window.location.href.startsWith('http://ryanjoneil.github.io')) {
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-67607976-1', 'auto');
+        ga('send', 'pageview');
+      }
+    </script>
+  </body>
+
+  
+  
+</html>

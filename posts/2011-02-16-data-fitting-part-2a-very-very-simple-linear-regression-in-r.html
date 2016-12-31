@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html class="no-js">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>ryanjoneil.github.io</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width">
+
+        <link rel="stylesheet" href="/static/css/bootstrap.css">
+        <style>
+            body {
+                padding-top: 50px;
+                padding-bottom: 20px;
+            }
+        </style>
+        <link rel="stylesheet" href="/static/css/bootstrap-theme.css">
+        <link rel="stylesheet" href="/static/css/main.css">
+        <script src="/static/js/vendor/modernizr-2.6.2.js"></script>
+
+        <link rel="alternate" type="application/rss+xml" title="RSS Feed" href="/rss.xml">
+
+        <!-- MathJax -->
+        <script type="text/x-mathjax-config">
+          MathJax.Hub.Config({
+            tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+          });
+        </script>
+        <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    </head>
+
+    <body>
+    <div class="navbar navbar navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/index.html">ryanjoneil.github.io</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class=""><a href="/index.html">/</a></li>
+            <li class=""><a href="/blog.html">blog</a></li>
+            <li><a href="/rss.xml" target="_blank"><span class="fa fa-rss"></span></a></li>
+            <li><a href="https://twitter.com/ryanjoneil" target="_blank"><span class="fa fa-twitter"></span></a></li>
+            <li><a href="https://github.com/ryanjoneil" target="_blank"><span class="fa fa-github"></span></a></li>
+            <li><a href="https://www.linkedin.com/in/ryan-j-o-neil-59b6ab83" target="_blank"><span class="fa fa-linkedin"></span></a></li>
+          </ul>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+    
+<div class="jumbotron">
+  <div class="container">
+    <h1>adventures in optimization</h1>
+    <p>The charming adventures of <a href="mailto:ryanjoneil@gmail.com">a data scientist</a> and his solver.</p>
+  </div>
+</div>
+
+<div class="container">
+  <div class="content-outer">
+  	<div class="content-header">
+		
+			<a href='/posts/2011-02-15-data-fitting-part-2-very-very-simple-linear-regression-in-python.html'>&laquo;</a>
+		
+
+	   	Wednesday, February 16, 2011
+
+		
+			<a href='/posts/2011-02-23-simulating-gdp-growth.html'>&raquo;</a>
+		
+  	</div>
+
+	<div class="content-inner">
+		<h2>Data Fitting Part 2a - Very, Very Simple Linear Regression in R</h2>
+      <p><em>Predict how much people like cats and dogs based on their ice cream preferences. Also, R.</em></p>
+	  	
+
+<p>I thought it might be useful to follow up the <a href="2011-02-15-data-fitting-part-2-very-very-simple-linear-regression-in-python.html">last post</a> with another one showing the same examples in R.</p>
+
+<p>R provides a function called lm, which is similar in spirit to <a href="http://numpy.scipy.org/">numpy</a>'s linalg.lstsq.  As you'll see, lm's interface is a bit more tuned to the concepts of modeling.</p>
+
+<p>We begin by reading in the example CSV into a data frame:</p>
+
+<pre><code class="r">> responses <- read.csv('example_data.csv')
+
+> responses
+  respondent vanilla.love strawberry.love chocolate.love
+1     Serdar            9               4              9
+2        Dan            8               6              4
+3  Nathaniel            9               4              8
+4     Lauren            3               7              9
+5        Jen            6               8              5
+6     Jackie            4               5              3
+
+  dog.love cat.love
+1        9        9
+2       10        4
+3        2        6
+4        4        6
+5        2        5
+6       10        3
+</code></pre>
+
+<p>A data frame is sort of like a matrix, but with named columns.  That is, we can refer to entire columns using the dollar sign.  We are now ready to run least squares.  We'll create the model for predicting "dog love."  To create the "cat love" model, simply use that column name instead:</p>
+
+<pre><code class="r">> fit1 <- lm(responses$dog.love ~ responses$vanilla.love
+    + responses$strawberry.love + responses$chocolate.love)
+</code></pre>
+
+<p>The syntax for lm is a little offputting at first.  This call tells it to create a model for "dog love" with respect to <i>(the ~)</i> a function of the form <i>offset + x1*vanilla love + x2*strawberry love + x3*chocolate love</i>.  Note that the offset is conveniently implied when using lm, so this is the same as the second model we created in Python.  Now that we've computed the coefficients for our "dog love" model, we can ask R about it:</p>
+
+<pre><code class="r">> summary(fit1)
+
+Call:
+lm(formula = responses$dog.love ~ responses$vanilla.love
+  + responses$strawberry.love + responses$chocolate.love)
+
+Residuals:
+      1       2       3       4       5       6
+ 3.1827  2.9436 -4.5820  0.8069 -1.9856 -0.3657
+
+Coefficients:
+                          Estimate Std. Error t value Pr(>|t|)
+(Intercept)                20.9298    15.0654   1.389    0.299
+responses$vanilla.love     -0.2783     0.9934  -0.280    0.806
+responses$strawberry.love  -1.4314     1.5905  -0.900    0.463
+responses$chocolate.love   -0.7647     0.8214  -0.931    0.450
+
+Residual standard error: 4.718 on 2 degrees of freedom
+Multiple R-squared: 0.4206,     Adjusted R-squared: -0.4485
+F-statistic: 0.484 on 3 and 2 DF,  p-value: 0.7272
+</code></pre>
+
+<p>This gives us quite a bit of information, including the coefficients for our "dog love" model and various error metrics.  You can find the offset and coefficients under the Estimate column above.  We quickly verify this using R's vectorized arithmetic:</p>
+
+<pre><code class="r">> 20.9298 - 0.2783 * responses$vanilla.love
+    - 1.4314 * responses$strawberry.love
+    - 0.7647 * responses$chocolate.love
+
+[1]  5.8172  7.0562  6.5819  3.1928  3.9853 10.3655
+</code></pre>
+
+<p>You'll notice the model is essentially the same as the one we got from numpy.  Our next step is to add in the squared inputs.  We do this by adding extra terms to the modeling formula.  The I() function allows us to easily add additional operators to columns.  That's how we accomplish the squaring.  We could alternatively add squared input values to the data frame, but using I() is more convenient and natural.</p>
+
+<pre><code class="r">> fit2 <- lm(responses$dog.love ~ responses$vanilla.love
+    + I(responses$vanilla.love^2) + responses$strawberry.love
+    + I(responses$strawberry.love^2) + responses$chocolate.love
+    + I(responses$chocolate.love^2))
+
+> summary(fit2)
+
+Call:
+lm(formula = responses$dog.love ~ responses$vanilla.love
+  + I(responses$vanilla.love^2) + responses$strawberry.love
+  + I(responses$strawberry.love^2) + responses$chocolate.love
+  + I(responses$chocolate.love^2))
+
+Residuals:
+ALL 6 residuals are 0: no residual degrees of freedom!
+
+Coefficients: (1 not defined because of singularities)
+                               Estimate Std. Error t value Pr(>|t|)
+(Intercept)                    -357.444         NA      NA       NA
+responses$vanilla.love           72.444         NA      NA       NA
+I(responses$vanilla.love^2)      -6.111         NA      NA       NA
+responses$strawberry.love        59.500         NA      NA       NA
+I(responses$strawberry.love^2)   -5.722         NA      NA       NA
+responses$chocolate.love          7.000         NA      NA       NA
+I(responses$chocolate.love^2)        NA         NA      NA       NA
+
+Residual standard error: NaN on 0 degrees of freedom
+Multiple R-squared:     1,      Adjusted R-squared:   NaN
+F-statistic:   NaN on 5 and 0 DF,  p-value: NA
+</code></pre>
+
+<p>We can see that we get the same "dog love" model as produced by the third Python version of the last post.  Again, we quickly verify that the output is the same (minus some rounding errors):</p>
+
+<pre><code class="r">> -357.444 + 72.444 * responses$vanilla.love
+    - 6.111 * responses$vanilla.love^2
+    + 59.5 * responses$strawberry.love
+    - 5.722 * responses$strawberry.love^2
+    + 7 * responses$chocolate.love
+
+[1]  9.009 10.012  2.009  4.011  2.016 10.006
+</code></pre>
+
+
+  	</div>
+  </div>
+</div>
+
+
+    <script src="/static/js/vendor/jquery-1.10.1.js"></script>
+    <script src="/static/js/vendor/bootstrap.js"></script>
+    <script src="/static/js/main.js"></script>
+
+    <!-- highight.js -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.8.0/styles/default.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.8.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+
+    <!-- Google Analytics -->
+    <script>
+      if (window.location.href.startsWith('http://ryanjoneil.github.io')) {
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-67607976-1', 'auto');
+        ga('send', 'pageview');
+      }
+    </script>
+  </body>
+
+  
+  
+</html>

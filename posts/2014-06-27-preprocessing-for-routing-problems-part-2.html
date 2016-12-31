@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html class="no-js">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>ryanjoneil.github.io</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width">
+
+        <link rel="stylesheet" href="/static/css/bootstrap.css">
+        <style>
+            body {
+                padding-top: 50px;
+                padding-bottom: 20px;
+            }
+        </style>
+        <link rel="stylesheet" href="/static/css/bootstrap-theme.css">
+        <link rel="stylesheet" href="/static/css/main.css">
+        <script src="/static/js/vendor/modernizr-2.6.2.js"></script>
+
+        <link rel="alternate" type="application/rss+xml" title="RSS Feed" href="/rss.xml">
+
+        <!-- MathJax -->
+        <script type="text/x-mathjax-config">
+          MathJax.Hub.Config({
+            tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+          });
+        </script>
+        <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    </head>
+
+    <body>
+    <div class="navbar navbar navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/index.html">ryanjoneil.github.io</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class=""><a href="/index.html">/</a></li>
+            <li class=""><a href="/blog.html">blog</a></li>
+            <li><a href="/rss.xml" target="_blank"><span class="fa fa-rss"></span></a></li>
+            <li><a href="https://twitter.com/ryanjoneil" target="_blank"><span class="fa fa-twitter"></span></a></li>
+            <li><a href="https://github.com/ryanjoneil" target="_blank"><span class="fa fa-github"></span></a></li>
+            <li><a href="https://www.linkedin.com/in/ryan-j-o-neil-59b6ab83" target="_blank"><span class="fa fa-linkedin"></span></a></li>
+          </ul>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+    
+<div class="jumbotron">
+  <div class="container">
+    <h1>adventures in optimization</h1>
+    <p>The charming adventures of <a href="mailto:ryanjoneil@gmail.com">a data scientist</a> and his solver.</p>
+  </div>
+</div>
+
+<div class="container">
+  <div class="content-outer">
+  	<div class="content-header">
+		
+			<a href='/posts/2014-05-28-preprocessing-for-routing-problems-part-1.html'>&laquo;</a>
+		
+
+	   	Friday, June 27, 2014
+
+		
+			<a href='/posts/2014-07-18-are-we-getting-happier.html'>&raquo;</a>
+		
+  	</div>
+
+	<div class="content-inner">
+		<h2>Preprocessing for Routing Problems - Part 2</h2>
+      <p><em>Preprocessing techniques for dividing space based on closest points by driving distance.</em></p>
+	  	
+
+<p>In the <a href="2014-05-28-preprocessing-for-routing-problems-part-1.html">previous post</a>, we considered preprocessing for the vehicle routing problem where the vehicles have different starting locations. Our goal was to create potentially overlapping regions for the entire US which we could later use for route construction. We defined these regions using all 5-digit zip codes in the continental US for which one of our regional headquarters is the closest, or one of $n$ closest, headquarters in terms of Euclidean distance. The resulting regions gave us some flexibility in terms of how much redundancy we allow in our coverage of the country.</p>
+
+<p>This post refines those regions, replacing the Euclidean distance with a more realistic metric: estimated travel time. Doing this should give us a better sense of how much space a given driver can actually cover. It should also divide the country up more equitably among our drivers.</p>
+
+<p>Our approach here will be similar to that of the last post, but instead of ranking our headquarter-zip pairs by Euclidean distance, we'll rank them by estimated travel time. The catch is that, while the former is easy to compute using the <a href="http://cran.r-project.org/web/packages/SpatialTools/index.html">SpatialTools</a> library, we have to request the latter from a third party. In this post, we'll use the MapQuest <a href="http://open.mapquestapi.com/directions/#matrix">Route Matrix</a>, since it provides estimates based on <a href="http://www.openstreetmap.org/">OpenStreetMap</a> data to us for free, and doesn't cap the number of requests we can make.</p>
+
+<p>To do this we're going to need a lot of point estimates for location-to-location travel times. In fact, building a full data set for replacing our Euclidean distance ranks would require $37,341 \times 25 = 933,525$ travel time estimates. That's a bit prohibitive. The good news is we don't need to all the data points unless we generate 25 levels of redundancy. We can just request enough travel time estimates to make us reasonably certain that we've got all the necessary data. In the last post we generated regions for 1, 2, and 3 levels of redundancy, so here we'll get travel times for the 10 closest headquarters to each zip code, and take the leap of faith that the closest 3 headquarters by travel time for each zip will be among the 10 closest by Euclidean distance.</p>
+
+<p><em><strong>Note</strong>: I've provided the output data so you don't have to make hundreds of thousands of requests to MapQuest yourself. Instead of running the following code, please download it <a href="https://www.dropbox.com/s/c4bh08wpam5653r/hqs_to_zips_time.zip">here</a>. You can then run the section at the end that generates the maps.</em></p>
+
+<p>Let's assume that you have just executed the code from the <a href="2014-05-28-preprocessing-for-routing-problems-part-1.html">last post</a> and have its variables in your current scope. <em>If you need it, you can find that code <a href="https://gist.github.com/ryanjoneil/adfb2449370902f4ee3d">here</a>.</em> First, we define some constants we're going to need in order to make MapQuest requests.</p>
+
+<pre><code class="r"># Define some constants for making requests to MapQuest and determining
+# when to save and what to request.
+library(RCurl)
+library(rjson)
+library(utils)
+
+MAPQUEST_API_KEY <- 'YOUR KEY HERE'
+MAPQUEST_API_URL <- 'http://www.mapquestapi.com/directions/v2/routematrix?key=%s&json=%s'
+ZIPS_BETWEEN_SAVE <- 250
+HQ_RANK_MIN <- 1  # Min/max distance ranks for time estimates
+HQ_RANK_MAX <- 10
+</code></pre>
+
+<p>Now we create a data frame to hold our HQ-to-zip travel estimates. The rows correspond to zip codes and the columns correspond to our headquarter locations. We initialize the data frame to contain no estimates and write it to a CSV file. Since it will take on the order of days for us to fill this file in, we're going to write it out and read it back in periodically. That way we can pick up where we left off by simply rerunning the code in case of an error or loss of network connectivity.</p>
+
+<pre><code class="r"># Write out a blank file containing our time estimates.
+TIME_CSV_PATH <- 'hqs_to_zips_time.csv'
+if (!file.exists(TIME_CSV_PATH)) {
+    # Clear out everything except row and column names.
+    empty <- as.data.frame(matrix(nrow=nrow(zips_deduped), ncol=nrow(largest_cities)+1))
+    names(empty) <- c('zip', largest_cities$name)
+    empty$zip <- zips_deduped$zip
+
+    # This represents our current state.
+    write.csv(empty, TIME_CSV_PATH, row.names=F)
+}
+
+# Read in our current state in case we are starting over.
+hqs_to_zips_time <- read.csv(TIME_CSV_PATH)
+hqs_to_zips_time$zip <- sprintf('%05d', hqs_to_zips_time$zip)
+
+# Sanity check: If we have any times = 0, set them to NA so that we re-request them.
+hqs_to_zips_time[hqs_to_zips_time <= 0] <- NA
+</code></pre>
+
+<p>With that file created, we can start making requests to MapQuest's Route Matrix. For each zip code, we are going to request travel times for its 10 closest HQs. We'll save our time estimates data frame every 250 zip codes. Also, we're going to randomize the order of the zip codes so we fill out our data set more evenly as we go. That way we can generate maps during the process or otherwise inspect the data as we go.</p>
+
+<pre><code class="r"># Now we start requesting travel times from MapQuest.
+requests_until_save <- ZIPS_BETWEEN_SAVE
+col_count <- ncol(hqs_to_zips_time)
+
+# Randomize the zip code order so we fill in the map uniformly as we get more data.
+# This will enable us to check on our data over time and make sure it looks right.
+for (zip_idx in sample(1:nrow(zips_deduped))) {
+    z <- zips_deduped$zip[zip_idx]
+    z_lat <- zips_deduped$latitude[zip_idx]
+    z_lon <- zips_deduped$longitude[zip_idx]
+
+    # Find PODs for this zip that are in the rank range.
+    which_hqs <- which(
+        hqs_to_zips_rank[,zip_idx] >= HQ_RANK_MIN &
+        hqs_to_zips_rank[,zip_idx] <= HQ_RANK_MAX
+    )
+
+    # We're only interested in records that aren't filled in yet.
+    na_pods <- is.na(hqs_to_zips_time[zip_idx, which_hqs+1])
+    if (length(hqs_to_zips_time[zip_idx,2:col_count][na_pods]) < 1) {
+        next
+    }
+
+    # Request this block of PODs and fill them all in.
+    print(sprintf('requesting: zip=%s rank=[%d-%d]', z, HQ_RANK_MIN, HQ_RANK_MAX))
+
+    # Construct a comma-delimited string of lat/lons containing the locations of our
+    # HQs We will use this for our MapQuest requests below: for each zip code, we
+    # make one request for its distance to every HQ in our range.
+    hq_locations <- paste(
+        sprintf("'%f,%f'", largest_cities$lat[which_hqs], largest_cities$long[which_hqs]),
+        collapse = ', '
+    )
+
+    # TODO: make sure we are requesting from location 1 to 2:n only
+    request_json <- URLencode(sprintf(
+        "{allToAll: false, locations: ['%f,%f', %s]}",
+        z_lat,
+        z_lon,
+        hq_locations
+    ))
+    url <- sprintf(MAPQUEST_API_URL, MAPQUEST_API_KEY, request_json)
+    result <- fromJSON(getURL(url))
+
+    # If we get back 0s, they should be NA. Otherwise they'll mess up our
+    # rankings and region drawing later.
+    result$time[result$time <= 0] <- NA
+
+    hqs_to_zips_time[zip_idx, which_hqs+1] <- result$time[2:length(result$distance)]
+
+    # See if we should save our current state.
+    requests_until_save <- requests_until_save - 1
+    if (requests_until_save < 1) {
+        print('saving current state')
+        write.csv(hqs_to_zips_time, TIME_CSV_PATH, row.names=F)
+        requests_until_save <- ZIPS_BETWEEN_SAVE
+    }
+}
+
+# Final save once we are done.
+write.csv(hqs_to_zips_time, TIME_CSV_PATH, row.names=F)
+</code></pre>
+
+<p><em>Assuming you didn't actually run that code and instead opted to <a href="https://www.dropbox.com/s/c4bh08wpam5653r/hqs_to_zips_time.zip">download the data</a>, run the following code to read it in.</em></p>
+
+<pre><code class="r">hqs_to_zips_time <- read.csv(TIME_CSV_PATH)
+hqs_to_zips_time$zip <- sprintf('%05d', hqs_to_zips_time$zip)
+</code></pre>
+
+<p>Now we generate our ranks based on travel time instead of distance. We have to be a bit more careful this time, as we might have incomplete data. We don't want pairs with travel time of NA showing up in the rankings.</p>
+
+<pre><code class="r"># Rank HQs by their distance to each unique zip code location.
+hqs_to_zips_rank2 <- matrix(nrow=nrow(largest_cities), ncol=nrow(zips_deduped))
+for (i in 1:nrow(zips_deduped)) {
+    not_na <- !is.na(hqs_to_zips_time[i,2:ncol(hqs_to_zips_time)])
+    hqs_to_zips_rank2[not_na,i] <-
+        rank(hqs_to_zips_time[i,2:ncol(hqs_to_zips_time)][not_na], ties.method='first')
+}
+</code></pre>
+
+<p>We build our map for the Dallas, TX headquarter the same way as before.</p>
+
+<pre><code class="r"># Now we draw regions for which Dallas is one of the closest 3 HQs by time.
+hq_idx <- which(largest_cities$name == 'Dallas TX')
+redundancy_levels <- c(3, 2, 1)
+fill_alpha <- c(0.15, 0.30, 0.45)
+
+map('state')
+for (i in 1:length(redundancy_levels)) {
+    # Find every zip for which this HQ is within n in time rank.
+    within_n <- hqs_to_zips_rank2[hq_idx,] <= redundancy_levels[i]
+
+    # Convex hull of zip code points.
+    hull_order <- chull(
+        zips_deduped$longitude[within_n],
+        zips_deduped$latitude[within_n]
+    )
+    hull_x <- zips_deduped$longitude[within_n][hull_order]
+    hull_y <- zips_deduped$latitude[within_n][hull_order]
+    polygon(hull_x, hull_y, border='blue', col=rgb(0, 0, 1, fill_alpha[i]))
+}
+
+# The other HQs.
+other_hqs = 1:nrow(largest_cities) != hq_idx
+points(
+    largest_cities$long[other_hqs],
+    largest_cities$lat[other_hqs],
+    pch = 21,
+    bg = rgb(0.4, 0.4, 0.4, 0.6),
+    col = 'black',
+    cex = 1.5
+)
+
+# This HQ.
+points(
+    largest_cities$long[hq_idx],
+    largest_cities$lat[hq_idx],
+    pch = 21,
+    bg = rgb(1, 0, 0, .85),
+    col = 'black',
+    cex = 1.5
+)
+</code></pre>
+
+<p>This shows the regions for which Dallas is among the closest headquarters for 1, 2, and 3 level of redundancy. Compare this map to the one from the previous post, and you'll see that it conforms better to the highway system. For instance, it takes into account I-20 which moves east and west across Texas, instead of pushing up into the Dakotas.</p>
+
+<p><center>
+<img width="60%" src="/static/images/2014/routing-problems/post2plot1.png" /><br/>
+<em>Travel time-based regions for Dallas, TX</em>
+</center></p>
+
+<p>And now our map of the US, showing the regions for each HQ as the set of zip codes for which it is the closest.</p>
+
+<pre><code class="r"># Map of regions where every zip is served only by its closest HQ.
+map('usa')
+for (hq_idx in 1:nrow(largest_cities)) {
+    # Find every zip for which this HQ is the closest.
+    within_1 <- hqs_to_zips_rank2[hq_idx,] == 1
+    within_1[is.na(within_1)] <- F
+
+    # Convex hull of zip code points.
+    hull_order <- chull(
+        zips_deduped$longitude[within_1],
+        zips_deduped$latitude[within_1]
+    )
+    hull_x <- zips_deduped$longitude[within_1][hull_order]
+    hull_y <- zips_deduped$latitude[within_1][hull_order]
+    polygon(
+        hull_x,
+        hull_y,
+        border = 'black',
+        col = rgb(0, 0, 1, 0.25)
+    )
+}
+
+# All HQs
+points(
+    largest_cities$long,
+    largest_cities$lat,
+    pch = 21,
+    bg = rgb(1, 0, 0, .75),
+    col = 'black',
+    cex = 1.5
+)
+</code></pre>
+
+<p>This gives us our new map. If we compare this with the original, it should better reflect the topology of the highway system. It also looks a bit less jagged.</p>
+
+<p><center>
+<img width="60%" src="/static/images/2014/routing-problems/post2plot2.png" /><br/>
+<em>All regions with redundancy level of 1</em>
+</center></p>
+
+<p>Exercises for the reader:<ul><li>Some of these regions overlap, even though they are supposed to be only composed of zip codes for which a given HQ is the closest. Why is that?</li><li>Say we want to limit our driver to given maximum travel times. Based on our data from MapQuest, draw concentric circles representing approximate 3, 5, and 7 hour travel time regions.</li></ul></p>
+
+
+  	</div>
+  </div>
+</div>
+
+
+    <script src="/static/js/vendor/jquery-1.10.1.js"></script>
+    <script src="/static/js/vendor/bootstrap.js"></script>
+    <script src="/static/js/main.js"></script>
+
+    <!-- highight.js -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.8.0/styles/default.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.8.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+
+    <!-- Google Analytics -->
+    <script>
+      if (window.location.href.startsWith('http://ryanjoneil.github.io')) {
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-67607976-1', 'auto');
+        ga('send', 'pageview');
+      }
+    </script>
+  </body>
+
+  
+  
+</html>

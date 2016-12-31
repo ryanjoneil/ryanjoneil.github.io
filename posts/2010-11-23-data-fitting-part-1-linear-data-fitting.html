@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html class="no-js">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>ryanjoneil.github.io</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width">
+
+        <link rel="stylesheet" href="/static/css/bootstrap.css">
+        <style>
+            body {
+                padding-top: 50px;
+                padding-bottom: 20px;
+            }
+        </style>
+        <link rel="stylesheet" href="/static/css/bootstrap-theme.css">
+        <link rel="stylesheet" href="/static/css/main.css">
+        <script src="/static/js/vendor/modernizr-2.6.2.js"></script>
+
+        <link rel="alternate" type="application/rss+xml" title="RSS Feed" href="/rss.xml">
+
+        <!-- MathJax -->
+        <script type="text/x-mathjax-config">
+          MathJax.Hub.Config({
+            tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+          });
+        </script>
+        <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    </head>
+
+    <body>
+    <div class="navbar navbar navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/index.html">ryanjoneil.github.io</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class=""><a href="/index.html">/</a></li>
+            <li class=""><a href="/blog.html">blog</a></li>
+            <li><a href="/rss.xml" target="_blank"><span class="fa fa-rss"></span></a></li>
+            <li><a href="https://twitter.com/ryanjoneil" target="_blank"><span class="fa fa-twitter"></span></a></li>
+            <li><a href="https://github.com/ryanjoneil" target="_blank"><span class="fa fa-github"></span></a></li>
+            <li><a href="https://www.linkedin.com/in/ryan-j-o-neil-59b6ab83" target="_blank"><span class="fa fa-linkedin"></span></a></li>
+          </ul>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+    
+<div class="jumbotron">
+  <div class="container">
+    <h1>adventures in optimization</h1>
+    <p>The charming adventures of <a href="mailto:ryanjoneil@gmail.com">a data scientist</a> and his solver.</p>
+  </div>
+</div>
+
+<div class="container">
+  <div class="content-outer">
+  	<div class="content-header">
+		
+			<a href='/posts/2009-10-08-easy-monty-carlo-simulation-in-python.html'>&laquo;</a>
+		
+
+	   	Tuesday, November 23, 2010
+
+		
+			<a href='/posts/2010-11-30-off-the-cuff-voter-fraud-detection.html'>&raquo;</a>
+		
+  	</div>
+
+	<div class="content-inner">
+		<h2>Data Fitting Part 1 - Linear Data Fitting</h2>
+      <p><em>An introduction to data fitting and classification using linear optimization in Python.</em></p>
+	  	
+
+<p>Data fitting is one of those tasks that everyone should have at least some exposure to.  Certainly developers and analysts will benefit from a working knowledge of its fundamentals and their implementations.  However, in my own reading I've found it difficult to locate good examples that are simple enough to pick up quickly and come with accompanying source code.</p>
+
+<p>
+This article commences an ongoing series introducing basic data fitting techniques.  With any luck they won't be overly complex, while still being useful enough to get the point across with a real example and real data.  We'll start with a binary classification problem: presented with a series of records, each containing a set number of input values describing it, determine whether or not each record exhibits some property.</p>
+
+<p>
+We'll use the cancer1.dt data from the proben1 set of test cases, which you can download <a href="ftp://ftp.cs.cuhk.hk/pub/proben1/cancer/cancer1.dt">here</a>.  Each record starts with 9 data points containing physical characteristics of a tumor.  The second to last data point contains 1 if a tumor is benign and 0 if it is malignant.  We seek to find a linear function we can run on an arbitrary record that will return a value greater than zero if that record's tumor is predicted to be benign and less than zero if it is predicted to be malignant.  We will train our linear model on the first 350 records, and test it for accuracy on the remaining rows.</p>
+
+<p>
+This is similar to the data fitting problem found in <a href="http://www.amazon.com/Linear-Programming-Books-Mathematical-Sciences/dp/0716715872">Chvatal</a>.  Our inputs consist of a matrix of observed data, $A$, and a vector of classifications, $b$.  In order to classify a record, we require another vector $x$ such that the dot product of $x$ and that record will be either greater or less than zero depending on its predicted classification.</p>
+
+<p>
+A couple points to note before we start:</p>
+
+<ul><li>Most observed data are noisy.  This means it may be impossible to locate a hyperplane that cleanly separates given records of one type from another.  In this case, we must resort to finding a function that minimizes our predictive error.  For the purposes of this example, we'll minimize the sum of the absolute values of the observed and predicted values.  That is, we seek $x$ such that we find $min \sum_i{|a_i^T x-b_i|}$.</li>
+<li>The <a href="http://www.purplemath.com/modules/strtlneq.htm">slope-intercept</a> form of a line, $f(x)=m^T x+b$, contains an offset.  It should be obvious that this is necessary in our model so that our function isn't required to pass through the origin.  Thus, we'll be adding an extra variable with the coefficient of 1 to represent our offset value.</li>
+</ul><br />
+In order to model this, we use two linear constraints for each absolute value.  We minimize the sum of these.  Our Linear Programming model thus looks like:</p>
+
+<p>
+<center><table><tbody>
+<tr><td valign="top">$\min$</td><td colspan="5">$z = x_0 + \sum_i{v_i}$</td></tr>
+<tr><td valign="top">s.t.</td><td align="right">$v_i$</td><td>$\geq$</td><td>$x_0 + a_i'x - 1$</td><td valign="top">$\forall$ benign tumors</td></tr>
+<tr><td valign="top"></td><td align="right">$v_i$</td><td>$\geq$</td><td>$1 - x_0 - a_i'x$</td><td valign="top">$\forall$ benign tumors</td></tr>
+<tr><td valign="top"></td><td align="right">$v_i$</td><td>$\geq$</td><td>$x_0 + a_i'x - (-1)$</td><td valign="top">$\forall$ malignant tumors</td></tr>
+<tr><td valign="top"></td><td align="right">$v_i$</td><td>$\geq$</td><td>$-1 - x_0 - a_i'x$</td><td valign="top">$\forall$ malignant tumors</td></tr>
+</tbody></table></center></p>
+
+<p>
+In order to do this in Python, we use SCIP and SoPlex from the zibopt library.  We start by setting constants for benign and malignant outputs and providing a function to read in the training and testing data sets.<br />
+
+<pre><code class="py"># Preferred output values for tumor categories
+BENIGN = 1
+MALIGNANT = -1
+
+def read_proben1_cancer_data(filename, train_size):
+    '''Loads a proben1 cancer file into train & test sets'''
+    # Number of input data points per record
+    DATA_POINTS = 9
+
+    train_data = []
+    test_data = []
+
+    with open(filename) as infile:
+        # Read in the first train_size lines to a training
+        # data list, and the others to testing data.  This
+        # allows us to test how general our model is on
+        # something other than the input data.
+        for line in infile.readlines()[7:]: # skip header
+            line = line.split()
+
+            # Records = offset (x0) + remaining data points
+            input = [float(x) for x in line[:DATA_POINTS]]
+            output = BENIGN if line[-2] == '1' else MALIGNANT
+            record = {'input': input, 'output': output}
+
+            # Determine what data set to put this in
+            if len(train_data) >= train_size:
+                test_data.append(record)
+            else:
+                train_data.append(record)
+
+    return train_data, test_data
+</code></pre>
+
+<p>The next function implements the LP model described above using SoPlex and SCIP.  It minimizes the sum of residuals for each training record.  This amounts to summing the absolute value of the difference between predicted and observed output data.  The following function takes in input and observed output data and returns a list of coefficients.  Our resulting model consists of taking the <a href="http://en.wikipedia.org/wiki/Dot_product">dot product</a> of an input record and these coefficients.  If the result is greater than or equal to zero, that record is predicted to be a benign tumor, otherwise it is predicted to be malignant.</p>
+
+<pre><code class="py">def train_linear_model(train_data):
+    '''
+    Accepts a set of input training data with known output
+    values.  Returns a list of coefficients to apply to
+    arbitrary records for purposes of binary categorization.
+    '''
+    from zibopt import scip
+    import sys
+
+    # Make sure we have at least one training records
+    assert len(train_data) > 0
+    num_variables = len(train_data[0]['input'])
+
+    # Variables are coefficients in front of the data points.
+    # It is important that these be unrestricted in sign so
+    # they can take negative values.
+    solver = scip.solver()
+    coefficients = [
+        solver.variable(lower=-sys.maxint)
+        for _ in xrange(num_variables)
+    ]
+
+    # Residual for each data row
+    residuals = [solver.variable() for _ in train_data]
+    for r, d in zip(residuals, train_data):
+        # r will be the absolute value of the difference
+        # between observed and predicted values.  We can
+        # model absolute values such as r >= |foo| as:
+        #
+        #   r >=  foo
+        #   r >= -foo
+        solver += sum(
+            x * y for x, y in zip(coefficients, d['input'])
+        ) + r >= d['output']
+
+        solver += sum(
+            x * y for x, y in zip(coefficients, d['input'])
+        ) - r <= d['output']
+
+    # Find and return coefficients that min sum of residuals
+    solution = solver.minimize(objective=sum(residuals))
+    return [solution[c] for c in coefficients]
+</code></pre>
+
+<p>We also provide a convenience function for counting the number of correct predictions by our resulting model against either the test or training data sets.</p>
+
+<pre><code class="py">def count_correct(data_set, coefficients):
+    '''Returns the number of correct predictions'''
+    correct = 0
+    for d in data_set:
+        result = sum(
+            x*y for x, y in zip(coefficients, d['input'])
+        )
+
+        # Do we predict the same as the output?
+        if (result >= 0) == (d['output'] >= 0):
+            correct += 1
+
+    return correct
+</code></pre>
+
+<p>Finally we write a main method to read in the data, build our linear model, and test its efficacy.</p>
+
+<pre><code class="py">if __name__ == '__main__':
+    from pprint import pprint
+
+    # Specs for this input file
+    INPUT_FILE_NAME = 'cancer1.dt'
+    TRAIN_SIZE = 350
+
+    train_data, test_data = read_proben1_cancer_data(
+        INPUT_FILE_NAME, TRAIN_SIZE
+    )
+
+    # Add the offset variable to each of our data records
+    for data_set in [train_data, test_data]:
+        for row in data_set:
+            row['input'] = [1] + row['input']
+
+    coefficients = train_linear_model(train_data)
+    print 'coefficients:'
+    pprint(coefficients)
+
+    # Print % of correct preditions for each data set
+    correct = count_correct(train_data, coefficients)
+    print '%s / %s = %.02f%% correct on training set' % (
+        correct, len(train_data),
+        100 * float(correct) / len(train_data)
+    )
+
+    correct = count_correct(test_data, coefficients)
+    print '%s / %s = %.02f%% correct on testing set' % (
+        correct, len(test_data),
+        100 * float(correct) / len(test_data)
+    )
+</code></pre>
+
+<p>The result of running this model against the cancer1.dt data set is:</p>
+
+<pre>coefficients:
+[1.4072882449702786,
+ -0.14014055927954652,
+ -0.6239513714263405,
+ -0.26727681774258882,
+ 0.067107753841131157,
+ -0.28300216102808429,
+ -1.0355594670918404,
+ -0.22774451038152174,
+ -0.69871243677663608,
+ -0.072575089848659444]
+328 / 350 = 93.71% correct on training set
+336 / 349 = 96.28% correct on testing set
+</pre>
+
+<p>The accuracy is pretty good here against the both the training and testing sets, so this particular model generalizes well.  This is about the simplest model we can implement for data fitting, and we'll get to more complicated ones later, but it's nice to see we can do so well so quickly.  The coefficients correspond to using a function of this form, rounding off to three decimal places:</p>
+
+<p>
+$$f(x) = 1.407 - 0.140 x_1 - 0.624 x_2 - 0.267 x_3 + 0.067 x_4 - 0.283 x_5 - 1.037 x_6 - 0.228 x_7 - 0.699 x_8 - 0.073 x_9$$
+</p>
+
+
+  	</div>
+  </div>
+</div>
+
+
+    <script src="/static/js/vendor/jquery-1.10.1.js"></script>
+    <script src="/static/js/vendor/bootstrap.js"></script>
+    <script src="/static/js/main.js"></script>
+
+    <!-- highight.js -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.8.0/styles/default.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.8.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+
+    <!-- Google Analytics -->
+    <script>
+      if (window.location.href.startsWith('http://ryanjoneil.github.io')) {
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-67607976-1', 'auto');
+        ga('send', 'pageview');
+      }
+    </script>
+  </body>
+
+  
+  
+</html>

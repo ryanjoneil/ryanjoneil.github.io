@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html class="no-js">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>ryanjoneil.github.io</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width">
+
+        <link rel="stylesheet" href="/static/css/bootstrap.css">
+        <style>
+            body {
+                padding-top: 50px;
+                padding-bottom: 20px;
+            }
+        </style>
+        <link rel="stylesheet" href="/static/css/bootstrap-theme.css">
+        <link rel="stylesheet" href="/static/css/main.css">
+        <script src="/static/js/vendor/modernizr-2.6.2.js"></script>
+
+        <link rel="alternate" type="application/rss+xml" title="RSS Feed" href="/rss.xml">
+
+        <!-- MathJax -->
+        <script type="text/x-mathjax-config">
+          MathJax.Hub.Config({
+            tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+          });
+        </script>
+        <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    </head>
+
+    <body>
+    <div class="navbar navbar navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/index.html">ryanjoneil.github.io</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class=""><a href="/index.html">/</a></li>
+            <li class=""><a href="/blog.html">blog</a></li>
+            <li><a href="/rss.xml" target="_blank"><span class="fa fa-rss"></span></a></li>
+            <li><a href="https://twitter.com/ryanjoneil" target="_blank"><span class="fa fa-twitter"></span></a></li>
+            <li><a href="https://github.com/ryanjoneil" target="_blank"><span class="fa fa-github"></span></a></li>
+            <li><a href="https://www.linkedin.com/in/ryan-j-o-neil-59b6ab83" target="_blank"><span class="fa fa-linkedin"></span></a></li>
+          </ul>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+    
+<div class="jumbotron">
+  <div class="container">
+    <h1>adventures in optimization</h1>
+    <p>The charming adventures of <a href="mailto:ryanjoneil@gmail.com">a data scientist</a> and his solver.</p>
+  </div>
+</div>
+
+<div class="container">
+  <div class="content-outer">
+  	<div class="content-header">
+		
+			<a href='/posts/2011-04-11-reformed-japhs-in-python-rolling-effect.html'>&laquo;</a>
+		
+
+	   	Thursday, April 14, 2011
+
+		
+			<a href='/posts/2011-04-18-reformed-japhs-in-python-turing-machine.html'>&raquo;</a>
+		
+  	</div>
+
+	<div class="content-inner">
+		<h2>Reformed JAPHs in Python - Huffman Coding</h2>
+      <p><em>Python obfuscation and Huffman Coding.</em></p>
+	  	
+
+<p>At this point, tricking python into printing strings via ever more pernicious mechanisms got a little boring.  So I switched to obfuscating fundamental computer science algorithms.  Here's a JAPH that takes in a <a href="http://en.wikipedia.org/wiki/Huffman_coding">Huffman coded</a> version of 'just another python hacker', decodes, and prints it.</p>
+
+<pre><code class="py"># Build coding tree
+def build_tree(scheme):
+    if scheme.startswith('*'):
+        left, scheme = build_tree(scheme[1:])
+        right, scheme = build_tree(scheme)
+        return (left, right), scheme
+    else:
+        return scheme[0], scheme[1:]
+
+def decode(tree, encoded):
+    ret = ''
+    node = tree
+    for direction in encoded:
+        if direction == '0':
+            node = node[0]
+        else:
+            node = node[1]
+        if isinstance(node, str):
+            ret += node
+            node = tree
+    return ret
+
+tree = build_tree('*****ju*sp*er***yct* h**ka*no')[0]
+print(
+    decode(tree, bin(10627344201836243859174935587).lstrip('0b').zfill(103))
+)
+</code></pre>
+
+<p>The decoding tree is built like a true LISP-style tree as a sequence of pairs.  '*' represents a branch in the tree while other characters are leaf nodes.  This looks like ((((('j', 'u'), ('s', 'p')), ('e', 'r')), ((('y', 'c'), 't'), (' ', 'h'))), (('k', 'a'), ('n', 'o'))) after it's constructed.</p><p>The actual Huffman coded version of our favorite string looks like 0000000001000100101011010111011101010111001000110110000110100001010111111110011001111010100110000100011, which in base-2 encoding represents around a 50% savings in space.  Well worth all the effort, right?</p><p>There's a catch here, which is that this is hard to obfuscate unless we turn it into a single expression.  This means that we have to convert build_tree and decode into lambda functions.  Unfortunately, they are recursive and lambda functions don't do that easily.  Fortunately, we can use <a href="http://code.activestate.com/recipes/576366-y-combinator/">Y combinators</a> and then the rest is simple.  These are worth some study since they will pop up again later.</p>
+
+<pre><code class="py">Y = lambda g: (
+    lambda f: g(lambda arg: f(f)(arg))) (lambda f: g(lambda arg: f(f)(arg))
+)
+
+build_tree = Y(
+    lambda f: lambda scheme: (
+        (f(scheme[1:])[0], f(f(scheme[1:])[1])[0]),
+        f(f(scheme[1:])[1])[1 ]
+    ) if scheme.startswith('*') else (scheme[0], scheme[1:])
+)
+
+decode = Y(lambda f: lambda x: x[3]+x[1] if not x[2] else (
+    f([x[0], x[0], x[2], x[3]+x[1]]) if isinstance(x[1], str) else (
+        f([x[0], x[1][0], x[2][1:], x[3]]) if x[2][0] == '0' else (
+            f([x[0], x[1][1], x[2][1:], x[3]])
+        )
+    )
+))
+
+tree = build_tree('*****ju*sp*er***yct* h**ka*no')[0]
+print(
+    decode([
+        tree,
+        tree,
+        bin(10627344201836243859174935587).lstrip('0b').zfill(103), ''
+    ])
+)
+</code></pre>
+
+<p>The final version is really just a condensed (and expanded, weirdly) version of the above (again, make sure to use Python 3.2):</p>
+
+<pre><code class="py">print((lambda t,e,s:(lambda g:(lambda f:g(lambda arg:f(f)(arg)))(lambda f:
+g(lambda arg: f(f)(arg))))(lambda f:lambda x: x[3]+x[1]if not x[2]else f([
+x[0],x[0],x[2],x[3]+x[1]])if isinstance(x[1],str)else f([x[0],x[1][0],x[2]
+[1:],x[3]])if x[2][0]=='0'else f([x[0],x[1][1],x[2][1:],x[3]]))([t,t,e,s])
+)((lambda g:(lambda f:g(lambda arg:f(f)(arg)))(lambda f:g(lambda arg:f(f)(
+arg))))(lambda f:lambda p:((f(p[1:])[0],f(f(p[1:])[1])[0]),f(f(p[1:])[1])[
+1])if p.startswith('*')else(p[0],p[1:]))('*****ju*sp*er***yct* h**ka*no')[
+0],bin(10627344201836243859179756385-4820798).lstrip('0b').zfill(103),''))
+</code></pre>
+
+
+  	</div>
+  </div>
+</div>
+
+
+    <script src="/static/js/vendor/jquery-1.10.1.js"></script>
+    <script src="/static/js/vendor/bootstrap.js"></script>
+    <script src="/static/js/main.js"></script>
+
+    <!-- highight.js -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.8.0/styles/default.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.8.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+
+    <!-- Google Analytics -->
+    <script>
+      if (window.location.href.startsWith('http://ryanjoneil.github.io')) {
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-67607976-1', 'auto');
+        ga('send', 'pageview');
+      }
+    </script>
+  </body>
+
+  
+  
+</html>

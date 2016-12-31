@@ -1,0 +1,35 @@
+.content-outer {
+	border: 1px dotted;
+    border-radius: 5px;
+    margin: 0px;
+}
+
+.content-header {
+    background-color: #9AC0CD;
+    padding: 5px 20px 5px 20px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    font-size: 110%;
+    font-weight: bold;
+}
+
+.content-inner {
+    padding: 0px 20px 0px 20px;
+}
+
+.jumbotron {
+    background-color: #ffffff;
+    font-size: 18px;
+    line-height: inherit;
+    margin-bottom: 0px;
+    padding-bottom: 20px;
+    padding-top: 20px;
+}
+
+.jumbotron h1 {
+	font-size: 40px;
+}
+
+.navbar {
+	background-color: #cccccc;
+}

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html class="no-js">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>ryanjoneil.github.io</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width">
+
+        <link rel="stylesheet" href="/static/css/bootstrap.css">
+        <style>
+            body {
+                padding-top: 50px;
+                padding-bottom: 20px;
+            }
+        </style>
+        <link rel="stylesheet" href="/static/css/bootstrap-theme.css">
+        <link rel="stylesheet" href="/static/css/main.css">
+        <script src="/static/js/vendor/modernizr-2.6.2.js"></script>
+
+        <link rel="alternate" type="application/rss+xml" title="RSS Feed" href="/rss.xml">
+
+        <!-- MathJax -->
+        <script type="text/x-mathjax-config">
+          MathJax.Hub.Config({
+            tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+          });
+        </script>
+        <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    </head>
+
+    <body>
+    <div class="navbar navbar navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/index.html">ryanjoneil.github.io</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class=""><a href="/index.html">/</a></li>
+            <li class=""><a href="/blog.html">blog</a></li>
+            <li><a href="/rss.xml" target="_blank"><span class="fa fa-rss"></span></a></li>
+            <li><a href="https://twitter.com/ryanjoneil" target="_blank"><span class="fa fa-twitter"></span></a></li>
+            <li><a href="https://github.com/ryanjoneil" target="_blank"><span class="fa fa-github"></span></a></li>
+            <li><a href="https://www.linkedin.com/in/ryan-j-o-neil-59b6ab83" target="_blank"><span class="fa fa-linkedin"></span></a></li>
+          </ul>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+    
+<div class="jumbotron">
+  <div class="container">
+    <h1>adventures in optimization</h1>
+    <p>The charming adventures of <a href="mailto:ryanjoneil@gmail.com">a data scientist</a> and his solver.</p>
+  </div>
+</div>
+
+<div class="container">
+  <div class="content-outer">
+  	<div class="content-header">
+		
+			<a href='/posts/2011-05-19-joy-in-the-time-of-the-python-futures-module.html'>&laquo;</a>
+		
+
+	   	Thursday, June 9, 2011
+
+		
+			<a href='/posts/2011-10-25-know-your-time-complexities.html'>&raquo;</a>
+		
+  	</div>
+
+	<div class="content-inner">
+		<h2>A Few Notes on Deterministic vs. Stochastic Simulation</h2>
+      <p><em>Mental meanderings about simulation and how to get stakeholders to understand the importance of randomness.</em></p>
+	  	
+
+<p>I find I have to build simulations with increasing frequency in my work and life.  Usually this indicates I'm faced with one of the following situations:</p><ol><li>The need for a quick estimate regarding the quantitative behavior of some situation.</li><li>The desire to verify the result of a computation or assumption.</li><li>A situation which is too complex or random to effectively model or understand.</li></ol><p>Anyone familiar at all with simulation will recognize the last item as the motivating force of the entire field.  Simulation models tend to take over when systems become so complex that understanding them is prohibitive in cost and time or entirely infeasible.  In a simulation, the modeler can focus on individual interactions between entities while still hoping for useful output in the form of descriptive statistics.</p>
+
+<p>As such, simulations are nearly always stochastic.  The output of a simulation, whether it be the mean time to service upon entering a queue or the number of fish alive in a pond, is determined by a number of random inputs.  It is estimated by looking at a sample of the entire, often infinite, problem space and therefore must be described in terms of mean and variance.</p>
+
+<p>For me, simulation building usually follows a process roughly like this:</p><ol><li>Work with a domain expert to understand the process under study.</li><li>Convert this process into a deterministic simulation (no randomness).</li><li>Verify the output of the deterministic simulation.</li><li>Anlyze the inputs of the simulation to determine their probability distributions.</li><li>Convert the deterministic simulation to a stochastic simulation.</li></ol><p>The reason for creating a simulation without randomness first is that it can be difficult or impossible to verify its correctness otherwise.  Thus one may focus on the simulation logic first before analyzing and adding sources of randomness.</p>
+
+<p>Where the procedure breaks down is after the third step.  Domain experts are often happy to share their knowledge about systems to aid in designing simulations, and typically can understand the resulting abstractions.  They are also invaluable in verifying simulation output.  However, they are unlikely to understand why it is necessary to add randomness to a system that they already perceive as functional.  Further, doing so can be just as difficult and time consuming as the initial model development and therefore requires justification.</p>
+
+<p>This can be a quandary for the model builder.  How does one communicate the need to incorporate randomness to decision makers who lack understanding of probability?  It is trivially easy to construct simulations that use the same input parameters but yield drastically different outputs.  Consider the code below, which simulates two events occurring and counts the number of times event b happens before event a.</p>
+
+<pre><code class="py">import random
+
+def sim_stochastic(event_a_lambda, event_b_lambda):
+    # Returns 0 if event A arrives first, 1 if event B arrives first
+
+    # Calculate next arrival time for each event randomly.
+    event_a_arrival = random.expovariate(event_a_lambda)
+    event_b_arrival = random.expovariate(event_b_lambda)
+
+    return 0.0 if event_a_arrival <= event_b_arrival else 1.0
+
+def sim_deterministic(event_a_lambda, event_b_lambda):
+    # Returns 0 if event A arrives first, 1 if event B arrives first
+
+    # Calculate next arrival time for each event deterministically.
+    event_a_arrival = 1.0 / event_a_lambda
+    event_b_arrival = 1.0 / event_b_lambda
+
+    return 0.0 if event_a_arrival <= event_b_arrival else 1.0
+
+if __name__ == '__main__':
+    event_a_lambda = 0.3
+    event_b_lambda = 0.5
+
+    repetitions = 10000
+
+    for sim in (sim_stochastic, sim_deterministic):
+        output = [
+            sim(event_a_lambda, event_b_lambda)
+            for _ in range(repetitions)
+        ]
+        event_b_first = 100.0 * (sum(output) / len(output))
+        print('event b is first %0.1f%% of the time' % event_b_first)
+</code></pre>
+
+<p>Both simulations use the same input parameter, but the second one is essentially wrong as b will always happen first.  In the stochastic version, we use exponential distributions for the inputs and obtain an output that verifies our basic understanding of these distributions.</p>
+
+<pre>event b is first 63.0% of the time<br />event b is first 100.0% of the time<br /></pre>
+
+<p>How about you?  How do you discuss the need to model a random world with decision makers?</p>
+
+
+  	</div>
+  </div>
+</div>
+
+
+    <script src="/static/js/vendor/jquery-1.10.1.js"></script>
+    <script src="/static/js/vendor/bootstrap.js"></script>
+    <script src="/static/js/main.js"></script>
+
+    <!-- highight.js -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.8.0/styles/default.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.8.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+
+    <!-- Google Analytics -->
+    <script>
+      if (window.location.href.startsWith('http://ryanjoneil.github.io')) {
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-67607976-1', 'auto');
+        ga('send', 'pageview');
+      }
+    </script>
+  </body>
+
+  
+  
+</html>

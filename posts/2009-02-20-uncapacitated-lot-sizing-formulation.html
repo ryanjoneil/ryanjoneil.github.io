@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html class="no-js">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>ryanjoneil.github.io</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width">
+
+        <link rel="stylesheet" href="/static/css/bootstrap.css">
+        <style>
+            body {
+                padding-top: 50px;
+                padding-bottom: 20px;
+            }
+        </style>
+        <link rel="stylesheet" href="/static/css/bootstrap-theme.css">
+        <link rel="stylesheet" href="/static/css/main.css">
+        <script src="/static/js/vendor/modernizr-2.6.2.js"></script>
+
+        <link rel="alternate" type="application/rss+xml" title="RSS Feed" href="/rss.xml">
+
+        <!-- MathJax -->
+        <script type="text/x-mathjax-config">
+          MathJax.Hub.Config({
+            tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+          });
+        </script>
+        <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    </head>
+
+    <body>
+    <div class="navbar navbar navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/index.html">ryanjoneil.github.io</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class=""><a href="/index.html">/</a></li>
+            <li class=""><a href="/blog.html">blog</a></li>
+            <li><a href="/rss.xml" target="_blank"><span class="fa fa-rss"></span></a></li>
+            <li><a href="https://twitter.com/ryanjoneil" target="_blank"><span class="fa fa-twitter"></span></a></li>
+            <li><a href="https://github.com/ryanjoneil" target="_blank"><span class="fa fa-github"></span></a></li>
+            <li><a href="https://www.linkedin.com/in/ryan-j-o-neil-59b6ab83" target="_blank"><span class="fa fa-linkedin"></span></a></li>
+          </ul>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+    
+<div class="jumbotron">
+  <div class="container">
+    <h1>adventures in optimization</h1>
+    <p>The charming adventures of <a href="mailto:ryanjoneil@gmail.com">a data scientist</a> and his solver.</p>
+  </div>
+</div>
+
+<div class="container">
+  <div class="content-outer">
+  	<div class="content-header">
+		
+
+	   	Friday, February 20, 2009
+
+		
+			<a href='/posts/2009-02-27-on-the-beauty-of-power-sets.html'>&raquo;</a>
+		
+  	</div>
+
+	<div class="content-inner">
+		<h2>Uncapacitated Lot Sizing Formulation</h2>
+      <p><em>Formulation and aspects of the Uncapacitated Lot Sizing problem in Integer Programming.</em></p>
+	  	
+
+<p>Uncapacitated Lot Sizing (ULS) is a classic <a href="http://en.wikipedia.org/wiki/Operations_research">OR</a> problem that seeks to minimize the cost of satisfying known demand for a product over time.  Demand is subject to varying costs for production, set-up, and storage of the product.  Technically, it is a mixed binary integer linear program -- the key point separating it from the world of <a href="http://en.wikipedia.org/wiki/Linear_programming">linear optimization</a> being that production cannot occur during any period without paying that period's fixed costs for set-up.  Thus it has linear nonnegative variables for production and storage amounts during each period, and a binary variable for each period that determines whether or not production can actually occur.</p>
+
+<p>For $n$ periods with per-period fixed set-up cost $f_t$, unit production cost $p_t$, unit storage cost $h_t$,and demand $d_t$, we define decision variables related to production and storage quantities:</p>
+
+<p>
+<center>
+$x_t =$ units produced in period $t$<br />
+$s_t =$ stock at the end of period $t$<br />
+$y_t = 1$ if production occurs in period $t$, $0$ otherwise<br />
+</center>
+</p>
+
+<p>One can minimize overall cost for satisfying all demand on time using the following model per <a href="http://www.amazon.com/Integer-Programming-Laurence-Wolsey/dp/0471283665/ref=pd_bbs_sr_1?ie=UTF8&amp;s=books&amp;qid=1235083688&amp;sr=8-1">Wolsey (1998)</a>, defined slightly differently here:</p>
+
+<p>
+<center>
+<table><tbody><tr><td valign="top">$\min$</td><td colspan="4">$z = \sum_t{p_t x_t} + \sum_t{h_t s_t} + \sum_t{f_t y_t}$</td></tr>
+<tr><td al="" valign="top">s.t.</td><td align="right">$s_1$</td><td>$=$</td><td>$d_1 + s_1$</td><td></td></tr>
+<tr><td></td><td align="right">$s_{t-1} + x_t$</td><td>$=$</td><td>$d_t + s_t$</td><td>$\forall t > 1$</td></tr>
+<tr><td></td><td align="right">$x_t$</td><td>$\leq$</td><td>$M y_t$</td><td>$\forall t$</td></tr>
+<tr><td></td><td align="right">$s_t, x_t$</td><td>$\geq$</td><td>$0$</td><td>$\forall t$</td></tr>
+<tr><td></td><td align="right">$y_t$</td><td>$\in$</td><td>$\{0,1\}$</td><td>$\forall t$</td></tr></tbody></table>
+</center>
+</p>
+
+<p>According to Wolsey, page 11, given that $s_t = \sum_{i=1}^t (x_i - d_i)$ and defining new constants $K = \sum_{t=1}^n h_t(\sum_{i=1}^t d_i)$ and $c_t = p_t + \sum_{i=t}^n h_i$, the objective function can be rewritten as $z = \sum_t c_t x_t + \sum _t f_t y_t - K$.  The book lacks a proof of this and it seems a bit non-obvious, so I attempt an explanation in somewhat painstaking detail here.</p>
+
+<p>
+<center>
+<table width="500"><tbody>
+<tr><td colspan="3" valign="top">Proof:</td></tr>
+<tr><td colspan="1" align="right">$\sum_t p_t x_t + \sum_t h_t s_t + \sum_t f_t y_t$</td><td valign="top">$=$</td><td>$\sum_t c_t x_t + \sum _t f_t y_t - K$</td></tr>
+<tr><td colspan="3" valign="top">1. Eliminate $\sum_t f_t y_t$:</td></tr>
+<tr><td align="right">$\sum_t p_t x_t + \sum_t h_t s_t$</td>
+<td valign="top">$=$</td><td>$\sum_t c_t x_t - K$</td></tr>
+<tr><td colspan="3">2. Expand $K$ and $c_t$:</td></tr>
+<tr><td align="right">$\sum_t p_t x_t + \sum_t h_t s_t$</td><td>$=$</td>
+<td>$\sum_t (p_t + \sum_{i=t}^n h_i) x_t - \sum_t h_t (\sum_{i=1}^t d_i)$</td></tr>
+<tr><td colspan="3">3. Eliminate $\sum_t p_t x_t$:</td></tr>
+<tr><td align="right">$\sum_t h_t s_t$</td>
+<td>$=$</td><td>$\sum_t x_t (\sum_{i=t}^n h_i) - \sum_t h_t (\sum_{i=1}^t d_i)$</td></tr>
+<tr><td colspan="3">4. Expand $s_t$:</td></tr>
+<tr><td align="right">$\sum_t h_t (\sum_{i=1}^t x_i) - \sum_t h_t (\sum_{i=1}^t d_i)$</td><td>$=$</td><td>$\sum_t x_t (\sum_{i=t}^n h_i) - \sum_t h_t (\sum_{i=1}^t d_i)$</td></tr>
+<tr><td colspan="3">5. Eliminate $\sum_t h_t (\sum_{i=1}^t d_i)$:</td></tr>
+<tr><td align="right">$\sum_t h_t (\sum_{i=1}^t x_i)$</td><td>$=$</td><td>$\sum_t x_t (\sum_{i=t}^n h_i)$</td></tr>
+</tbody></table>
+</center></p>
+
+<p>The result from step 5 becomes obvious upon expanding its left and right-hand terms:</p>
+
+<p><center>$h_1 x_1 + h_2 (x_1 + x_2) + \cdots + h_n (x_1 + \cdots + x_n) = $ $x_1 (h_1 + \cdots + h_n) + x2 (h_2 + \cdots + h_n) + \cdots + x_n h_n$.</center></p>
+
+<p>In matrix notation with $h$ and $x$ as column vectors in $\bf R^n$ and $L$ and $U$ being $n x n$ lower and upper triangular identity matrices, respectively, this can be written as:</p>
+
+<p><center>
+$\left(h_1 \cdots h_n\right)\left(\matrix{1 \cdots 0 \cr \vdots\ddots \vdots \cr 1 \cdots 1}\right)\left(\matrix{x_1 \cr \vdots \cr x_n}\right) = \left(x_1 \cdots x_n \right)\left(\matrix{1 \cdots 1 \cr \vdots \ddots \vdots \cr 0 \cdots 1}\right)\left(\matrix{h_1 \cr \vdots \cr h_n}\right)$</center></p>
+
+<p>or $h^T L x = x^T U h$.</p>
+
+
+  	</div>
+  </div>
+</div>
+
+
+    <script src="/static/js/vendor/jquery-1.10.1.js"></script>
+    <script src="/static/js/vendor/bootstrap.js"></script>
+    <script src="/static/js/main.js"></script>
+
+    <!-- highight.js -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.8.0/styles/default.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.8.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+
+    <!-- Google Analytics -->
+    <script>
+      if (window.location.href.startsWith('http://ryanjoneil.github.io')) {
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-67607976-1', 'auto');
+        ga('send', 'pageview');
+      }
+    </script>
+  </body>
+
+  
+  
+</html>
