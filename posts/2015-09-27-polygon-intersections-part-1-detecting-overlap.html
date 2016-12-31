@@ -74,8 +74,6 @@
 	   	Sunday, September 27, 2015
 
 		
-			<a href='/posts/2015-12-10-polygon-intersections-part-2-removing-overlap.html'>&raquo;</a>
-		
   	</div>
 
 	<div class="content-inner">
@@ -164,8 +162,8 @@
 
 $$
 \begin{array}{rcl}
-    S_t = \{\,\left(x, y\right) & | & x \ge x_t,\\ 
-                                &   & y \ge y_t,\\ 
+    S_t = \{\,\left(x, y\right) & | & x \ge x_t,\\
+                                &   & y \ge y_t,\\
                                 &   & x + y \le x_t + y_t + a \,\}
 \end{array}
 $$
@@ -174,7 +172,7 @@ $$
 
 $$
 \begin{array}{rcl}
-    S_s = \{\,\left(x, y\right) & | & x_s \le x \le x_s + a,\\ 
+    S_s = \{\,\left(x, y\right) & | & x_s \le x \le x_s + a,\\
                                 &   & y_s \le y \le y_s + a \,\}
 \end{array}
 $$
@@ -183,10 +181,10 @@ $$
 
 $$
 \begin{array}{rcl}
-    S_i = \{\,\left(x, y\right) & | & x \ge x_t,\\ 
-                                &   & y \ge y_t,\\ 
+    S_i = \{\,\left(x, y\right) & | & x \ge x_t,\\
+                                &   & y \ge y_t,\\
                                 &   & x + y \le x_t + y_t + a,\\
-                                &   & x_s \le x \le x_s + a,\\ 
+                                &   & x_s \le x \le x_s + a,\\
                                 &   & y_s \le y \le y_s + a \,\}
 \end{array}
 $$
@@ -202,8 +200,8 @@ $$
 $$
     S_t = \{\, \lambda_1 \left(\begin{array}{c} x_t \\ y_t \end{array}\right) +
                \lambda_2 \left(\begin{array}{c} x_t + a \\ y_t \end{array}\right) +
-               \lambda_3 \left(\begin{array}{c} x_t \\ y_t + a \end{array}\right) \, | \\ 
-               \lambda_1 + \lambda_2 + \lambda_3 = 1, \\ 
+               \lambda_3 \left(\begin{array}{c} x_t \\ y_t + a \end{array}\right) \, | \\
+               \lambda_1 + \lambda_2 + \lambda_3 = 1, \\
                \lambda_i \ge 0, \, i = \{1, \ldots, 3 \} \, \}
 $$
 
@@ -213,8 +211,8 @@ $$
     S_s = \{\, \lambda_4 \left(\begin{array}{c} x_s \\ y_s \end{array}\right) +
                \lambda_5 \left(\begin{array}{c} x_s + a \\ y_s \end{array}\right) +
                \lambda_6 \left(\begin{array}{c} x_s \\ y_s + a \end{array}\right) +
-               \lambda_7 \left(\begin{array}{c} x_s + a \\ y_s + a \end{array}\right) \, | \\ 
-               \lambda_4 + \lambda_5 + \lambda_6 + \lambda_7 = 1, \\ 
+               \lambda_7 \left(\begin{array}{c} x_s + a \\ y_s + a \end{array}\right) \, | \\
+               \lambda_4 + \lambda_5 + \lambda_6 + \lambda_7 = 1, \\
                \lambda_i \ge 0, \, i = \{4, \ldots, 7 \} \, \}
 $$
 
@@ -229,12 +227,12 @@ S_i = \{\,
 \lambda_4 \left(\begin{array}{c} x_s \\ y_s \end{array}\right) +
     \lambda_5 \left(\begin{array}{c} x_s + a \\ y_s \end{array}\right) +
     \lambda_6 \left(\begin{array}{c} x_s \\ y_s + a \end{array}\right) +
-    \lambda_7 \left(\begin{array}{c} x_s + a \\ y_s + a \end{array}\right)\\ 
-\lambda_1 + \lambda_2 + \lambda_3 = 1\\  
-\lambda_4 + \lambda_5 + \lambda_6 + \lambda_7 = 1\\  
+    \lambda_7 \left(\begin{array}{c} x_s + a \\ y_s + a \end{array}\right)\\
+\lambda_1 + \lambda_2 + \lambda_3 = 1\\
+\lambda_4 + \lambda_5 + \lambda_6 + \lambda_7 = 1\\
 \lambda_i \ge 0, \, i = \{1, \ldots, 7\}
 
-\,\}    
+\,\}
 $$
 
 <p>Just as before, if $S_i \ne \emptyset$, our polygons intersect.</p>
