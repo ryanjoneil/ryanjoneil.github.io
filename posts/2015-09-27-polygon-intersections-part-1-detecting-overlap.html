@@ -86,7 +86,7 @@
 <p>There are a number of way to answer this. In computer graphics, the problem is often approached using a <a href="https://en.wikipedia.org/wiki/Clipping_(computer_graphics)">clipping algorithm</a>. This post examines a couple of simpler techniques using linear inequalities and properties of convexity. To simplify the presentation, we assume we're only interested in convex polygons in two dimensions. We also assume that rotation is not an issue. That is, if one of the polygons is rotated, we can simply re-test to see if they overlap.</p>
 
 <p><center>
-<br/><img src="/static/images/2015/polygons/asteroids.jpg" /><br/><br/>
+<br/><img class="img-responsive" src="/static/images/2015/polygons/asteroids.jpg" /><br/><br/>
 <em>Don't get clobbered by an asteroid!</em>
 </center></p>
 
@@ -219,20 +219,22 @@ $$
 <p>If there exists a point inside both the triangle and the square, then it must satisfy both convex combinations. Thus we can define our intersecting set $S_i$ as follows. <em>(This is a little loose with the notation, but I think it makes the point a bit better.)</em></p>
 
 $$
-S_i = \{\,
 
-\lambda_1 \left(\begin{array}{c} x_t \\ y_t \end{array}\right) +
-    \lambda_2 \left(\begin{array}{c} x_t + a \\ y_t \end{array}\right) +
-    \lambda_3 \left(\begin{array}{c} x_t \\ y_t + a \end{array}\right) =
-\lambda_4 \left(\begin{array}{c} x_s \\ y_s \end{array}\right) +
-    \lambda_5 \left(\begin{array}{c} x_s + a \\ y_s \end{array}\right) +
-    \lambda_6 \left(\begin{array}{c} x_s \\ y_s + a \end{array}\right) +
-    \lambda_7 \left(\begin{array}{c} x_s + a \\ y_s + a \end{array}\right)\\
-\lambda_1 + \lambda_2 + \lambda_3 = 1\\
-\lambda_4 + \lambda_5 + \lambda_6 + \lambda_7 = 1\\
-\lambda_i \ge 0, \, i = \{1, \ldots, 7\}
+\begin{array}{rl}
 
-\,\}
+S_i = \{\, & \\
+           & \lambda_1 \left(\begin{array}{c} x_t \\ y_t \end{array}\right) +
+               \lambda_2 \left(\begin{array}{c} x_t + a \\ y_t \end{array}\right) +
+               \lambda_3 \left(\begin{array}{c} x_t \\ y_t + a \end{array}\right) =\\
+           & \lambda_4 \left(\begin{array}{c} x_s \\ y_s \end{array}\right) +
+               \lambda_5 \left(\begin{array}{c} x_s + a \\ y_s \end{array}\right) +
+               \lambda_6 \left(\begin{array}{c} x_s \\ y_s + a \end{array}\right) +
+               \lambda_7 \left(\begin{array}{c} x_s + a \\ y_s + a \end{array}\right)\\
+           & \lambda_1 + \lambda_2 + \lambda_3 = 1\\
+           & \lambda_4 + \lambda_5 + \lambda_6 + \lambda_7 = 1\\
+           & \lambda_i \ge 0, \, i = \{1, \ldots, 7\}\\
+      \,\} &
+\end{array}
 $$
 
 <p>Just as before, if $S_i \ne \emptyset$, our polygons intersect.</p>
