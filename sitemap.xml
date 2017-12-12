@@ -171,6 +171,11 @@
         <priority>1.0</priority>
     </url>
     <url>
+        <loc>http://ryanjoneil.github.io/posts/2015-12-10-polygon-intersections-part-2-removing-overlap.html</loc>
+        <changefreq>daily</changefreq>
+        <priority>1.0</priority>
+    </url>
+    <url>
         <loc>http://ryanjoneil.github.io/talks/2017/03/data-science-dc/practical-optimization-for-stats-nerds.slides.html</loc>
         <changefreq>daily</changefreq>
         <priority>1.0</priority>
