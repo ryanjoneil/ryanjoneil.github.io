@@ -65,7 +65,7 @@
 
     <p>I'm an analyst and coder by day, <a href="https://seor.gmu.edu/">Ph.D. candidate in optimization</a> by night, <a href="blog.html">blogger</a>, and amateur musician.</p>
 
-    <p>In <a href="https://www.linkedin.com/in/ryan-j-o-neil-59b6ab83">my work</a>, I direct <a href="https://grubhub.com">Grubhub</a>'s Decision Engineering team, which builds strategic, tactical, and operational decision services, and the algorithmic and quantitative components that power them.</p>
+    <p>In <a href="https://www.linkedin.com/in/ryan-j-o-neil-59b6ab83">my work</a>, I direct <a href="https://grubhub.com">Grubhub</a>'s Decision Engineering team, which builds strategic, tactical, and operational decision services enabling real-time meal delivery at enormous scale, and the algorithmic and quantitative components that power them.</p>
 
     <p>My academic research applies hybrid optimization and decomposition techniques to pickup and delivery problems under the direction of my advisor, <a href="http://seor.gmu.edu/~khoffman/">Dr. Karla Hoffman</a>. I'm also interested in <a href="http://paginas.fe.up.pt/~esicup/">cutting and packing problems</a>, computational optimization, and modeling languages.</p>
 
@@ -76,7 +76,13 @@
     <h3>papers</h3>
     <ul>
         <li>
-            <a href="www.optimization-online.org/DB_HTML/2017/12/6370.html">Exact Methods for Solving Traveling Salesman Problems with Pickup and Delivery in Real Time</a> examines exact methods for solving TSPPDs with consolidation in real-time applications. It considers enumerative, Mixed Integer Programming, Constraint Programming, and hybrid optimization approaches under various time budgets. [ <a href="http://www.optimization-online.org/DB_FILE/2017/12/6370.pdf">preprint</a> ]
+            <a href="http://www.optimization-online.org/DB_HTML/2017/12/6370.html">Exact Methods for Solving Traveling Salesman Problems with Pickup and Delivery in Real Time</a> examines exact methods for solving TSPPDs with consolidation in real-time applications. It considers enumerative, Mixed Integer Programming, Constraint Programming, and hybrid optimization approaches under various time budgets. [ <a href="http://www.optimization-online.org/DB_FILE/2017/12/6370.pdf">preprint</a> ]
+        </li>
+        <li>
+            <a href="http://www.optimization-online.org/DB_HTML/2018/10/6838.html">Integer Models for the Asymmetric Traveling Salesman Problem with Pickup and Delivery</a> proposes new a new ATSPPD model, new valid inequalities for the Sarin-Sherali-Bhootra ATSPPD, and studies the impact of relaxation complicating constraints in these models. [ <a href="http://www.optimization-online.org/DB_FILE/2018/10/6838.pdf">preprint</a> ]
+        </li>
+        <li>
+            <a href="http://www.optimization-online.org/DB_HTML/2018/10/6853.html">Decision Diagrams for Solving Traveling Salesman Problems with Pickup and Delivery in Real Tim</a> explores the use of Multivalued Decision Diagrams and Assignment Problem inference duals for real-time optimization of TSPPDs. [ <a href="http://www.optimization-online.org/DB_FILE/2018/10/6853.pdf">preprint</a> ]
         </li>
     </ul>
 
@@ -111,7 +117,13 @@
     <h3>projects</h3>
     <ul>
         <li>
-            <a href="https://github.com/ryanjoneil/ap.cpp">ap.cpp</a> is an incremental primal-dual assignment problem solver written in C++. It can vastly improve propagation in hybrid optimization models that use AP relaxations. I use it within custom propagators in <a href="http://www.gecode.org/">Gecode</a> for solving the Traveling Salesman Problem with side constraints.
+            <a href="https://github.com/ryanjoneil/tsppd-hybrid">TSPPD Hybrid Optimization Code</a> and <a href="https://github.com/ryanjoneil/tsppd-dd">TSPPD Decision Diagram Code</a> are both used in my dissertation, "Exact Methods for Solving Single-Vehicle Pickup and Delivery Problems in Real Time". The former contains C++14 code for hybrid CP and MIP models for solving TSPPDs. The later uses a hybridized Decision Diagram implementation with an Assignment Problem inference dual inside a branch-and-bound.
+        </li>
+        <li>
+            <a href="https://github.com/grubhub/tsppdlib">TSPPDlib</a> is a standard test set for TSPPDs. The instances are based on observed meal delivery data at Grubhub.
+        </li>
+        <li>
+            <a href="https://github.com/ryanjoneil/ap.cpp">ap.cpp</a> is an incremental primal-dual assignment problem solver written in C++. It can vastly improve propagation in hybrid optimization models that use AP relaxations. I use it within custom propagators in <a href="http://www.gecode.org/">Gecode</a> for solving the Traveling Salesman Problem with side constraints. <a href="https://github.com/ryanjoneil/ap">ap</a> is a Go version of the same thing.
         </li>
 		<li>
 			The <a href="https://github.com/ryanjoneil/rams">Ruby Algebraic Modeling System</a> is a simple modeling tool for formulating and solving MILPs in Ruby.

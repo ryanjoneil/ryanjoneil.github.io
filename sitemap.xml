@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?> 
 <urlset xmlns="http://www.google.com/schemas/sitemap/0.84">
     <url>
-        <loc>http://ryanjoneil.github.io/about.html</loc>
-        <changefreq>daily</changefreq>
-        <priority>1.0</priority>
-    </url>
-    <url>
         <loc>http://ryanjoneil.github.io/blog.html</loc>
         <changefreq>daily</changefreq>
         <priority>1.0</priority>
@@ -16,32 +11,7 @@
         <priority>1.0</priority>
     </url>
     <url>
-        <loc>http://ryanjoneil.github.io/posts/2009-02-20-uncapacitated-lot-sizing-formulation.html</loc>
-        <changefreq>daily</changefreq>
-        <priority>1.0</priority>
-    </url>
-    <url>
-        <loc>http://ryanjoneil.github.io/posts/2009-02-27-on-the-beauty-of-power-sets.html</loc>
-        <changefreq>daily</changefreq>
-        <priority>1.0</priority>
-    </url>
-    <url>
-        <loc>http://ryanjoneil.github.io/posts/2009-10-08-easy-monty-carlo-simulation-in-python.html</loc>
-        <changefreq>daily</changefreq>
-        <priority>1.0</priority>
-    </url>
-    <url>
-        <loc>http://ryanjoneil.github.io/posts/2010-11-23-data-fitting-part-1-linear-data-fitting.html</loc>
-        <changefreq>daily</changefreq>
-        <priority>1.0</priority>
-    </url>
-    <url>
-        <loc>http://ryanjoneil.github.io/posts/2010-11-30-off-the-cuff-voter-fraud-detection.html</loc>
-        <changefreq>daily</changefreq>
-        <priority>1.0</priority>
-    </url>
-    <url>
-        <loc>http://ryanjoneil.github.io/posts/2011-02-15-data-fitting-part-2-very-very-simple-linear-regression-in-python.html</loc>
+        <loc>http://ryanjoneil.github.io/posts/2012-09-22-langrangian-relaxation-with-gurobipy.html</loc>
         <changefreq>daily</changefreq>
         <priority>1.0</priority>
     </url>
@@ -51,102 +21,12 @@
         <priority>1.0</priority>
     </url>
     <url>
-        <loc>http://ryanjoneil.github.io/posts/2011-02-23-simulating-gdp-growth.html</loc>
-        <changefreq>daily</changefreq>
-        <priority>1.0</priority>
-    </url>
-    <url>
         <loc>http://ryanjoneil.github.io/posts/2011-04-01-reformed-japhs-in-python-alphabetic-indexing.html</loc>
         <changefreq>daily</changefreq>
         <priority>1.0</priority>
     </url>
     <url>
-        <loc>http://ryanjoneil.github.io/posts/2011-04-03-reformed-japhs-in-python-ridiculous-anagram.html</loc>
-        <changefreq>daily</changefreq>
-        <priority>1.0</priority>
-    </url>
-    <url>
-        <loc>http://ryanjoneil.github.io/posts/2011-04-06-reformed-japhs-in-python-rot13.html</loc>
-        <changefreq>daily</changefreq>
-        <priority>1.0</priority>
-    </url>
-    <url>
-        <loc>http://ryanjoneil.github.io/posts/2011-04-11-reformed-japhs-in-python-rolling-effect.html</loc>
-        <changefreq>daily</changefreq>
-        <priority>1.0</priority>
-    </url>
-    <url>
-        <loc>http://ryanjoneil.github.io/posts/2011-04-14-reformed-japhs-in-python-huffman-coding.html</loc>
-        <changefreq>daily</changefreq>
-        <priority>1.0</priority>
-    </url>
-    <url>
-        <loc>http://ryanjoneil.github.io/posts/2011-04-18-reformed-japhs-in-python-turing-machine.html</loc>
-        <changefreq>daily</changefreq>
-        <priority>1.0</priority>
-    </url>
-    <url>
-        <loc>http://ryanjoneil.github.io/posts/2011-04-20-reformed-japhs-in-python-scheme-to-python-compilation.html</loc>
-        <changefreq>daily</changefreq>
-        <priority>1.0</priority>
-    </url>
-    <url>
-        <loc>http://ryanjoneil.github.io/posts/2011-04-27-affine-scaling-in-r.html</loc>
-        <changefreq>daily</changefreq>
-        <priority>1.0</priority>
-    </url>
-    <url>
-        <loc>http://ryanjoneil.github.io/posts/2011-05-19-joy-in-the-time-of-the-python-futures-module.html</loc>
-        <changefreq>daily</changefreq>
-        <priority>1.0</priority>
-    </url>
-    <url>
-        <loc>http://ryanjoneil.github.io/posts/2011-06-11-a-few-notes-on-deterministic-vs-stochastic-simulation.html</loc>
-        <changefreq>daily</changefreq>
-        <priority>1.0</priority>
-    </url>
-    <url>
-        <loc>http://ryanjoneil.github.io/posts/2011-10-25-know-your-time-complexities.html</loc>
-        <changefreq>daily</changefreq>
-        <priority>1.0</priority>
-    </url>
-    <url>
-        <loc>http://ryanjoneil.github.io/posts/2011-11-03-know-your-time-complexities-part-2.html</loc>
-        <changefreq>daily</changefreq>
-        <priority>1.0</priority>
-    </url>
-    <url>
-        <loc>http://ryanjoneil.github.io/posts/2012-01-12-magic-squares-and-big-Ms.html</loc>
-        <changefreq>daily</changefreq>
-        <priority>1.0</priority>
-    </url>
-    <url>
-        <loc>http://ryanjoneil.github.io/posts/2012-01-13-normal-magic-squares.html</loc>
-        <changefreq>daily</changefreq>
-        <priority>1.0</priority>
-    </url>
-    <url>
-        <loc>http://ryanjoneil.github.io/posts/2012-03-26-a-few-thoughts-on-music-and-computer-programming.html</loc>
-        <changefreq>daily</changefreq>
-        <priority>1.0</priority>
-    </url>
-    <url>
-        <loc>http://ryanjoneil.github.io/posts/2012-09-22-langrangian-relaxation-with-gurobipy.html</loc>
-        <changefreq>daily</changefreq>
-        <priority>1.0</priority>
-    </url>
-    <url>
-        <loc>http://ryanjoneil.github.io/posts/2013-07-29-network-splitting.html</loc>
-        <changefreq>daily</changefreq>
-        <priority>1.0</priority>
-    </url>
-    <url>
-        <loc>http://ryanjoneil.github.io/posts/2014-02-03-chebyshev-centers-of-polygons-with-gurobipy.html</loc>
-        <changefreq>daily</changefreq>
-        <priority>1.0</priority>
-    </url>
-    <url>
-        <loc>http://ryanjoneil.github.io/posts/2014-02-14-capturing-stdout-in-a-python-child-process.html</loc>
+        <loc>http://ryanjoneil.github.io/posts/2011-02-23-simulating-gdp-growth.html</loc>
         <changefreq>daily</changefreq>
         <priority>1.0</priority>
     </url>
@@ -156,7 +36,82 @@
         <priority>1.0</priority>
     </url>
     <url>
+        <loc>http://ryanjoneil.github.io/posts/2014-02-14-capturing-stdout-in-a-python-child-process.html</loc>
+        <changefreq>daily</changefreq>
+        <priority>1.0</priority>
+    </url>
+    <url>
+        <loc>http://ryanjoneil.github.io/posts/2014-02-03-chebyshev-centers-of-polygons-with-gurobipy.html</loc>
+        <changefreq>daily</changefreq>
+        <priority>1.0</priority>
+    </url>
+    <url>
+        <loc>http://ryanjoneil.github.io/posts/2011-10-25-know-your-time-complexities.html</loc>
+        <changefreq>daily</changefreq>
+        <priority>1.0</priority>
+    </url>
+    <url>
+        <loc>http://ryanjoneil.github.io/posts/2011-04-11-reformed-japhs-in-python-rolling-effect.html</loc>
+        <changefreq>daily</changefreq>
+        <priority>1.0</priority>
+    </url>
+    <url>
+        <loc>http://ryanjoneil.github.io/posts/2012-03-26-a-few-thoughts-on-music-and-computer-programming.html</loc>
+        <changefreq>daily</changefreq>
+        <priority>1.0</priority>
+    </url>
+    <url>
+        <loc>http://ryanjoneil.github.io/posts/2011-06-11-a-few-notes-on-deterministic-vs-stochastic-simulation.html</loc>
+        <changefreq>daily</changefreq>
+        <priority>1.0</priority>
+    </url>
+    <url>
+        <loc>http://ryanjoneil.github.io/posts/2011-02-15-data-fitting-part-2-very-very-simple-linear-regression-in-python.html</loc>
+        <changefreq>daily</changefreq>
+        <priority>1.0</priority>
+    </url>
+    <url>
+        <loc>http://ryanjoneil.github.io/posts/2012-01-13-normal-magic-squares.html</loc>
+        <changefreq>daily</changefreq>
+        <priority>1.0</priority>
+    </url>
+    <url>
+        <loc>http://ryanjoneil.github.io/posts/2010-11-23-data-fitting-part-1-linear-data-fitting.html</loc>
+        <changefreq>daily</changefreq>
+        <priority>1.0</priority>
+    </url>
+    <url>
+        <loc>http://ryanjoneil.github.io/posts/2011-04-14-reformed-japhs-in-python-huffman-coding.html</loc>
+        <changefreq>daily</changefreq>
+        <priority>1.0</priority>
+    </url>
+    <url>
+        <loc>http://ryanjoneil.github.io/posts/2011-11-03-know-your-time-complexities-part-2.html</loc>
+        <changefreq>daily</changefreq>
+        <priority>1.0</priority>
+    </url>
+    <url>
+        <loc>http://ryanjoneil.github.io/posts/2011-04-27-affine-scaling-in-r.html</loc>
+        <changefreq>daily</changefreq>
+        <priority>1.0</priority>
+    </url>
+    <url>
+        <loc>http://ryanjoneil.github.io/posts/2013-07-29-network-splitting.html</loc>
+        <changefreq>daily</changefreq>
+        <priority>1.0</priority>
+    </url>
+    <url>
+        <loc>http://ryanjoneil.github.io/posts/2012-01-12-magic-squares-and-big-Ms.html</loc>
+        <changefreq>daily</changefreq>
+        <priority>1.0</priority>
+    </url>
+    <url>
         <loc>http://ryanjoneil.github.io/posts/2014-06-27-preprocessing-for-routing-problems-part-2.html</loc>
+        <changefreq>daily</changefreq>
+        <priority>1.0</priority>
+    </url>
+    <url>
+        <loc>http://ryanjoneil.github.io/posts/2011-05-19-joy-in-the-time-of-the-python-futures-module.html</loc>
         <changefreq>daily</changefreq>
         <priority>1.0</priority>
     </url>
@@ -166,12 +121,52 @@
         <priority>1.0</priority>
     </url>
     <url>
+        <loc>http://ryanjoneil.github.io/posts/2009-02-27-on-the-beauty-of-power-sets.html</loc>
+        <changefreq>daily</changefreq>
+        <priority>1.0</priority>
+    </url>
+    <url>
+        <loc>http://ryanjoneil.github.io/posts/2010-11-30-off-the-cuff-voter-fraud-detection.html</loc>
+        <changefreq>daily</changefreq>
+        <priority>1.0</priority>
+    </url>
+    <url>
+        <loc>http://ryanjoneil.github.io/posts/2009-02-20-uncapacitated-lot-sizing-formulation.html</loc>
+        <changefreq>daily</changefreq>
+        <priority>1.0</priority>
+    </url>
+    <url>
+        <loc>http://ryanjoneil.github.io/posts/2009-10-08-easy-monty-carlo-simulation-in-python.html</loc>
+        <changefreq>daily</changefreq>
+        <priority>1.0</priority>
+    </url>
+    <url>
+        <loc>http://ryanjoneil.github.io/posts/2011-04-18-reformed-japhs-in-python-turing-machine.html</loc>
+        <changefreq>daily</changefreq>
+        <priority>1.0</priority>
+    </url>
+    <url>
+        <loc>http://ryanjoneil.github.io/posts/2011-04-06-reformed-japhs-in-python-rot13.html</loc>
+        <changefreq>daily</changefreq>
+        <priority>1.0</priority>
+    </url>
+    <url>
+        <loc>http://ryanjoneil.github.io/posts/2011-04-20-reformed-japhs-in-python-scheme-to-python-compilation.html</loc>
+        <changefreq>daily</changefreq>
+        <priority>1.0</priority>
+    </url>
+    <url>
         <loc>http://ryanjoneil.github.io/posts/2015-09-27-polygon-intersections-part-1-detecting-overlap.html</loc>
         <changefreq>daily</changefreq>
         <priority>1.0</priority>
     </url>
     <url>
-        <loc>http://ryanjoneil.github.io/posts/2015-12-10-polygon-intersections-part-2-removing-overlap.html</loc>
+        <loc>http://ryanjoneil.github.io/posts/2011-04-03-reformed-japhs-in-python-ridiculous-anagram.html</loc>
+        <changefreq>daily</changefreq>
+        <priority>1.0</priority>
+    </url>
+    <url>
+        <loc>http://ryanjoneil.github.io/about.html</loc>
         <changefreq>daily</changefreq>
         <priority>1.0</priority>
     </url>
