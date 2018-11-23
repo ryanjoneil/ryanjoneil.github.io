@@ -39,6 +39,11 @@
     max-width: 350px;
 }
 
+.tidbit {
+    font-family: monospace;
+    font-size: 80%;
+}
+
 @media (max-width: 512px) {
     .ryan-image{
         padding: 0 0 20px 0;
