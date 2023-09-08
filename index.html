@@ -1,168 +1,355 @@
 <!DOCTYPE html>
-<html class="no-js">
-    <head>
-      <!-- Global site tag (gtag.js) - Google Analytics -->
-      <script async src="https://www.googletagmanager.com/gtag/js?id=UA-67607976-1"></script>
-      <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'UA-67607976-1');
-      </script>
+<html lang="en" dir="auto">
 
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title>ryanjoneil.github.io</title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width">
+<head>
+	<meta name="generator" content="Hugo 0.117.0"><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>adventures in optimization</title>
 
-        <link rel="stylesheet" href="/static/css/bootstrap.css">
-        <style>
-            body {
-                padding-top: 50px;
-                padding-bottom: 20px;
+<meta name="description" content="">
+<meta name="author" content="">
+<link rel="canonical" href="https://ryanjoneil.github.io/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.5cfc680b1eeaeef9efbced92d46c2a9e876b72ee14fba85846afc4cff9e6e6f8.css" integrity="sha256-XPxoCx7q7vnvvO2S1Gwqnodrcu4U&#43;6hYRq/Ez/nm5vg=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://ryanjoneil.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://ryanjoneil.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://ryanjoneil.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://ryanjoneil.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://ryanjoneil.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" type="application/rss+xml" href="https://ryanjoneil.github.io/index.xml">
+<link rel="alternate" type="application/json" href="https://ryanjoneil.github.io/index.json">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
             }
-        </style>
-        <link rel="stylesheet" href="/static/css/bootstrap-theme.css">
-        <link rel="stylesheet" href="/static/css/main.css">
-        <script src="/static/js/vendor/modernizr-2.6.2.js"></script>
 
-        <link rel="alternate" type="application/rss+xml" title="RSS Feed" href="/rss.xml">
+            .list {
+                background: var(--theme);
+            }
 
-        <!-- MathJax -->
-        <script type="text/x-mathjax-config">
-          MathJax.Hub.Config({
-            tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
-          });
-        </script>
-        <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
 
-        <!-- Font Awesome -->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
-    </head>
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
 
-    <body>
-      <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
-       <div class="container" id="navfluid">
-         <div class="navbar-header">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="/index.html">ryanjoneil.github.io</a>
+    </style>
+</noscript>
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css"
+    integrity="sha384-GvrOXuhMATgEsSwCs4smul74iXGOixntILdUW9XmUC6+HX0sLNAK3q71HotJqlAn"
+    crossorigin="anonymous"/>
+<script
+    src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"
+    integrity="sha384-cpW21h6RZv/phavutF+AuVYrr+dA8xD9zs6FwLpaCct6O9ctzYFfFr4dgmgccOTx"
+    crossorigin="anonymous">
+</script>
+
+<script
+    src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"
+    integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05"
+    crossorigin="anonymous"
+    onload="renderMathInElement(document.body);">
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    renderMathInElement(document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "$", right: "$", display: false}
+        ]
+    });
+});
+</script>
+
+<meta property="og:title" content="adventures in optimization" />
+<meta property="og:description" content="" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://ryanjoneil.github.io/" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="adventures in optimization"/>
+<meta name="twitter:description" content=""/>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "adventures in optimization",
+  "url": "https://ryanjoneil.github.io/",
+  "description": "",
+  "thumbnailUrl": "https://ryanjoneil.github.io/favicon.ico",
+  "sameAs": [
+      "/index.xml", "https://github.com/ryanjoneil", "https://scholar.google.com/citations?user=fXh_Ej4AAAAJ", "https://sigmoid.social/@ryanjoneil", "https://linkedin.com/in/ryan-o-59b6ab83/", "https://x.com/ryanjoneil"
+  ]
+}
+</script>
+</head>
+
+<body class="list" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://ryanjoneil.github.io/" accesskey="h" title="adventures in optimization (Alt + H)">adventures in optimization</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
         </div>
-        <div class="navbar-collapse collapse">
-          <ul class="nav navbar-nav">
-            <li class="active"><a href="/index.html">/</a></li>
-            <li class=""><a href="https://scholar.google.com/citations?user=fXh_Ej4AAAAJ&hl=en">scholar</a></li>
-            <li class=""><a href="/blog.html">blog</a></li>
-            <li><a href="/rss.xml" target="_blank"><span class="fa fa-rss"></span></a></li>
-            <li><a href="https://twitter.com/ryanjoneil" target="_blank"><span class="fa fa-twitter"></span></a></li>
-            <li><a href="https://github.com/ryanjoneil" target="_blank"><span class="fa fa-github"></span></a></li>
-            <li><a href="https://www.linkedin.com/in/ryan-j-o-neil-59b6ab83" target="_blank"><span class="fa fa-linkedin"></span></a></li>
-          </ul>
-        </div>
-      </div>
+        <ul id="menu">
+            <li>
+                <a href="https://ryanjoneil.github.io/about" title="about">
+                    <span>about</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://ryanjoneil.github.io/coding" title="coding">
+                    <span>coding</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://ryanjoneil.github.io/speaking" title="speaking">
+                    <span>speaking</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://ryanjoneil.github.io/writing" title="writing">
+                    <span>writing</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://ryanjoneil.github.io/search" title="🔍">
+                    <span>🔍</span>
+                </a>
+            </li>
+        </ul>
     </nav>
-
-    
-<div class="jumbotron">
-  <div class="container">
-    <h3>Hi, I'm Ryan.</h3>
-
-    <p><img class="img-responsive pull-left ryan-image" src="static/images/ryan.jpg" /></p>
-
-    <p>I use data and models to make complex decisions.</p>
-
-    <p>In <a href="https://www.linkedin.com/in/ryan-j-o-neil-59b6ab83">my work</a>, I direct <a href="https://grubhub.com">Grubhub</a>'s Decision Engineering department, which builds strategic, tactical, and operational decision services enabling <a href="https://bytes.grubhub.com/decisions-are-first-class-citizens-9994fd8fe802">real-time meal delivery at enormous scale</a>, and the algorithmic and quantitative components that power them.</p>
-
-    <p>Before that, I created successful dynamic vehicle routing systems for on-demand delivery at Zoomer, models and simulations to help large federal agencies make better decisions at <a href="https://www.mitre.org/">MITRE</a>, and data journalism projects in <a href="https://www.washingtonpost.com/">The Washington Post</a> newsroom.</p>
-
-    <p>I've done this while finishing bachelors and masters degrees in Computer Science and Operations Research, respectively, and finally a Ph.D. in <a href="https://seor.gmu.edu/">Systems Engineering &amp; Operations Research</a> by night. I <a href="https://drive.google.com/open?id=1dFfrDUOR1pSAiPNaH9EGlh__hMPvYVW9xBWJAm-x4-M">recently defended</a> my dissertation, <a href="https://drive.google.com/open?id=14RQnKrFpY1hIEVXlmDfzncjGzTTTLlPi">Exact Methods for Solving Single-Vehicle Pickup and Delivery Problems in Real Time</a>. My academic research applies hybrid optimization techniques to pickup and delivery problems for real-time decision making. I'm also interested in applications of optimization to machine learning, <a href="http://paginas.fe.up.pt/~esicup/">cutting and packing problems</a>, computational optimization, and modeling languages.
-
-   	<p>Here are a few things I've done lately.</p>
-
-    <div style="clear: both;" />
-
-    <h3>papers</h3>
-    <ul>
-        <li>
-            <a href="http://www.optimization-online.org/DB_HTML/2017/12/6370.html">Exact Methods for Solving Traveling Salesman Problems with Pickup and Delivery in Real Time</a> examines exact methods for solving TSPPDs with consolidation in real-time applications. It considers enumerative, Mixed Integer Programming, Constraint Programming, and hybrid optimization approaches under various time budgets. <span class="tidbit">[<a href="http://www.optimization-online.org/DB_FILE/2017/12/6370.pdf">preprint</a>]</span>
-        </li>
-        <li>
-            <a href="http://www.optimization-online.org/DB_HTML/2018/10/6838.html">Integer Models for the Asymmetric Traveling Salesman Problem with Pickup and Delivery</a> proposes a new ATSPPD model, new valid inequalities for the Sarin-Sherali-Bhootra ATSPPD, and studies the impact of relaxing complicating constraints in these. <span class="tidbit">[<a href="http://www.optimization-online.org/DB_FILE/2018/10/6838.pdf">preprint</a>]</span>
-        </li>
-        <li>
-            <a href="http://www.optimization-online.org/DB_HTML/2018/10/6853.html">Decision Diagrams for Solving Traveling Salesman Problems with Pickup and Delivery in Real Time</a> explores the use of Multivalued Decision Diagrams and Assignment Problem inference duals for real-time optimization of TSPPDs. <span class="tidbit">[<a href="http://www.optimization-online.org/DB_FILE/2018/10/6853.pdf">preprint</a>]</span>
-        </li>
-    </ul>
-
-   	<h3>talks</h3>
-    <ul>
-        <li>
-            <a href="https://pydata.org/seattle2017/">PyData Seattle 2017</a>: Practical Optimization for Stats Nerds <span class="tidbit">[<a href="https://pydata.org/seattle2017/schedule/presentation/81/">abstract</a> | <a href="http://nbviewer.jupyter.org/github/ryanjoneil/talks/blob/master/2017/07/pydata-seattle/practical-optimization-for-stats-nerds.slides.html">slides</a> | <a href="https://youtu.be/n9Fz74pFiA4?list=PLGVZCDnMOq0rxoq9Nx0B4tqtr891vaCn7">video</a>]</span>
-        </li>
-    	<li>
-            <a href="https://www.meetup.com/Data-Science-DC/events/238107178/">Data Science DC</a>: Practical Optimization for Stats Nerds <span class="tidbit">[<a href="talks/2017/03/data-science-dc/practical-optimization-for-stats-nerds.slides.html">slides</a>]</span>
-        </li>
-        <li>
-			<a href="http://nyc2015.pydata.org">PyData NYC 2015</a>:
-			Optimize your Docker Infrastructure with Python
-			<span class="tidbit">[<a href="http://nyc2015.pydata.org/schedule/presentation/104/">abstract</a> |
-			<a href="http://nbviewer.ipython.org/github/ryanjoneil/talks/blob/master/2015/11/pydata-nyc/optimize-your-docker-infrastructure-with-python.ipynb">slides</a> |
-			<a href="https://www.youtube.com/watch?v=l6NjecDJFb8">video</a>]</span>
-    	</li>
-    	<li>
-			<a href="http://ifors2014.org/">IFORS 2014</a>:
-			A MIP-Based Dual Bounding Technique for the Irregular Nesting Problem
-			<span class="tidbit">[<a href="https://www.euro-online.org/conf/ifors2014/treat_abstract?paperid=13132">abstract</a> |
-			<a href="static/misc/2014-ifors-slides.pdf">slides</a>]</span>
-    	</li>
-        <li>
-            <a href="http://pyvideo.org/events/pycon-us-2010.html">PyCon 2010</a>:
-            Optimal Resource Allocation using Python
-            <span class="tidbit">[<a href="http://pyvideo.org/pycon-us-2010/pycon-2010--optimal-resource-allocation-using-pyt.html">video</a>]</span>
-        </li>
-    </ul>
-
-    <h3>projects</h3>
-    <ul>
-        <li>
-            <a href="https://github.com/ryanjoneil/tsppd-hybrid">TSPPD Hybrid Optimization Code</a> and <a href="https://github.com/ryanjoneil/tsppd-dd">TSPPD Decision Diagram Code</a> are both used in my dissertation. The former contains C++14 code for hybrid CP and MIP models for solving TSPPDs. The latter uses a hybridized Decision Diagram implementation with an Assignment Problem inference dual inside a branch-and-bound.
-        </li>
-        <li>
-            <a href="https://github.com/grubhub/tsppdlib">TSPPDlib</a> is a standard test set for TSPPDs. The instances are based on observed meal delivery data at Grubhub.
-        </li>
-        <li>
-            <a href="https://github.com/ryanjoneil/ap.cpp">ap.cpp</a> is an incremental primal-dual assignment problem solver written in C++. It can vastly improve propagation in hybrid optimization models that use AP relaxations. I use it within custom propagators in <a href="http://www.gecode.org/">Gecode</a> and in Decision Diagrams for solving the Traveling Salesman Problem with side constraints. <a href="https://github.com/ryanjoneil/ap">ap</a> is a Go version of the same thing.
-        </li>
-		<li>
-			The <a href="https://github.com/ryanjoneil/rams">Ruby Algebraic Modeling System</a> is a simple modeling tool for formulating and solving MILPs in Ruby.
-		</li>
-    	<li>
-    		<a href="/blog.html">adventures in optimization</a> is a blog about modeling, optimization, and computer programming.
-    	</li>
-    	<!--li>
-    		<a href="https://github.com/ryanjoneil/decision-models-for-data-science">Decision Models for Data Science</a>
-    		is a work in progress about making decisions using predictive and optimization models. It explores linear, logical, and stochastic models for solving complex problems. It uses data to understand the structure and uncertainty inherent to such systems.
-    	</li-->
-    </ul>
+</header>
+<main class="main"> 
+<article class="first-entry home-info">
+    <header class="entry-header">
+        <h1>🤖 Beep beep boop.</h1>
+    </header>
+    <div class="entry-content">
+        The charming adventures of an analyst and his solver.
     </div>
+    <footer class="entry-footer">
+        <div class="social-icons">
+    <a href="/index.xml" target="_blank" rel="noopener noreferrer me" title="Rss">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+    stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 11a9 9 0 0 1 9 9" />
+    <path d="M4 4a16 16 0 0 1 16 16" />
+    <circle cx="5" cy="19" r="1" />
+</svg>
+    </a>
+    <a href="https://github.com/ryanjoneil" target="_blank" rel="noopener noreferrer me" title="Github">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+    stroke-linecap="round" stroke-linejoin="round">
+    <path
+        d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22">
+    </path>
+</svg>
+    </a>
+    <a href="https://scholar.google.com/citations?user=fXh_Ej4AAAAJ" target="_blank" rel="noopener noreferrer me" title="Googlescholar">
+        <svg role="img" viewBox="0 0 24 25" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor"
+    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path
+        d="M5.242 13.769L0.5 9.5 12 1l11.5 9-5.242 3.769C17.548 11.249 14.978 9.5 12 9.5c-2.977 0-5.548 1.748-6.758 4.269zM12 10a7 7 0 1 0 0 14 7 7 0 0 0 0-14z" />
+</svg>
+    </a>
+    <a href="https://sigmoid.social/@ryanjoneil" target="_blank" rel="noopener noreferrer me" title="Mastodon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+    stroke-linecap="round" stroke-linejoin="round">
+    <path
+        d="M21.58 13.913c-.29 1.469-2.592 3.121-5.238 3.396-1.379.184-2.737.368-4.185.276-2.368-.092-4.237-.551-4.237-.551 0 .184.014.459.043.643.308 2.294 2.317 2.478 4.22 2.57 1.922 0 3.633-.46 3.633-.46l.079 1.653s-1.344.734-3.738.918c-1.32.091-2.96-.092-4.869-.551-4.14-1.102-4.853-5.507-4.961-10.005-.034-1.285-.013-2.57-.013-3.58 0-4.589 3-5.966 3-5.966 1.513-.734 4.11-1.01 6.808-1.01h.067c2.699 0 5.296.276 6.81 1.01 0 0 3 1.377 3 5.967 0 0 .037 3.304-.419 5.69"
+        stroke="currentColor" />
+    <path
+        d="M17.832 8.633v5h-1.978V8.78c0-1.023-.43-1.542-1.29-1.542-.95 0-1.427.616-1.427 1.834v2.655H11.17V9.072c0-1.218-.476-1.834-1.427-1.834-.86 0-1.29.52-1.29 1.542v4.852H6.475V8.633c0-1.022.26-1.834.782-2.434.538-.6 1.243-.909 2.118-.909 1.012 0 1.779.39 2.286 1.169l.492.827.493-.827c.507-.78 1.274-1.169 2.286-1.169.875 0 1.58.308 2.118.909.522.6.782 1.412.782 2.434"
+        fill="currentColor" stroke="none" />
+</svg>
+    </a>
+    <a href="https://linkedin.com/in/ryan-o-59b6ab83/" target="_blank" rel="noopener noreferrer me" title="Linkedin">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+    stroke-linecap="round" stroke-linejoin="round">
+    <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+    <rect x="2" y="9" width="4" height="12"></rect>
+    <circle cx="4" cy="4" r="2"></circle>
+</svg>
+    </a>
+    <a href="https://x.com/ryanjoneil" target="_blank" rel="noopener noreferrer me" title="Twitter">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+    stroke-linecap="round" stroke-linejoin="round">
+    <path
+        d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z">
+    </path>
+</svg>
+    </a>
 </div>
 
+    </footer>
+</article>
 
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>🚀 Blogging is back, baby!
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>I’ve been a mostly absent blogger for the past few years. I could make excuses. They might sound like, “I was busy finishing my dissertation!” or “I founded a company and have a toddler!” or “The static site generator I used was abandoned!” Whatever they might be, these excuses would certainly end in exclamation points.
+But, ultimately, for several years it just felt like blogging was dead. It’s space was usurped by Tweets, LinkedIn hustle porn, long form Medium posts by megacorporations aimed at attracting talent, and other content fads....</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-09-07 00:00:00 +0000 UTC'>September 7, 2023</span>&nbsp;·&nbsp;Ryan O&#39;Neil</footer>
+  <a class="entry-link" aria-label="post link to 🚀 Blogging is back, baby!" href="https://ryanjoneil.github.io/posts/2023-09-07-blogging-is-back/"></a>
+</article>
 
-    <script src="/static/js/vendor/jquery-1.10.1.js"></script>
-    <script src="/static/js/vendor/bootstrap.js"></script>
-    <script src="/static/js/main.js"></script>
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>⚡️ On the Beauty of Power Sets
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>One of the difficulties we encounter in solving the Traveling Salesman Problem (TSP) is that, for even a small numer of cities, a complete description of the problem requires a factorial number of constraints. This is apparent in the standard formulation used to teach the TSP to OR students. Consider a set of $n$ cities with the distance from city $i$ to city $j$ denoted $d_{ij}$. We attempt to minimize the total distance of a tour entering and leaving each city exactly once....</p>
+  </div>
+  <footer class="entry-footer"><span title='2009-02-27 00:00:00 +0000 UTC'>February 27, 2009</span>&nbsp;·&nbsp;Ryan O&#39;Neil</footer>
+  <a class="entry-link" aria-label="post link to ⚡️ On the Beauty of Power Sets" href="https://ryanjoneil.github.io/posts/2009-02-27-on-the-beauty-of-power-sets/"></a>
+</article>
 
-    <!-- highight.js -->
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.8.0/styles/default.min.css">
-    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.8.0/highlight.min.js"></script>
-    <script>hljs.initHighlightingOnLoad();</script>
-  </body>
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>📐 Uncapacitated Lot Sizing
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Uncapacitated Lot Sizing (ULS) is a classic OR problem that seeks to minimize the cost of satisfying known demand for a product over time. Demand is subject to varying costs for production, set-up, and storage of the product. Technically, it is a mixed binary integer linear program – the key point separating it from the world of linear optimization being that production cannot occur during any period without paying that period’s fixed costs for set-up....</p>
+  </div>
+  <footer class="entry-footer"><span title='2009-02-20 00:00:00 +0000 UTC'>February 20, 2009</span>&nbsp;·&nbsp;Ryan O&#39;Neil</footer>
+  <a class="entry-link" aria-label="post link to 📐 Uncapacitated Lot Sizing" href="https://ryanjoneil.github.io/posts/2009-02-20-uncapacitated-lot-sizing/"></a>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2023 <a href="https://ryanjoneil.github.io/">adventures in optimization</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
 
-  
-  
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
 </html>

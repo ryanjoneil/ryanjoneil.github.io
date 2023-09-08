@@ -1,0 +1,394 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>adventures in optimization</title>
+    <link>https://ryanjoneil.github.io/</link>
+    <description>Recent content on adventures in optimization</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Thu, 07 Sep 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://ryanjoneil.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>🚀 Blogging is back, baby!</title>
+      <link>https://ryanjoneil.github.io/posts/2023-09-07-blogging-is-back/</link>
+      <pubDate>Thu, 07 Sep 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://ryanjoneil.github.io/posts/2023-09-07-blogging-is-back/</guid>
+      <description>New adventures in optimization</description>
+      <content:encoded><![CDATA[<p>I&rsquo;ve been a mostly absent blogger for the past few years. I could make excuses. They might sound like, &ldquo;I was busy finishing my dissertation!&rdquo; or &ldquo;I founded a company and have a toddler!&rdquo; or &ldquo;The <a href="https://github.com/eudicots/Cactus">static site generator</a> I used was abandoned!&rdquo; Whatever they might be, these excuses would certainly end in exclamation points.</p>
+<p>But, ultimately, for several years it just felt like blogging was <em>dead</em>. It&rsquo;s space was usurped by Tweets, LinkedIn <a href="https://www.inc.com/serhat-pala/alexis-ohanian-says-hustle-porn-is-most-dangerous-trend-in-silicon-valley-heres-how-to-eradicate-it.html">hustle porn</a>, long form Medium posts by megacorporations aimed at attracting talent, and other content fads. RSS feeds dried up bit by bit. That beautiful structure somewhere between a college essay and an academic preprint mostly ceased to be. Sad times, indeed.</p>
+<p>That trend seems to be reversing. I don&rsquo;t know whether it&rsquo;s the result of nudges from Substack, or that all the introverts in tech finally gave up baking COVID sourdough and needed something to do, but there is a lot of good content out there agian! Fire up your <a href="https://www.inoreader.com/">RSS aggregators</a> and get reading.</p>
+<p>This post is my own reboot of &ldquo;adventures in optimization,&rdquo; a blog I&rsquo;ve written intermittently since 2009. Unfortunately, it will take some time to move over all my old posts to Hugo. I&rsquo;ll do that slowly as I create new ones. For now, I&rsquo;ve ported over a couple early posts and put together a list of the blogs I&rsquo;m gleefully catching up on.</p>
+<p>See you soon!</p>
+<ul>
+<li></li>
+</ul>
+]]></content:encoded>
+    </item>
+    
+    <item>
+      <title>💬 Some talk</title>
+      <link>https://ryanjoneil.github.io/speaking/</link>
+      <pubDate>Wed, 06 Sep 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://ryanjoneil.github.io/speaking/</guid>
+      <description>This is a running list of talks I&amp;rsquo;ve given and am scheduled to give. It probably isn&amp;rsquo;t exhaustive. Some of them have slides or videos available.
+The future&amp;hellip; September 20, 2023 - DecisionCAMP 2023 - Decision model, meet the real world: Testing optimization models for use in production environments (abstract, slides)
+October 17, 2023 - INFORMS Annual Meeting - Adapting to Change in On-Demand Delivery: Unpacking a Suite of Testing Methodologies (abstract)</description>
+      <content:encoded><![CDATA[<p>This is a running list of talks I&rsquo;ve given and am scheduled to give. It probably isn&rsquo;t exhaustive. Some of them have slides or videos available.</p>
+<h3 id="the-future">The future&hellip;</h3>
+<ul>
+<li>
+<p>September 20, 2023 - <a href="https://decisioncamp2023.wordpress.com/">DecisionCAMP 2023</a> - Decision model, meet the real world: Testing optimization models for use in production environments (<a href="https://decisioncamp2023.wordpress.com/program/#NEXTMV">abstract</a>, <a href="https://decisioncamp2023.files.wordpress.com/2023/09/decisioncamp2023.nextmv.pdf">slides</a>)</p>
+</li>
+<li>
+<p>October 17, 2023 - <a href="https://meetings.informs.org/wordpress/phoenix2023/">INFORMS Annual Meeting</a> - Adapting to Change in On-Demand Delivery: Unpacking a Suite of Testing Methodologies (<a href="https://www.abstractsonline.com/pp8/?__hstc=194041586.cc5f446034c6d268dfea27d9b7ceb6dc.1681140481721.1691273766763.1691449438596.35&amp;__hssc=194041586.3.1691449438596&amp;__hsfp=1912911101&amp;hsCtaTracking=8f511889-324a-41b3-a438-37ad295392e9%7C0c80c5d7-cc8d-4989-9b70-52de4c44b90b#!/10856/presentation/7867">abstract</a>)</p>
+</li>
+</ul>
+<h3 id="the-past">The past&hellip;</h3>
+<ul>
+<li>
+<p>August 27, 2023 - <a href="https://sites.google.com/view/dpsolve2023/">DPSOLVE 2023</a> - Implementing Decision Diagrams in Production Systems (<a href="/slides/2023-dpsolve.pdf">slides</a>)</p>
+</li>
+<li>
+<p>May 11, 2023 - <a href="https://www.nextmv.io/videos">Nextmv Videos</a> - Several people are optimizing: Collaborative workflows for decision model operations (<a href="https://www.youtube.com/watch?v=8WkHltfgVPw">video</a>)</p>
+</li>
+<li>
+<p>April 18, 2023 - <a href="https://meetings.informs.org/wordpress/analytics2023/">INFORMS Business Analytics Conference</a> - Decision Model, Meet Production: A Collaborative Workflow for Optimizing More Operations (<a href="https://meetings.informs.org/wordpress/analytics2023/tracks/technology-tutorials/">abstract</a>)</p>
+</li>
+<li>
+<p>March 1, 2023 - <a href="https://www.nextmv.io/videos">Nextmv Videos</a> - What are decision diagrams? How are they used to model and solve optimization problems? (<a href="https://www.youtube.com/watch?v=WtdUhYH5Szs">video</a>)</p>
+</li>
+<li>
+<p>January 18, 2023 - <a href="https://www.nextmv.io/videos">Nextmv Videos</a> - In conversation with Karla Hoffman (<a href="https://www.youtube.com/watch?v=p4R9cglMP4Y">video</a>)</p>
+</li>
+<li>
+<p>October 5, 2020 - <a href="https://connect.informs.org/phillychapter/home">INFORMS Philadelphia Chapter</a> - Real-Time Routing for On-Demand Delivery (<a href="https://youtu.be/t6rI2JFVqG4">video</a>)</p>
+</li>
+<li>
+<p>October 22, 2019 - INFORMS Annual Meeting - Decision Diagrams for Real-Time Routing (<a href="/slides/2019-informs.pdf">slides</a>)</p>
+</li>
+<li>
+<p>July 6, 2017 - <a href="https://pydata.org/seattle2017/">PyData Seattle 2017</a> - Practical Optimization for Stats Nerds (<a href="https://pydata.org/seattle2017/schedule/presentation/81/">abstract</a>, <a href="https://youtu.be/n9Fz74pFiA4?list=PLGVZCDnMOq0rxoq9Nx0B4tqtr891vaCn7">video</a>)</p>
+</li>
+<li>
+<p>March 5, 2017 - <a href="https://www.meetup.com/Data-Science-DC/events/238107178/">Data Science DC</a> - Practical Optimization for Stats Nerds (<a href="https://nbviewer.org/github/ryanjoneil/talks/blob/master/2017/07/pydata-seattle/practical-optimization-for-stats-nerds.slides.html#/">slides</a>)</p>
+</li>
+<li>
+<p>December 4, 2015 - PyData NYC 2015 - Optimize your Docker Infrastructure with Python (<a href="https://nbviewer.org/github/ryanjoneil/talks/blob/master/2015/11/pydata-nyc/optimize-your-docker-infrastructure-with-python.ipynb">slides</a>, <a href="https://www.youtube.com/watch?v=l6NjecDJFb8">video</a>)</p>
+</li>
+<li>
+<p>July 17, 2014 - IFORS 2014 - A MIP-Based Dual Bounding Technique for the Irregular Nesting Problem (<a href="https://www.euro-online.org/conferences/program/#abstract/13132">abstract</a>, <a href="/slides/2014-ifors.pdf">slides</a>)</p>
+</li>
+<li>
+<p>February 19, 2010 - <a href="https://pyvideo.org/events/pycon-us-2010.html">PyCon 2010</a> - Optimal Resource Allocation using Python (<a href="https://pyvideo.org/pycon-us-2010/pycon-2010--optimal-resource-allocation-using-pyt.html">video</a>)</p>
+</li>
+</ul>
+]]></content:encoded>
+    </item>
+    
+    <item>
+      <title>📝 Some text</title>
+      <link>https://ryanjoneil.github.io/writing/</link>
+      <pubDate>Wed, 06 Sep 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://ryanjoneil.github.io/writing/</guid>
+      <description>I&amp;rsquo;m an desultory blogger and intermitent academic. Nonetheless, I like the research and writing process. Most of my current and old posts live here. Some of my other writings and collaborations are listed below.
+Papers, patents &amp;amp; preprints&amp;hellip; June 2023 - USPTO - Runners for optimization solvers and simulators describes technology for creating and executing Decision Diagram-based optimization solvers and state-based simulators in cloud environments. (patent)
+September 2020 - Operations Research Forum - MIPLIBing: Seamless Benchmarking of Mathematical Optimization Problems and Metadata Extensions presents a Python library that automatically downloads queried subsets from the current versions of MIPLIB, MINLPLib, and QPLIB, provides a centralized local cache across projects, and tracks the best solution values and bounds on record for each problem.</description>
+      <content:encoded><![CDATA[<p>I&rsquo;m an desultory blogger and intermitent academic. Nonetheless, I like the research and writing process. Most of my current and old posts live <a href="/posts">here</a>. Some of my other writings and collaborations are listed below.</p>
+<h3 id="papers-patents--preprints">Papers, patents &amp; preprints&hellip;</h3>
+<ul>
+<li>
+<p>June 2023 - <a href="https://www.uspto.gov/">USPTO</a> - <a href="https://patents.google.com/patent/US11675688B2/en">Runners for optimization solvers and simulators</a> describes technology for creating and executing Decision Diagram-based optimization solvers and state-based simulators in cloud environments. (<a href="https://patentimages.storage.googleapis.com/c6/08/09/060978f00373e0/US11675688.pdf">patent</a>)</p>
+</li>
+<li>
+<p>September 2020 - <a href="https://www.springer.com/journal/43069">Operations Research Forum</a> - <a href="https://link.springer.com/article/10.1007/s43069-020-00024-1">MIPLIBing: Seamless Benchmarking of Mathematical Optimization Problems and Metadata Extensions</a> presents a Python library that automatically downloads queried subsets from the current versions of MIPLIB, MINLPLib, and QPLIB, provides a centralized local cache across projects, and tracks the best solution values and bounds on record for each problem. (<a href="https://digitalcommons.bucknell.edu/cgi/viewcontent.cgi?article=2883&amp;context=fac_journ">preprint</a>)</p>
+</li>
+<li>
+<p>May 2019 - <a href="https://www.sciencedirect.com/journal/operations-research-letters">Operations Research Letters</a> - <a href="https://www.sciencedirect.com/science/article/abs/pii/S0167637718305364">Decision diagrams for solving traveling salesman problems with pickup and delivery in real time</a> explores the use of Multivalued Decision Diagrams and Assignment Problem inference duals for real-time optimization of TSPPDs. (<a href="http://www.optimization-online.org/DB_FILE/2018/10/6853.pdf">preprint</a>)</p>
+</li>
+<li>
+<p>October 2018 - <a href="https://optimization-online.org/author/roneil1/">Optimization Online</a> - <a href="https://optimization-online.org/2018/10/6838/">Integer Models for the Asymmetric Traveling Salesman Problem with Pickup and Delivery</a> proposes a new ATSPPD model, new valid inequalities for the Sarin-Sherali-Bhootra ATSPPD, and studies the impact of relaxing complicating constraints in these. (<a href="http://www.optimization-online.org/DB_FILE/2018/10/6838.pdf">preprint</a>)</p>
+</li>
+<li>
+<p>September 2018 - <a href="https://optimization-online.org/author/roneil1/">Optimization Online</a> - <a href="http://www.optimization-online.org/DB_HTML/2017/12/6370.html">Exact Methods for Solving Traveling Salesman Problems with Pickup and Delivery in Real Time</a> examines exact methods for solving TSPPDs with consolidation in real-time applications. It considers enumerative, Mixed Integer Programming, Constraint Programming, and hybrid optimization approaches under various time budgets. (<a href="http://www.optimization-online.org/DB_FILE/2017/12/6370.pdf">preprint</a>)</p>
+</li>
+<li>
+<p>March 2018 - <a href="https://optimization-online.org/author/roneil1/">Optimization Online</a> -<a href="https://optimization-online.org/2018/04/6571/">The Meal Delivery Routing Problem</a> introduces the MDRP to formalize and study an important emerging class of dynamic delivery operations. It also develops optimization-based algorithms tailored to solve the courier assignment (dynamic vehicle routing) and capacity management (offline shift scheduling) problems encountered in meal delivery operations. (<a href="https://optimization-online.org/wp-content/uploads/2018/04/6571.pdf">preprint</a>)</p>
+</li>
+</ul>
+<h3 id="other-blogs">Other blogs&hellip;</h3>
+<ul>
+<li>
+<p>April 20, 2022 - <a href="https://www.nextmv.io/blog">Nextmv Blog</a> - <a href="https://www.nextmv.io/blog/you-need-a-solver-what-is-a-solver">You need a solver. What is a solver?</a></p>
+</li>
+<li>
+<p>March 2, 2021 - <a href="https://www.nextmv.io/blog">Nextmv Blog</a> - <a href="https://www.nextmv.io/blog/binaries-are-beautiful">Binaries are beautiful</a></p>
+</li>
+<li>
+<p>March 2, 2020 - <a href="https://www.nextmv.io/blog">Nextmv Blog</a> - <a href="https://www.nextmv.io/blog/how-hop-hops">How Hop Hops</a></p>
+</li>
+<li>
+<p>September 13, 2018 - <a href="https://bytes.grubhub.com/">Grubhub Bytes</a> - <a href="https://bytes.grubhub.com/decisions-are-first-class-citizens-9994fd8fe802">Decisions are first class citizens: an introduction to Decision Engineering</a></p>
+</li>
+<li>
+<p>January 5, 2015 - <a href="https://web.archive.org/web/20161107120859/http://blog.yhat.com/">The Yhat Blog</a> - <a href="https://web.archive.org/web/20160909032804/http://blog.yhat.com/posts/currency-portfolio-optimization-using-scienceops.html">Currency Portfolio Optimization Using ScienceOps</a></p>
+</li>
+<li>
+<p>November 10, 2014 - <a href="https://web.archive.org/web/20161107120859/http://blog.yhat.com/">The Yhat Blog</a> - <a href="https://web.archive.org/web/20160308065802/http://blog.yhat.com/posts/how-yhat-does-cloud-balancing.html">How Yhat Does Cloud Balancing: A Case Study</a></p>
+</li>
+</ul>
+]]></content:encoded>
+    </item>
+    
+    <item>
+      <title>🖖 Hi, I&#39;m Ryan.</title>
+      <link>https://ryanjoneil.github.io/about/</link>
+      <pubDate>Wed, 06 Sep 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://ryanjoneil.github.io/about/</guid>
+      <description>I use data and models to simplify complex decisions.
+By day, I am an operations research analyst, Go coder, and co-founder of Nextmv. I&amp;rsquo;m interested in hybrid optimization, decision diagrams, and mixed integer programming. My applications skew heavily toward logistics for delivery platforms, with detours into cutting and packing.
+For the past several years, I&amp;rsquo;ve worked in real-time optimization related to on-demand delivery, scheduling, forecasting, and simulation. I did a MS in Operations Research by night at [George Mason University], then a PhD in the same field under the tutelage of Karla Hoffman.</description>
+      <content:encoded><![CDATA[<p><img loading="lazy" src="/img/ryan.jpg" alt="me"  />
+</p>
+<p>I use data and models to simplify complex decisions.</p>
+<p>By day, I am an <a href="https://www.informs.org/Explore/Operations-Research-Analytics">operations research analyst</a>, <a href="https://go.dev">Go</a> coder, and co-founder of <a href="https://nextmv.io">Nextmv</a>. I&rsquo;m interested in hybrid optimization, <a href="https://www.andrew.cmu.edu/user/vanhoeve/mdd/">decision diagrams</a>, and <a href="https://en.wikipedia.org/wiki/Integer_programming">mixed integer programming</a>. My applications skew heavily toward logistics for delivery platforms, with detours into <a href="https://www.euro-online.org/websites/esicup/">cutting and packing</a>.</p>
+<p>For the past several years, I&rsquo;ve worked in real-time optimization related to on-demand delivery, scheduling, forecasting, and simulation. I did a MS in Operations Research by night at [George Mason University], then a PhD in the same field under the tutelage of <a href="https://seor.vse.gmu.edu/~khoffman/">Karla Hoffman</a>.</p>
+<p>By night, I am am ameteur cellist, and a cat and early music enthusiast.</p>
+]]></content:encoded>
+    </item>
+    
+    <item>
+      <title>🧑‍💻️ Some code</title>
+      <link>https://ryanjoneil.github.io/coding/</link>
+      <pubDate>Wed, 06 Sep 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://ryanjoneil.github.io/coding/</guid>
+      <description>Most of my work is proprietary, but some of it is open. Here are a few projects I&amp;rsquo;ve built okr made significant contributions. I&amp;rsquo;ve also made significant contributions to projects such as PuLP, MIPLIBing, and MDRPlib.
+Alive&amp;hellip; The Ruby Algebraic Modeling System is a simple modeling tool for formulating and solving MILPs in Ruby.
+ap.cpp is an incremental primal-dual assignment problem solver written in C++. It can vastly improve propagation in hybrid optimization models that use AP relaxations.</description>
+      <content:encoded><![CDATA[<p>Most of my work is proprietary, but some of it is open. Here are a few projects I&rsquo;ve built okr made significant contributions. I&rsquo;ve also made significant contributions to projects such as <a href="https://coin-or.github.io/pulp/">PuLP</a>, <a href="https://github.com/thserra/MIPLIBing">MIPLIBing</a>, and <a href="https://github.com/grubhub/mdrplib">MDRPlib</a>.</p>
+<h3 id="alive">Alive&hellip;</h3>
+<ul>
+<li>
+<p>The <a href="https://github.com/ryanjoneil/rams">Ruby Algebraic Modeling System</a> is a simple modeling tool for formulating and solving MILPs in Ruby.</p>
+</li>
+<li>
+<p><a href="https://github.com/ryanjoneil/ap.cpp">ap.cpp</a> is an incremental primal-dual assignment problem solver written in C++. It can vastly improve propagation in hybrid optimization models that use AP relaxations. I use it within custom propagators in <a href="https://www.gecode.org/">Gecode</a> and in Decision Diagrams for solving the Traveling Salesman Problem with side constraints.</p>
+</li>
+<li>
+<p><a href="https://github.com/ryanjoneil/ap">ap</a> is a Go version of ap.cpp.</p>
+</li>
+<li>
+<p><a href="https://github.com/ryanjoneil/tsppd-hybrid">TSPPD Hybrid Optimization Code</a> and <a href="https://github.com/ryanjoneil/tsppd-dd">TSPPD Decision Diagram Code</a> are both used in my dissertation. The former contains C++14 code for hybrid CP and MIP models for solving TSPPDs. The latter uses a hybridized Decision Diagram implementation with an Assignment Problem inference dual inside a branch-and-bound.</p>
+</li>
+<li>
+<p><a href="https://github.com/grubhub/tsppdlib">TSPPDlib</a> is a standard test set for TSPPDs. The instances are based on observed meal delivery data at Grubhub.</p>
+</li>
+</ul>
+<h3 id="defunct">Defunct&hellip;</h3>
+<ul>
+<li>
+<p><a href="https://pythonhosted.org/python-zibopt/">python-zibopt</a> was a Python interface to the <a href="https://www.scipopt.org/">SCIP Optimization Suite</a>. This was no longer necessary once <a href="https://github.com/scipopt/PySCIPOpt">PySCIPOpt</a> emerged.</p>
+</li>
+<li>
+<p><a href="https://github.com/ryanjoneil/chute">Chute</a> was a simple, lighweight tool for running discrete event simulations in Python.</p>
+</li>
+<li>
+<p><a href="https://code.google.com/archive/p/pygep/">PyGEP</a> was a simple library suitable for academic study of GEP (Gene Expression Programming) in Python 2.</p>
+</li>
+</ul>
+]]></content:encoded>
+    </item>
+    
+    <item>
+      <title>⚡️ On the Beauty of Power Sets</title>
+      <link>https://ryanjoneil.github.io/posts/2009-02-27-on-the-beauty-of-power-sets/</link>
+      <pubDate>Fri, 27 Feb 2009 00:00:00 +0000</pubDate>
+      
+      <guid>https://ryanjoneil.github.io/posts/2009-02-27-on-the-beauty-of-power-sets/</guid>
+      <description>Using power sets in algebraic modeling languages for formulating the Traveling Salesman Problem</description>
+      <content:encoded><![CDATA[<p>One of the difficulties we encounter in solving the <a href="https://www.math.uwaterloo.ca/tsp/">Traveling Salesman Problem</a> (TSP) is that, for even a small numer of cities, a complete description of the problem requires a factorial number of constraints. This is apparent in the standard formulation used to teach the TSP to OR students. Consider a set of $n$ cities with the distance from city $i$ to city $j$ denoted $d_{ij}$.  We attempt to minimize the total distance of a tour entering and leaving each city exactly once. $x_{ij} = 1$ if the edge from city $i$ to city $j$ is included in the tour, $0$ otherwise:</p>
+<p>$$
+\small
+\begin{align*}
+\min\quad       &amp; z = \sum_i \sum_{j\ne i} d_{ij} x_{ij}\\
+\text{s.t.}\quad&amp; \sum_{j\ne i} x_{ij} = 1 &amp;\quad\forall&amp;\ i &amp; \text{leave each city once}\\
+&amp; \sum_{i\ne j} x_{ij} = 1 &amp;\quad\forall&amp;\ j &amp; \text{enter each city once}\\
+&amp; x_{ij} \in \{0,1\}       &amp;\quad\forall&amp;\ i,j
+\end{align*}
+$$</p>
+<p>This appears like a reasonable formulation until we solve it and see that our solution contains disconnected subtours. Suppose we have four cities, labeled $A$ through $D$. Connecting $A$ to $B$, $B$ to $A$, $C$ to $D$ and $D$ to $C$ provides a feasible solution to our formulation, but does not constitute a cycle. Here is a more concrete example of two disconnected subtours $\{(1,5),(5,1)\}$ and $\{(2,3),(3,4),(4,2)\}$ over five cities:</p>
+<pre tabindex="0"><code>ampl: display x;
+x [*,*]
+:   1   2   3   4   5    :=
+1   0   0   0   0   1
+2   0   0   1   0   0
+3   0   0   0   1   0
+4   0   1   0   0   0
+5   1   0   0   0   0
+;
+</code></pre><p>Realizing we just solved the <a href="https://en.wikipedia.org/wiki/Assignment_problem">Assignment Problem</a>, we now add subtour elimination constraints. These require that any proper, non-null subset of our $n$ cities is connected by at most $n-1$ active edges:</p>
+<p>$$
+\sum_{i \in S} \sum_{j \in S} x_{ij} \leq |S|-1 \quad\forall\ S \subset {1, &hellip;, n}, S \ne O
+$$</p>
+<p>Indexing subtour elimination constraints over a <a href="https://en.wikipedia.org/wiki/Power_set">power set</a> of the cities completes the formulation. However, this requires an additional $\sum_{k=2}^{n-1} \begin{pmatrix} n \\ k \end{pmatrix}$ rows tacked on the end of our matrix and is clearly infeasible for large $n$. The most current computers can handle using this approach <a href="http://zimpl.zib.de/download/zimpl.pdf">is around 19 cities</a>. It remains an instructive tool for understanding the <a href="https://en.wikipedia.org/wiki/Combinatorial_explosion">combinatorial explosion</a> that occurs in problems like TSP and is worth translating into a modeling language. So how does one model it on a computer?</p>
+<p>Unfortunately, <a href="https://ampl.com/">AMPL</a>, the gold standard in mathematical modeling languages, is unable to index over sets. Creating a power set in AMPL requires going through a few contortions.  The following code demonstrates power and index sets over four cities:</p>
+<pre tabindex="0"><code>set cities := 1 .. 4 ordered;
+
+param n := card(cities);
+set indices := 0 .. (2^n - 1);
+set power {i in indices} := {c in cities: (i div 2^(ord(c) - 1)) mod 2 = 1};
+
+display cities;
+display n;
+display indices;
+display power;
+</code></pre><p>This yields the following output:</p>
+<pre tabindex="0"><code>set cities := 1 2 3 4;
+
+n = 4
+
+set indices := 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15;
+
+set power[0] := ; # empty
+set power[1] := 1;
+set power[2] := 2;
+set power[3] := 1 2;
+set power[4] := 3;
+set power[5] := 1 3;
+set power[6] := 2 3;
+set power[7] := 1 2 3;
+set power[8] := 4;
+set power[9] := 1 4;
+set power[10] := 2 4;
+set power[11] := 1 2 4;
+set power[12] := 3 4;
+set power[13] := 1 3 4;
+set power[14] := 2 3 4;
+set power[15] := 1 2 3 4;
+</code></pre><p>Note how the index set contains an index for each row in our power set. We can now generate the subtour elimination constraints:</p>
+<pre tabindex="0"><code>var x {cities cross cities} binary;
+s.t. subtours {i in indices: card(power[i]) &gt; 1 and card(power[i]) &lt; card(cities)}:
+sum {(c,k) in power[i] cross power[i]: k != c} x[c,k] &lt;= card(power[i]) - 1;
+
+expand subtours;
+
+subject to subtours[3]:  x[1,2] + x[2,1] &lt;= 1;
+subject to subtours[5]:  x[1,3] + x[3,1] &lt;= 1;
+subject to subtours[6]:  x[2,3] + x[3,2] &lt;= 1;
+subject to subtours[7]:  x[1,2] + x[1,3] + x[2,1] + x[2,3] + x[3,1] + x[3,2] &lt;= 2;
+subject to subtours[9]:  x[1,4] + x[4,1] &lt;= 1;
+subject to subtours[10]: x[2,4] + x[4,2] &lt;= 1;
+subject to subtours[11]: x[1,2] + x[1,4] + x[2,1] + x[2,4] + x[4,1] + x[4,2] &lt;= 2;
+subject to subtours[12]: x[3,4] + x[4,3] &lt;= 1;
+subject to subtours[13]: x[1,3] + x[1,4] + x[3,1] + x[3,4] + x[4,1] + x[4,3] &lt;= 2;
+subject to subtours[14]: x[2,3] + x[2,4] + x[3,2] + x[3,4] + x[4,2] + x[4,3] &lt;= 2;
+</code></pre><p>While this does work, the code for generating the power set looks like <a href="https://en.wikipedia.org/wiki/Voodoo_programming">voodoo</a>. Understanding it required piece-by-piece decomposition, an exercise I suggest you go through yourself if you have a copy of AMPL and 15 minutes to spare:</p>
+<pre tabindex="0"><code>set foo {c in cities} := {ord(c)};
+set bar {c in cities} := {2^(ord(c) - 1)};
+set baz {i in indices} := {c in cities: i div 2^(ord(c) - 1)};
+set qux {i in indices} := {c in cities: (i div 2^(ord(c) - 1)) mod 2 = 1};
+
+display foo;
+display bar;
+display baz;
+display qux;
+</code></pre><p>This may be an instance where open source leads commercial software. The good folks who produce the <a href="https://scipopt.org/">SCIP Optimization Suite</a> provide an AMPL-like language called <a href="https://zimpl.zib.de/">ZIMPL</a> with a few additional useful features. One of these is power sets. Compared to the code above, doesn&rsquo;t this look refreshing?</p>
+<pre tabindex="0"><code>set cities := {1 to 4};
+
+set power[] := powerset(cities);
+set indices := indexset(power);
+</code></pre>]]></content:encoded>
+    </item>
+    
+    <item>
+      <title>📐 Uncapacitated Lot Sizing</title>
+      <link>https://ryanjoneil.github.io/posts/2009-02-20-uncapacitated-lot-sizing/</link>
+      <pubDate>Fri, 20 Feb 2009 00:00:00 +0000</pubDate>
+      
+      <guid>https://ryanjoneil.github.io/posts/2009-02-20-uncapacitated-lot-sizing/</guid>
+      <description>Formulation and aspects of the Uncapacitated Lot Sizing problem in Integer Programming</description>
+      <content:encoded><![CDATA[<p>Uncapacitated Lot Sizing (ULS) is a classic <a href="http://en.wikipedia.org/wiki/Operations_research">OR</a> problem that seeks to minimize the cost of satisfying known demand for a product over time.  Demand is subject to varying costs for production, set-up, and storage of the product.  Technically, it is a mixed binary integer linear program &ndash; the key point separating it from the world of <a href="http://en.wikipedia.org/wiki/Linear_programming">linear optimization</a> being that production cannot occur during any period without paying that period&rsquo;s fixed costs for set-up.  Thus it has linear nonnegative variables for production and storage amounts during each period, and a binary variable for each period that determines whether or not production can actually occur.</p>
+<p>For $n$ periods with per-period fixed set-up cost $f_t$, unit production cost $p_t$, unit storage cost $h_t$,and demand $d_t$, we define decision variables related to production and storage quantities:</p>
+<p>$$
+\small
+\begin{align*}
+x_t &amp;= \text{units produced in period}\ t\\
+s_t &amp;= \text{stock at the end of period}\ t\\
+y_t &amp;= 1\ \text{if production occurs in period}\ t, 0\ \text{otherwise}
+\end{align*}
+$$</p>
+<p>One can minimize overall cost for satisfying all demand on time using the following model per <a href="http://www.amazon.com/Integer-Programming-Laurence-Wolsey/dp/0471283665/">Wolsey (1998)</a>, defined slightly differently here:</p>
+<p>$$
+\small
+\begin{align*}
+\min\quad       &amp; z = \sum_t{p_t x_t} + \sum_t{h_t s_t} + \sum_t{f_t y_t}\\
+\text{s.t.}\quad&amp; s_1 = d_1 + s_1\\
+&amp; s_{t-1} + x_t = d_t + s_t &amp;\quad\forall&amp;\ t &gt; 1\\
+&amp; x_t \leq M y_t            &amp;\quad\forall&amp;\ t\\
+&amp; s_t, x_t \geq 0           &amp;\quad\forall&amp;\ t\\
+&amp; y_t \in {0,1}           &amp;\quad\forall&amp;\ t
+\end{align*}
+$$</p>
+<p>According to Wolsey, page 11, given that $s_t = \sum_{i=1}^t (x_i - d_i)$ and defining new constants $K = \sum_{t=1}^n h_t(\sum_{i=1}^t d_i)$ and $c_t = p_t + \sum_{i=t}^n h_i$, the objective function can be rewritten as $z = \sum_t c_t x_t + \sum _t f_t y_t - K$.  The book lacks a proof of this and it seems a bit non-obvious, so I attempt an explanation in somewhat painstaking detail here.</p>
+<p>$$
+\small
+\begin{align*}
+&amp;\text{Proof}:\\
+&amp; &amp; \sum_t p_t x_t + \sum_t h_t s_t + \sum_t f_t y_t &amp;= \sum_t c_t x_t + \sum _t f_t y_t - K\\
+&amp;\text{1. Remove} \sum_t f_t y_t:\\
+&amp; &amp; \sum_t p_t x_t + \sum_t h_t s_t &amp;= \sum_t c_t x_t - K\\
+&amp;\text{2. Expand}\ K\ \text{and}\ c_t:\\
+&amp; &amp; \sum_t p_t x_t + \sum_t h_t s_t &amp;= \sum_t (p_t + \sum_{i=t}^n h_i) x_t - \sum_t h_t (\sum_{i=1}^t d_i)\\
+&amp;\text{3. Remove}\ \sum_t p_t x_t:\\
+&amp; &amp; \sum_t h_t s_t &amp;= \sum_t x_t (\sum_{i=t}^n h_i) - \sum_t h_t (\sum_{i=1}^t d_i)\\
+&amp;\text{4. Expand}\ s_t:\\
+&amp; &amp; \sum_t h_t (\sum_{i=1}^t x_i) - \sum_t h_t (\sum_{i=1}^t d_i) &amp;= \sum_t x_t (\sum_{i=t}^n h_i) - \sum_t h_t (\sum_{i=1}^t d_i)\\
+&amp;\text{5. Remove}\ \sum_t h_t (\sum_{i=1}^t d_i):\\
+&amp; &amp; \sum_t h_t (\sum_{i=1}^t x_i) &amp;= \sum_t x_t (\sum_{i=t}^n h_i)
+\end{align*}
+$$</p>
+<p>The result from step 5 becomes obvious upon expanding its left and right-hand terms:</p>
+<p>$$
+h_1 x_1 + h_2 (x_1 + x_2) + \cdots + h_n (x_1 + \cdots + x_n) =\\
+x_1 (h_1 + \cdots + h_n) + x2 (h_2 + \cdots + h_n) + \cdots + x_n h_n
+$$</p>
+<p>In matrix notation with $h$ and $x$ as column vectors in $\bf R^n$ and $L$ and $U$ being $n \times n$ lower and upper triangular identity matrices, respectively, this can be written as:</p>
+<p>$$
+\small
+\begin{pmatrix}
+h_1 \cdots h_n
+\end{pmatrix}
+\begin{pmatrix}
+1 \cdots 0 \\
+\vdots \ddots \vdots \\
+1 \cdots 1
+\end{pmatrix}
+\begin{pmatrix}
+x_1 \\
+\vdots \\
+x_n
+\end{pmatrix} =
+\begin{pmatrix}
+x_1 \cdots x_n
+\end{pmatrix}
+\begin{pmatrix}
+1 \cdots 1 \\
+\vdots \ddots \vdots \\
+0 \cdots 1
+\end{pmatrix}
+\begin{pmatrix}
+h_1 \\
+\vdots \\
+h_n
+\end{pmatrix}
+$$</p>
+<p>or $h^T L x = x^T U h$.</p>
+]]></content:encoded>
+    </item>
+    
+    
+  </channel>
+</rss>

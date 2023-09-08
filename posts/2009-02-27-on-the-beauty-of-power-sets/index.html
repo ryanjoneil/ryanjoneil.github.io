@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>⚡️ On the Beauty of Power Sets | adventures in optimization</title>
+<meta name="keywords" content="modeling, tsp">
+<meta name="description" content="Using power sets in algebraic modeling languages for formulating the Traveling Salesman Problem">
+<meta name="author" content="Ryan O&#39;Neil">
+<link rel="canonical" href="https://ryanjoneil.github.io/posts/2009-02-27-on-the-beauty-of-power-sets/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.5cfc680b1eeaeef9efbced92d46c2a9e876b72ee14fba85846afc4cff9e6e6f8.css" integrity="sha256-XPxoCx7q7vnvvO2S1Gwqnodrcu4U&#43;6hYRq/Ez/nm5vg=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://ryanjoneil.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://ryanjoneil.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://ryanjoneil.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://ryanjoneil.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://ryanjoneil.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css"
+    integrity="sha384-GvrOXuhMATgEsSwCs4smul74iXGOixntILdUW9XmUC6+HX0sLNAK3q71HotJqlAn"
+    crossorigin="anonymous"/>
+<script
+    src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"
+    integrity="sha384-cpW21h6RZv/phavutF+AuVYrr+dA8xD9zs6FwLpaCct6O9ctzYFfFr4dgmgccOTx"
+    crossorigin="anonymous">
+</script>
+
+<script
+    src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"
+    integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05"
+    crossorigin="anonymous"
+    onload="renderMathInElement(document.body);">
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    renderMathInElement(document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "$", right: "$", display: false}
+        ]
+    });
+});
+</script>
+
+<meta property="og:title" content="⚡️ On the Beauty of Power Sets" />
+<meta property="og:description" content="Using power sets in algebraic modeling languages for formulating the Traveling Salesman Problem" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://ryanjoneil.github.io/posts/2009-02-27-on-the-beauty-of-power-sets/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2009-02-27T00:00:00+00:00" />
+<meta property="article:modified_time" content="2009-02-27T00:00:00+00:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="⚡️ On the Beauty of Power Sets"/>
+<meta name="twitter:description" content="Using power sets in algebraic modeling languages for formulating the Traveling Salesman Problem"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://ryanjoneil.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "⚡️ On the Beauty of Power Sets",
+      "item": "https://ryanjoneil.github.io/posts/2009-02-27-on-the-beauty-of-power-sets/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "⚡️ On the Beauty of Power Sets",
+  "name": "⚡️ On the Beauty of Power Sets",
+  "description": "Using power sets in algebraic modeling languages for formulating the Traveling Salesman Problem",
+  "keywords": [
+    "modeling", "tsp"
+  ],
+  "articleBody": "One of the difficulties we encounter in solving the Traveling Salesman Problem (TSP) is that, for even a small numer of cities, a complete description of the problem requires a factorial number of constraints. This is apparent in the standard formulation used to teach the TSP to OR students. Consider a set of $n$ cities with the distance from city $i$ to city $j$ denoted $d_{ij}$. We attempt to minimize the total distance of a tour entering and leaving each city exactly once. $x_{ij} = 1$ if the edge from city $i$ to city $j$ is included in the tour, $0$ otherwise:\n$$ \\small \\begin{align*} \\min\\quad \u0026 z = \\sum_i \\sum_{j\\ne i} d_{ij} x_{ij}\\\\ \\text{s.t.}\\quad\u0026 \\sum_{j\\ne i} x_{ij} = 1 \u0026\\quad\\forall\u0026\\ i \u0026 \\text{leave each city once}\\\\ \u0026 \\sum_{i\\ne j} x_{ij} = 1 \u0026\\quad\\forall\u0026\\ j \u0026 \\text{enter each city once}\\\\ \u0026 x_{ij} \\in \\{0,1\\} \u0026\\quad\\forall\u0026\\ i,j \\end{align*} $$\nThis appears like a reasonable formulation until we solve it and see that our solution contains disconnected subtours. Suppose we have four cities, labeled $A$ through $D$. Connecting $A$ to $B$, $B$ to $A$, $C$ to $D$ and $D$ to $C$ provides a feasible solution to our formulation, but does not constitute a cycle. Here is a more concrete example of two disconnected subtours $\\{(1,5),(5,1)\\}$ and $\\{(2,3),(3,4),(4,2)\\}$ over five cities:\nampl: display x; x [*,*] : 1 2 3 4 5 := 1 0 0 0 0 1 2 0 0 1 0 0 3 0 0 0 1 0 4 0 1 0 0 0 5 1 0 0 0 0 ; Realizing we just solved the Assignment Problem, we now add subtour elimination constraints. These require that any proper, non-null subset of our $n$ cities is connected by at most $n-1$ active edges:\n$$ \\sum_{i \\in S} \\sum_{j \\in S} x_{ij} \\leq |S|-1 \\quad\\forall\\ S \\subset {1, …, n}, S \\ne O $$\nIndexing subtour elimination constraints over a power set of the cities completes the formulation. However, this requires an additional $\\sum_{k=2}^{n-1} \\begin{pmatrix} n \\\\ k \\end{pmatrix}$ rows tacked on the end of our matrix and is clearly infeasible for large $n$. The most current computers can handle using this approach is around 19 cities. It remains an instructive tool for understanding the combinatorial explosion that occurs in problems like TSP and is worth translating into a modeling language. So how does one model it on a computer?\nUnfortunately, AMPL, the gold standard in mathematical modeling languages, is unable to index over sets. Creating a power set in AMPL requires going through a few contortions. The following code demonstrates power and index sets over four cities:\nset cities := 1 .. 4 ordered; param n := card(cities); set indices := 0 .. (2^n - 1); set power {i in indices} := {c in cities: (i div 2^(ord(c) - 1)) mod 2 = 1}; display cities; display n; display indices; display power; This yields the following output:\nset cities := 1 2 3 4; n = 4 set indices := 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15; set power[0] := ; # empty set power[1] := 1; set power[2] := 2; set power[3] := 1 2; set power[4] := 3; set power[5] := 1 3; set power[6] := 2 3; set power[7] := 1 2 3; set power[8] := 4; set power[9] := 1 4; set power[10] := 2 4; set power[11] := 1 2 4; set power[12] := 3 4; set power[13] := 1 3 4; set power[14] := 2 3 4; set power[15] := 1 2 3 4; Note how the index set contains an index for each row in our power set. We can now generate the subtour elimination constraints:\nvar x {cities cross cities} binary; s.t. subtours {i in indices: card(power[i]) \u003e 1 and card(power[i]) \u003c card(cities)}: sum {(c,k) in power[i] cross power[i]: k != c} x[c,k] \u003c= card(power[i]) - 1; expand subtours; subject to subtours[3]: x[1,2] + x[2,1] \u003c= 1; subject to subtours[5]: x[1,3] + x[3,1] \u003c= 1; subject to subtours[6]: x[2,3] + x[3,2] \u003c= 1; subject to subtours[7]: x[1,2] + x[1,3] + x[2,1] + x[2,3] + x[3,1] + x[3,2] \u003c= 2; subject to subtours[9]: x[1,4] + x[4,1] \u003c= 1; subject to subtours[10]: x[2,4] + x[4,2] \u003c= 1; subject to subtours[11]: x[1,2] + x[1,4] + x[2,1] + x[2,4] + x[4,1] + x[4,2] \u003c= 2; subject to subtours[12]: x[3,4] + x[4,3] \u003c= 1; subject to subtours[13]: x[1,3] + x[1,4] + x[3,1] + x[3,4] + x[4,1] + x[4,3] \u003c= 2; subject to subtours[14]: x[2,3] + x[2,4] + x[3,2] + x[3,4] + x[4,2] + x[4,3] \u003c= 2; While this does work, the code for generating the power set looks like voodoo. Understanding it required piece-by-piece decomposition, an exercise I suggest you go through yourself if you have a copy of AMPL and 15 minutes to spare:\nset foo {c in cities} := {ord(c)}; set bar {c in cities} := {2^(ord(c) - 1)}; set baz {i in indices} := {c in cities: i div 2^(ord(c) - 1)}; set qux {i in indices} := {c in cities: (i div 2^(ord(c) - 1)) mod 2 = 1}; display foo; display bar; display baz; display qux; This may be an instance where open source leads commercial software. The good folks who produce the SCIP Optimization Suite provide an AMPL-like language called ZIMPL with a few additional useful features. One of these is power sets. Compared to the code above, doesn’t this look refreshing?\nset cities := {1 to 4}; set power[] := powerset(cities); set indices := indexset(power); ",
+  "wordCount" : "924",
+  "inLanguage": "en",
+  "datePublished": "2009-02-27T00:00:00Z",
+  "dateModified": "2009-02-27T00:00:00Z",
+  "author":{
+    "@type": "Person",
+    "name": "Ryan O'Neil"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://ryanjoneil.github.io/posts/2009-02-27-on-the-beauty-of-power-sets/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "adventures in optimization",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://ryanjoneil.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://ryanjoneil.github.io/" accesskey="h" title="adventures in optimization (Alt + H)">adventures in optimization</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://ryanjoneil.github.io/about" title="about">
+                    <span>about</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://ryanjoneil.github.io/coding" title="coding">
+                    <span>coding</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://ryanjoneil.github.io/speaking" title="speaking">
+                    <span>speaking</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://ryanjoneil.github.io/writing" title="writing">
+                    <span>writing</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://ryanjoneil.github.io/search" title="🔍">
+                    <span>🔍</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title">
+      ⚡️ On the Beauty of Power Sets
+    </h1>
+    <div class="post-description">
+      Using power sets in algebraic modeling languages for formulating the Traveling Salesman Problem
+    </div>
+    <div class="post-meta"><span title='2009-02-27 00:00:00 +0000 UTC'>February 27, 2009</span>&nbsp;·&nbsp;Ryan O&#39;Neil
+
+</div>
+  </header> 
+  <div class="post-content"><p>One of the difficulties we encounter in solving the <a href="https://www.math.uwaterloo.ca/tsp/">Traveling Salesman Problem</a> (TSP) is that, for even a small numer of cities, a complete description of the problem requires a factorial number of constraints. This is apparent in the standard formulation used to teach the TSP to OR students. Consider a set of $n$ cities with the distance from city $i$ to city $j$ denoted $d_{ij}$.  We attempt to minimize the total distance of a tour entering and leaving each city exactly once. $x_{ij} = 1$ if the edge from city $i$ to city $j$ is included in the tour, $0$ otherwise:</p>
+<p>$$
+\small
+\begin{align*}
+\min\quad       &amp; z = \sum_i \sum_{j\ne i} d_{ij} x_{ij}\\
+\text{s.t.}\quad&amp; \sum_{j\ne i} x_{ij} = 1 &amp;\quad\forall&amp;\ i &amp; \text{leave each city once}\\
+&amp; \sum_{i\ne j} x_{ij} = 1 &amp;\quad\forall&amp;\ j &amp; \text{enter each city once}\\
+&amp; x_{ij} \in \{0,1\}       &amp;\quad\forall&amp;\ i,j
+\end{align*}
+$$</p>
+<p>This appears like a reasonable formulation until we solve it and see that our solution contains disconnected subtours. Suppose we have four cities, labeled $A$ through $D$. Connecting $A$ to $B$, $B$ to $A$, $C$ to $D$ and $D$ to $C$ provides a feasible solution to our formulation, but does not constitute a cycle. Here is a more concrete example of two disconnected subtours $\{(1,5),(5,1)\}$ and $\{(2,3),(3,4),(4,2)\}$ over five cities:</p>
+<pre tabindex="0"><code>ampl: display x;
+x [*,*]
+:   1   2   3   4   5    :=
+1   0   0   0   0   1
+2   0   0   1   0   0
+3   0   0   0   1   0
+4   0   1   0   0   0
+5   1   0   0   0   0
+;
+</code></pre><p>Realizing we just solved the <a href="https://en.wikipedia.org/wiki/Assignment_problem">Assignment Problem</a>, we now add subtour elimination constraints. These require that any proper, non-null subset of our $n$ cities is connected by at most $n-1$ active edges:</p>
+<p>$$
+\sum_{i \in S} \sum_{j \in S} x_{ij} \leq |S|-1 \quad\forall\ S \subset {1, &hellip;, n}, S \ne O
+$$</p>
+<p>Indexing subtour elimination constraints over a <a href="https://en.wikipedia.org/wiki/Power_set">power set</a> of the cities completes the formulation. However, this requires an additional $\sum_{k=2}^{n-1} \begin{pmatrix} n \\ k \end{pmatrix}$ rows tacked on the end of our matrix and is clearly infeasible for large $n$. The most current computers can handle using this approach <a href="http://zimpl.zib.de/download/zimpl.pdf">is around 19 cities</a>. It remains an instructive tool for understanding the <a href="https://en.wikipedia.org/wiki/Combinatorial_explosion">combinatorial explosion</a> that occurs in problems like TSP and is worth translating into a modeling language. So how does one model it on a computer?</p>
+<p>Unfortunately, <a href="https://ampl.com/">AMPL</a>, the gold standard in mathematical modeling languages, is unable to index over sets. Creating a power set in AMPL requires going through a few contortions.  The following code demonstrates power and index sets over four cities:</p>
+<pre tabindex="0"><code>set cities := 1 .. 4 ordered;
+
+param n := card(cities);
+set indices := 0 .. (2^n - 1);
+set power {i in indices} := {c in cities: (i div 2^(ord(c) - 1)) mod 2 = 1};
+
+display cities;
+display n;
+display indices;
+display power;
+</code></pre><p>This yields the following output:</p>
+<pre tabindex="0"><code>set cities := 1 2 3 4;
+
+n = 4
+
+set indices := 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15;
+
+set power[0] := ; # empty
+set power[1] := 1;
+set power[2] := 2;
+set power[3] := 1 2;
+set power[4] := 3;
+set power[5] := 1 3;
+set power[6] := 2 3;
+set power[7] := 1 2 3;
+set power[8] := 4;
+set power[9] := 1 4;
+set power[10] := 2 4;
+set power[11] := 1 2 4;
+set power[12] := 3 4;
+set power[13] := 1 3 4;
+set power[14] := 2 3 4;
+set power[15] := 1 2 3 4;
+</code></pre><p>Note how the index set contains an index for each row in our power set. We can now generate the subtour elimination constraints:</p>
+<pre tabindex="0"><code>var x {cities cross cities} binary;
+s.t. subtours {i in indices: card(power[i]) &gt; 1 and card(power[i]) &lt; card(cities)}:
+sum {(c,k) in power[i] cross power[i]: k != c} x[c,k] &lt;= card(power[i]) - 1;
+
+expand subtours;
+
+subject to subtours[3]:  x[1,2] + x[2,1] &lt;= 1;
+subject to subtours[5]:  x[1,3] + x[3,1] &lt;= 1;
+subject to subtours[6]:  x[2,3] + x[3,2] &lt;= 1;
+subject to subtours[7]:  x[1,2] + x[1,3] + x[2,1] + x[2,3] + x[3,1] + x[3,2] &lt;= 2;
+subject to subtours[9]:  x[1,4] + x[4,1] &lt;= 1;
+subject to subtours[10]: x[2,4] + x[4,2] &lt;= 1;
+subject to subtours[11]: x[1,2] + x[1,4] + x[2,1] + x[2,4] + x[4,1] + x[4,2] &lt;= 2;
+subject to subtours[12]: x[3,4] + x[4,3] &lt;= 1;
+subject to subtours[13]: x[1,3] + x[1,4] + x[3,1] + x[3,4] + x[4,1] + x[4,3] &lt;= 2;
+subject to subtours[14]: x[2,3] + x[2,4] + x[3,2] + x[3,4] + x[4,2] + x[4,3] &lt;= 2;
+</code></pre><p>While this does work, the code for generating the power set looks like <a href="https://en.wikipedia.org/wiki/Voodoo_programming">voodoo</a>. Understanding it required piece-by-piece decomposition, an exercise I suggest you go through yourself if you have a copy of AMPL and 15 minutes to spare:</p>
+<pre tabindex="0"><code>set foo {c in cities} := {ord(c)};
+set bar {c in cities} := {2^(ord(c) - 1)};
+set baz {i in indices} := {c in cities: i div 2^(ord(c) - 1)};
+set qux {i in indices} := {c in cities: (i div 2^(ord(c) - 1)) mod 2 = 1};
+
+display foo;
+display bar;
+display baz;
+display qux;
+</code></pre><p>This may be an instance where open source leads commercial software. The good folks who produce the <a href="https://scipopt.org/">SCIP Optimization Suite</a> provide an AMPL-like language called <a href="https://zimpl.zib.de/">ZIMPL</a> with a few additional useful features. One of these is power sets. Compared to the code above, doesn&rsquo;t this look refreshing?</p>
+<pre tabindex="0"><code>set cities := {1 to 4};
+
+set power[] := powerset(cities);
+set indices := indexset(power);
+</code></pre>
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://ryanjoneil.github.io/tags/modeling/">modeling</a></li>
+      <li><a href="https://ryanjoneil.github.io/tags/tsp/">tsp</a></li>
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2023 <a href="https://ryanjoneil.github.io/">adventures in optimization</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

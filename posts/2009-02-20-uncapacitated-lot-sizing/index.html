@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>📐 Uncapacitated Lot Sizing | adventures in optimization</title>
+<meta name="keywords" content="modeling">
+<meta name="description" content="Formulation and aspects of the Uncapacitated Lot Sizing problem in Integer Programming">
+<meta name="author" content="Ryan O&#39;Neil">
+<link rel="canonical" href="https://ryanjoneil.github.io/posts/2009-02-20-uncapacitated-lot-sizing/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.5cfc680b1eeaeef9efbced92d46c2a9e876b72ee14fba85846afc4cff9e6e6f8.css" integrity="sha256-XPxoCx7q7vnvvO2S1Gwqnodrcu4U&#43;6hYRq/Ez/nm5vg=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://ryanjoneil.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://ryanjoneil.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://ryanjoneil.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://ryanjoneil.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://ryanjoneil.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css"
+    integrity="sha384-GvrOXuhMATgEsSwCs4smul74iXGOixntILdUW9XmUC6+HX0sLNAK3q71HotJqlAn"
+    crossorigin="anonymous"/>
+<script
+    src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"
+    integrity="sha384-cpW21h6RZv/phavutF+AuVYrr+dA8xD9zs6FwLpaCct6O9ctzYFfFr4dgmgccOTx"
+    crossorigin="anonymous">
+</script>
+
+<script
+    src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"
+    integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05"
+    crossorigin="anonymous"
+    onload="renderMathInElement(document.body);">
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    renderMathInElement(document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "$", right: "$", display: false}
+        ]
+    });
+});
+</script>
+
+<meta property="og:title" content="📐 Uncapacitated Lot Sizing" />
+<meta property="og:description" content="Formulation and aspects of the Uncapacitated Lot Sizing problem in Integer Programming" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://ryanjoneil.github.io/posts/2009-02-20-uncapacitated-lot-sizing/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2009-02-20T00:00:00+00:00" />
+<meta property="article:modified_time" content="2009-02-20T00:00:00+00:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="📐 Uncapacitated Lot Sizing"/>
+<meta name="twitter:description" content="Formulation and aspects of the Uncapacitated Lot Sizing problem in Integer Programming"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://ryanjoneil.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "📐 Uncapacitated Lot Sizing",
+      "item": "https://ryanjoneil.github.io/posts/2009-02-20-uncapacitated-lot-sizing/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "📐 Uncapacitated Lot Sizing",
+  "name": "📐 Uncapacitated Lot Sizing",
+  "description": "Formulation and aspects of the Uncapacitated Lot Sizing problem in Integer Programming",
+  "keywords": [
+    "modeling"
+  ],
+  "articleBody": "Uncapacitated Lot Sizing (ULS) is a classic OR problem that seeks to minimize the cost of satisfying known demand for a product over time. Demand is subject to varying costs for production, set-up, and storage of the product. Technically, it is a mixed binary integer linear program – the key point separating it from the world of linear optimization being that production cannot occur during any period without paying that period’s fixed costs for set-up. Thus it has linear nonnegative variables for production and storage amounts during each period, and a binary variable for each period that determines whether or not production can actually occur.\nFor $n$ periods with per-period fixed set-up cost $f_t$, unit production cost $p_t$, unit storage cost $h_t$,and demand $d_t$, we define decision variables related to production and storage quantities:\n$$ \\small \\begin{align*} x_t \u0026= \\text{units produced in period}\\ t\\\\ s_t \u0026= \\text{stock at the end of period}\\ t\\\\ y_t \u0026= 1\\ \\text{if production occurs in period}\\ t, 0\\ \\text{otherwise} \\end{align*} $$\nOne can minimize overall cost for satisfying all demand on time using the following model per Wolsey (1998), defined slightly differently here:\n$$ \\small \\begin{align*} \\min\\quad \u0026 z = \\sum_t{p_t x_t} + \\sum_t{h_t s_t} + \\sum_t{f_t y_t}\\\\ \\text{s.t.}\\quad\u0026 s_1 = d_1 + s_1\\\\ \u0026 s_{t-1} + x_t = d_t + s_t \u0026\\quad\\forall\u0026\\ t \u003e 1\\\\ \u0026 x_t \\leq M y_t \u0026\\quad\\forall\u0026\\ t\\\\ \u0026 s_t, x_t \\geq 0 \u0026\\quad\\forall\u0026\\ t\\\\ \u0026 y_t \\in {0,1} \u0026\\quad\\forall\u0026\\ t \\end{align*} $$\nAccording to Wolsey, page 11, given that $s_t = \\sum_{i=1}^t (x_i - d_i)$ and defining new constants $K = \\sum_{t=1}^n h_t(\\sum_{i=1}^t d_i)$ and $c_t = p_t + \\sum_{i=t}^n h_i$, the objective function can be rewritten as $z = \\sum_t c_t x_t + \\sum _t f_t y_t - K$. The book lacks a proof of this and it seems a bit non-obvious, so I attempt an explanation in somewhat painstaking detail here.\n$$ \\small \\begin{align*} \u0026\\text{Proof}:\\\\ \u0026 \u0026 \\sum_t p_t x_t + \\sum_t h_t s_t + \\sum_t f_t y_t \u0026= \\sum_t c_t x_t + \\sum _t f_t y_t - K\\\\ \u0026\\text{1. Remove} \\sum_t f_t y_t:\\\\ \u0026 \u0026 \\sum_t p_t x_t + \\sum_t h_t s_t \u0026= \\sum_t c_t x_t - K\\\\ \u0026\\text{2. Expand}\\ K\\ \\text{and}\\ c_t:\\\\ \u0026 \u0026 \\sum_t p_t x_t + \\sum_t h_t s_t \u0026= \\sum_t (p_t + \\sum_{i=t}^n h_i) x_t - \\sum_t h_t (\\sum_{i=1}^t d_i)\\\\ \u0026\\text{3. Remove}\\ \\sum_t p_t x_t:\\\\ \u0026 \u0026 \\sum_t h_t s_t \u0026= \\sum_t x_t (\\sum_{i=t}^n h_i) - \\sum_t h_t (\\sum_{i=1}^t d_i)\\\\ \u0026\\text{4. Expand}\\ s_t:\\\\ \u0026 \u0026 \\sum_t h_t (\\sum_{i=1}^t x_i) - \\sum_t h_t (\\sum_{i=1}^t d_i) \u0026= \\sum_t x_t (\\sum_{i=t}^n h_i) - \\sum_t h_t (\\sum_{i=1}^t d_i)\\\\ \u0026\\text{5. Remove}\\ \\sum_t h_t (\\sum_{i=1}^t d_i):\\\\ \u0026 \u0026 \\sum_t h_t (\\sum_{i=1}^t x_i) \u0026= \\sum_t x_t (\\sum_{i=t}^n h_i) \\end{align*} $$\nThe result from step 5 becomes obvious upon expanding its left and right-hand terms:\n$$ h_1 x_1 + h_2 (x_1 + x_2) + \\cdots + h_n (x_1 + \\cdots + x_n) =\\\\ x_1 (h_1 + \\cdots + h_n) + x2 (h_2 + \\cdots + h_n) + \\cdots + x_n h_n $$\nIn matrix notation with $h$ and $x$ as column vectors in $\\bf R^n$ and $L$ and $U$ being $n \\times n$ lower and upper triangular identity matrices, respectively, this can be written as:\n$$ \\small \\begin{pmatrix} h_1 \\cdots h_n \\end{pmatrix} \\begin{pmatrix} 1 \\cdots 0 \\\\ \\vdots \\ddots \\vdots \\\\ 1 \\cdots 1 \\end{pmatrix} \\begin{pmatrix} x_1 \\\\ \\vdots \\\\ x_n \\end{pmatrix} = \\begin{pmatrix} x_1 \\cdots x_n \\end{pmatrix} \\begin{pmatrix} 1 \\cdots 1 \\\\ \\vdots \\ddots \\vdots \\\\ 0 \\cdots 1 \\end{pmatrix} \\begin{pmatrix} h_1 \\\\ \\vdots \\\\ h_n \\end{pmatrix} $$\nor $h^T L x = x^T U h$.\n",
+  "wordCount" : "597",
+  "inLanguage": "en",
+  "datePublished": "2009-02-20T00:00:00Z",
+  "dateModified": "2009-02-20T00:00:00Z",
+  "author":{
+    "@type": "Person",
+    "name": "Ryan O'Neil"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://ryanjoneil.github.io/posts/2009-02-20-uncapacitated-lot-sizing/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "adventures in optimization",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://ryanjoneil.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://ryanjoneil.github.io/" accesskey="h" title="adventures in optimization (Alt + H)">adventures in optimization</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://ryanjoneil.github.io/about" title="about">
+                    <span>about</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://ryanjoneil.github.io/coding" title="coding">
+                    <span>coding</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://ryanjoneil.github.io/speaking" title="speaking">
+                    <span>speaking</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://ryanjoneil.github.io/writing" title="writing">
+                    <span>writing</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://ryanjoneil.github.io/search" title="🔍">
+                    <span>🔍</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title">
+      📐 Uncapacitated Lot Sizing
+    </h1>
+    <div class="post-description">
+      Formulation and aspects of the Uncapacitated Lot Sizing problem in Integer Programming
+    </div>
+    <div class="post-meta"><span title='2009-02-20 00:00:00 +0000 UTC'>February 20, 2009</span>&nbsp;·&nbsp;Ryan O&#39;Neil
+
+</div>
+  </header> 
+  <div class="post-content"><p>Uncapacitated Lot Sizing (ULS) is a classic <a href="http://en.wikipedia.org/wiki/Operations_research">OR</a> problem that seeks to minimize the cost of satisfying known demand for a product over time.  Demand is subject to varying costs for production, set-up, and storage of the product.  Technically, it is a mixed binary integer linear program &ndash; the key point separating it from the world of <a href="http://en.wikipedia.org/wiki/Linear_programming">linear optimization</a> being that production cannot occur during any period without paying that period&rsquo;s fixed costs for set-up.  Thus it has linear nonnegative variables for production and storage amounts during each period, and a binary variable for each period that determines whether or not production can actually occur.</p>
+<p>For $n$ periods with per-period fixed set-up cost $f_t$, unit production cost $p_t$, unit storage cost $h_t$,and demand $d_t$, we define decision variables related to production and storage quantities:</p>
+<p>$$
+\small
+\begin{align*}
+x_t &amp;= \text{units produced in period}\ t\\
+s_t &amp;= \text{stock at the end of period}\ t\\
+y_t &amp;= 1\ \text{if production occurs in period}\ t, 0\ \text{otherwise}
+\end{align*}
+$$</p>
+<p>One can minimize overall cost for satisfying all demand on time using the following model per <a href="http://www.amazon.com/Integer-Programming-Laurence-Wolsey/dp/0471283665/">Wolsey (1998)</a>, defined slightly differently here:</p>
+<p>$$
+\small
+\begin{align*}
+\min\quad       &amp; z = \sum_t{p_t x_t} + \sum_t{h_t s_t} + \sum_t{f_t y_t}\\
+\text{s.t.}\quad&amp; s_1 = d_1 + s_1\\
+&amp; s_{t-1} + x_t = d_t + s_t &amp;\quad\forall&amp;\ t &gt; 1\\
+&amp; x_t \leq M y_t            &amp;\quad\forall&amp;\ t\\
+&amp; s_t, x_t \geq 0           &amp;\quad\forall&amp;\ t\\
+&amp; y_t \in {0,1}           &amp;\quad\forall&amp;\ t
+\end{align*}
+$$</p>
+<p>According to Wolsey, page 11, given that $s_t = \sum_{i=1}^t (x_i - d_i)$ and defining new constants $K = \sum_{t=1}^n h_t(\sum_{i=1}^t d_i)$ and $c_t = p_t + \sum_{i=t}^n h_i$, the objective function can be rewritten as $z = \sum_t c_t x_t + \sum _t f_t y_t - K$.  The book lacks a proof of this and it seems a bit non-obvious, so I attempt an explanation in somewhat painstaking detail here.</p>
+<p>$$
+\small
+\begin{align*}
+&amp;\text{Proof}:\\
+&amp; &amp; \sum_t p_t x_t + \sum_t h_t s_t + \sum_t f_t y_t &amp;= \sum_t c_t x_t + \sum _t f_t y_t - K\\
+&amp;\text{1. Remove} \sum_t f_t y_t:\\
+&amp; &amp; \sum_t p_t x_t + \sum_t h_t s_t &amp;= \sum_t c_t x_t - K\\
+&amp;\text{2. Expand}\ K\ \text{and}\ c_t:\\
+&amp; &amp; \sum_t p_t x_t + \sum_t h_t s_t &amp;= \sum_t (p_t + \sum_{i=t}^n h_i) x_t - \sum_t h_t (\sum_{i=1}^t d_i)\\
+&amp;\text{3. Remove}\ \sum_t p_t x_t:\\
+&amp; &amp; \sum_t h_t s_t &amp;= \sum_t x_t (\sum_{i=t}^n h_i) - \sum_t h_t (\sum_{i=1}^t d_i)\\
+&amp;\text{4. Expand}\ s_t:\\
+&amp; &amp; \sum_t h_t (\sum_{i=1}^t x_i) - \sum_t h_t (\sum_{i=1}^t d_i) &amp;= \sum_t x_t (\sum_{i=t}^n h_i) - \sum_t h_t (\sum_{i=1}^t d_i)\\
+&amp;\text{5. Remove}\ \sum_t h_t (\sum_{i=1}^t d_i):\\
+&amp; &amp; \sum_t h_t (\sum_{i=1}^t x_i) &amp;= \sum_t x_t (\sum_{i=t}^n h_i)
+\end{align*}
+$$</p>
+<p>The result from step 5 becomes obvious upon expanding its left and right-hand terms:</p>
+<p>$$
+h_1 x_1 + h_2 (x_1 + x_2) + \cdots + h_n (x_1 + \cdots + x_n) =\\
+x_1 (h_1 + \cdots + h_n) + x2 (h_2 + \cdots + h_n) + \cdots + x_n h_n
+$$</p>
+<p>In matrix notation with $h$ and $x$ as column vectors in $\bf R^n$ and $L$ and $U$ being $n \times n$ lower and upper triangular identity matrices, respectively, this can be written as:</p>
+<p>$$
+\small
+\begin{pmatrix}
+h_1 \cdots h_n
+\end{pmatrix}
+\begin{pmatrix}
+1 \cdots 0 \\
+\vdots \ddots \vdots \\
+1 \cdots 1
+\end{pmatrix}
+\begin{pmatrix}
+x_1 \\
+\vdots \\
+x_n
+\end{pmatrix} =
+\begin{pmatrix}
+x_1 \cdots x_n
+\end{pmatrix}
+\begin{pmatrix}
+1 \cdots 1 \\
+\vdots \ddots \vdots \\
+0 \cdots 1
+\end{pmatrix}
+\begin{pmatrix}
+h_1 \\
+\vdots \\
+h_n
+\end{pmatrix}
+$$</p>
+<p>or $h^T L x = x^T U h$.</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://ryanjoneil.github.io/tags/modeling/">modeling</a></li>
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2023 <a href="https://ryanjoneil.github.io/">adventures in optimization</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

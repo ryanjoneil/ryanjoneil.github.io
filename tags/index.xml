@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Tags on adventures in optimization</title>
+    <link>https://ryanjoneil.github.io/tags/</link>
+    <description>Recent content in Tags on adventures in optimization</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Fri, 27 Feb 2009 00:00:00 +0000</lastBuildDate><atom:link href="https://ryanjoneil.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>modeling</title>
+      <link>https://ryanjoneil.github.io/tags/modeling/</link>
+      <pubDate>Fri, 27 Feb 2009 00:00:00 +0000</pubDate>
+      
+      <guid>https://ryanjoneil.github.io/tags/modeling/</guid>
+      <description></description>
+      <content:encoded><![CDATA[]]></content:encoded>
+    </item>
+    
+    <item>
+      <title>tsp</title>
+      <link>https://ryanjoneil.github.io/tags/tsp/</link>
+      <pubDate>Fri, 27 Feb 2009 00:00:00 +0000</pubDate>
+      
+      <guid>https://ryanjoneil.github.io/tags/tsp/</guid>
+      <description></description>
+      <content:encoded><![CDATA[]]></content:encoded>
+    </item>
+    
+  </channel>
+</rss>
