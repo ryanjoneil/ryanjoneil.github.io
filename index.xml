@@ -15,8 +15,8 @@
       <guid>https://ryanjoneil.github.io/posts/2023-09-07-blogging-is-back/</guid>
       <description>New adventures in optimization</description>
       <content:encoded><![CDATA[<p>I&rsquo;ve been a mostly absent blogger for the past few years. I could make excuses. They might sound like, &ldquo;I was busy finishing my dissertation!&rdquo; or &ldquo;I founded a company and have a toddler!&rdquo; or &ldquo;The <a href="https://github.com/eudicots/Cactus">static site generator</a> I used was abandoned!&rdquo; Whatever they might be, these excuses would certainly end in exclamation points.</p>
-<p>But, ultimately, for several years it just felt like blogging was <em>dead</em>. It&rsquo;s space was usurped by Tweets, LinkedIn <a href="https://www.inc.com/serhat-pala/alexis-ohanian-says-hustle-porn-is-most-dangerous-trend-in-silicon-valley-heres-how-to-eradicate-it.html">hustle porn</a>, long form Medium posts by megacorporations aimed at attracting talent, and other content fads. RSS feeds dried up bit by bit. That beautiful structure somewhere between a college essay and an academic preprint mostly ceased to be. Sad times, indeed.</p>
-<p>That trend seems to be reversing. I don&rsquo;t know whether it&rsquo;s the result of nudges from Substack, or that all the introverts in tech finally gave up baking COVID sourdough and needed something to do, but there is a lot of good content out there agian! Fire up your <a href="https://www.inoreader.com/">RSS aggregators</a> and get reading.</p>
+<p>But, ultimately, for several years it just felt like blogging was <em>dead</em>. Its space was usurped by Tweets, LinkedIn hustle posts, long form Medium content aimed at attracting talent, and other content trends. RSS feeds dried up bit by bit. That beautiful structure somewhere between a college essay and an academic preprint mostly ceased to be. Sad times, indeed.</p>
+<p>That trend seems to be reversing. I don&rsquo;t know whether it&rsquo;s the result of nudges from Substack, or that all the introverts in tech finally gave up baking pandemic, but there is a lot of good content out there again! Fire up your <a href="https://www.inoreader.com/">RSS aggregators</a> and get reading.</p>
 <p>This post is my own reboot of &ldquo;adventures in optimization,&rdquo; a blog I&rsquo;ve written intermittently since 2009. Unfortunately, it will take some time to move over all my old posts to Hugo. I&rsquo;ll do that slowly as I create new ones. For now, I&rsquo;ve ported over a couple early posts and put together a list of the active blogs I&rsquo;m gleefully catching up on.</p>
 <p>See you soon!</p>
 <ul>
@@ -100,10 +100,10 @@ October 17, 2023 - INFORMS Annual Meeting - Adapting to Change in On-Demand Deli
       <pubDate>Wed, 06 Sep 2023 00:00:00 +0000</pubDate>
       
       <guid>https://ryanjoneil.github.io/writing/</guid>
-      <description>I&amp;rsquo;m an desultory blogger and intermitent academic. Nonetheless, I like the research and writing process. Most of my current and old posts live here. Some of my other writings and collaborations are listed below.
+      <description>I&amp;rsquo;m an desultory blogger and intermittent academic. Nonetheless, I like the research and writing process. Most of my current and old posts live here. Some of my other writings and collaborations are listed below.
 Papers, patents &amp;amp; preprints&amp;hellip; June 2023 - USPTO - Runners for optimization solvers and simulators describes technology for creating and executing Decision Diagram-based optimization solvers and state-based simulators in cloud environments. (patent)
 September 2020 - Operations Research Forum - MIPLIBing: Seamless Benchmarking of Mathematical Optimization Problems and Metadata Extensions presents a Python library that automatically downloads queried subsets from the current versions of MIPLIB, MINLPLib, and QPLIB, provides a centralized local cache across projects, and tracks the best solution values and bounds on record for each problem.</description>
-      <content:encoded><![CDATA[<p>I&rsquo;m an desultory blogger and intermitent academic. Nonetheless, I like the research and writing process. Most of my current and old posts live <a href="/posts">here</a>. Some of my other writings and collaborations are listed below.</p>
+      <content:encoded><![CDATA[<p>I&rsquo;m an desultory blogger and intermittent academic. Nonetheless, I like the research and writing process. Most of my current and old posts live <a href="/posts">here</a>. Some of my other writings and collaborations are listed below.</p>
 <h3 id="papers-patents--preprints">Papers, patents &amp; preprints&hellip;</h3>
 <ul>
 <li>
@@ -157,13 +157,13 @@ September 2020 - Operations Research Forum - MIPLIBing: Seamless Benchmarking of
       <guid>https://ryanjoneil.github.io/about/</guid>
       <description>I use data and models to simplify complex decisions.
 By day, I am an operations research analyst, Go coder, and co-founder of Nextmv. I&amp;rsquo;m interested in hybrid optimization, decision diagrams, and mixed integer programming. My applications skew heavily toward logistics for delivery platforms, with detours into cutting and packing.
-For the past several years, I&amp;rsquo;ve worked in real-time optimization related to on-demand delivery, scheduling, forecasting, and simulation. I did a MS in Operations Research by night at [George Mason University], then a PhD in the same field under the tutelage of Karla Hoffman.</description>
+For the past several years, I&amp;rsquo;ve worked in real-time optimization for on-demand delivery, scheduling, forecasting, and simulation. I did a MS in Operations Research by night at [George Mason University], then a PhD in the same field under the advisement of Karla Hoffman.</description>
       <content:encoded><![CDATA[<p><img loading="lazy" src="/img/ryan.jpg" alt="me"  />
 </p>
 <p>I use data and models to simplify complex decisions.</p>
 <p>By day, I am an <a href="https://www.informs.org/Explore/Operations-Research-Analytics">operations research analyst</a>, <a href="https://go.dev">Go</a> coder, and co-founder of <a href="https://nextmv.io">Nextmv</a>. I&rsquo;m interested in hybrid optimization, <a href="https://www.andrew.cmu.edu/user/vanhoeve/mdd/">decision diagrams</a>, and <a href="https://en.wikipedia.org/wiki/Integer_programming">mixed integer programming</a>. My applications skew heavily toward logistics for delivery platforms, with detours into <a href="https://www.euro-online.org/websites/esicup/">cutting and packing</a>.</p>
-<p>For the past several years, I&rsquo;ve worked in real-time optimization related to on-demand delivery, scheduling, forecasting, and simulation. I did a MS in Operations Research by night at [George Mason University], then a PhD in the same field under the tutelage of <a href="https://seor.vse.gmu.edu/~khoffman/">Karla Hoffman</a>.</p>
-<p>By night, I am am ameteur cellist, and a cat and early music enthusiast.</p>
+<p>For the past several years, I&rsquo;ve worked in real-time optimization for on-demand delivery, scheduling, forecasting, and simulation. I did a MS in Operations Research by night at [George Mason University], then a PhD in the same field under the advisement of <a href="https://seor.vse.gmu.edu/~khoffman/">Karla Hoffman</a>.</p>
+<p>By night, I am am amateur cellist, and a cat and early music enthusiast.</p>
 ]]></content:encoded>
     </item>
     
@@ -201,7 +201,7 @@ ap.cpp is an incremental primal-dual assignment problem solver written in C++. I
 <p><a href="https://pythonhosted.org/python-zibopt/">python-zibopt</a> was a Python interface to the <a href="https://www.scipopt.org/">SCIP Optimization Suite</a>. This was no longer necessary once <a href="https://github.com/scipopt/PySCIPOpt">PySCIPOpt</a> emerged.</p>
 </li>
 <li>
-<p><a href="https://github.com/ryanjoneil/chute">Chute</a> was a simple, lighweight tool for running discrete event simulations in Python.</p>
+<p><a href="https://github.com/ryanjoneil/chute">Chute</a> was a simple, lightweight tool for running discrete event simulations in Python.</p>
 </li>
 <li>
 <p><a href="https://code.google.com/archive/p/pygep/">PyGEP</a> was a simple library suitable for academic study of GEP (Gene Expression Programming) in Python 2.</p>
