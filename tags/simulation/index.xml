@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>simulation on adventures in optimization</title>
+    <link>https://ryanjoneil.github.io/tags/simulation/</link>
+    <description>Recent content in simulation on adventures in optimization</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Thu, 08 Oct 2009 00:00:00 +0000</lastBuildDate><atom:link href="https://ryanjoneil.github.io/tags/simulation/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>🐍 Monte Carlo Simulation in Python</title>
+      <link>https://ryanjoneil.github.io/posts/2009-10-08-monte-carlo-simulation-in-python/</link>
+      <pubDate>Thu, 08 Oct 2009 00:00:00 +0000</pubDate>
+      
+      <guid>https://ryanjoneil.github.io/posts/2009-10-08-monte-carlo-simulation-in-python/</guid>
+      <description> A quick introduction to writing and interpreting Monte Carlo simulations in Python</description>
+      <content:encoded><![CDATA[<p>One of the most useful tools one learns in an Operations Research curriculum is <a href="http://en.wikipedia.org/wiki/Monte_Carlo_method">Monte Carlo Simulation</a>. Its utility lies in its simplicity: one can learn vital information about nearly any process, be it deterministic or stochastic, without wading through the grunt work of finding an analytical solution. It can be used for off-the-cuff estimates or as a proper scientific tool. All one needs to know is how to simulate a given process and its appropriate probability distributions and parameters if that process is stochastic.</p>
+<p>Here&rsquo;s how it works:</p>
+<ul>
+<li>Construct a simulation that, given input values, returns a value of interest. This could be a pure quantity, like time spent waiting for a bus, or a boolean indicating whether or not a particular event occurs.</li>
+<li>Run the simulation a, usually large, number of times, each time with randomly generated input variables. Record its output values.</li>
+<li>Compute sample mean and variance of the output values.</li>
+</ul>
+<p>In the case of time spent waiting for a bus, the sample mean and variance are estimators of mean and variance for one&rsquo;s wait time. In the boolean case, these represent probability that the given event will occur.</p>
+<p>One can think of Monte Carlo Simulation as throwing darts. Say you want to find the area under a curve without integrating. All you must do is draw the curve on a wall and throw darts at it randomly. After you&rsquo;ve thrown enough darts, the area under the curve can be approximated using the percentage of darts that end up under the curve times the total area.</p>
+<p>This technique is often performed using a spreadsheet, but that can be a bit clunky and may make more complex simulations difficult. I&rsquo;d like to spend a minute showing how it can be done in Python. Consider the following scenario:</p>
+<p>Passengers for a train arrive according to a Poisson process with a mean of 100 per hour. The next train arrives exponentially with a rate of 5 per hour. How many passers will be aboard the train?</p>
+<p>We can simulate this using the fact that a Poisson process can be represented as a string of events occurring with exponential inter-arrival times. We use the <code>sim()</code> function below to generate the number of passengers for random instances of the problem. We then compute sample mean and variance for these values.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> random
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>PASSENGERS <span style="color:#f92672">=</span> <span style="color:#ae81ff">100.0</span>
+</span></span><span style="display:flex;"><span>TRAINS     <span style="color:#f92672">=</span>   <span style="color:#ae81ff">5.0</span>
+</span></span><span style="display:flex;"><span>ITERATIONS <span style="color:#f92672">=</span> <span style="color:#ae81ff">10000</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">sim</span>():
+</span></span><span style="display:flex;"><span>    passengers <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.0</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Determine when the train arrives</span>
+</span></span><span style="display:flex;"><span>    train <span style="color:#f92672">=</span> random<span style="color:#f92672">.</span>expovariate(TRAINS)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Count the number of passenger arrivals before the train</span>
+</span></span><span style="display:flex;"><span>    now <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.0</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">while</span> <span style="color:#66d9ef">True</span>:
+</span></span><span style="display:flex;"><span>        now <span style="color:#f92672">+=</span> random<span style="color:#f92672">.</span>expovariate(PASSENGERS)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> now <span style="color:#f92672">&gt;=</span> train:
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">break</span>
+</span></span><span style="display:flex;"><span>        passengers <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1.0</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> passengers
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;__main__&#39;</span>:
+</span></span><span style="display:flex;"><span>    output <span style="color:#f92672">=</span> [sim() <span style="color:#66d9ef">for</span> _ <span style="color:#f92672">in</span> range(ITERATIONS)]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    total <span style="color:#f92672">=</span> sum(output)
+</span></span><span style="display:flex;"><span>    mean <span style="color:#f92672">=</span> total <span style="color:#f92672">/</span> len(output)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    sum_sqrs <span style="color:#f92672">=</span> sum(x<span style="color:#f92672">*</span>x <span style="color:#66d9ef">for</span> x <span style="color:#f92672">in</span> output)
+</span></span><span style="display:flex;"><span>    variance <span style="color:#f92672">=</span> (sum_sqrs <span style="color:#f92672">-</span> total <span style="color:#f92672">*</span> mean) <span style="color:#f92672">/</span> (len(output) <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#39;E[X] = </span><span style="color:#e6db74">%.02f</span><span style="color:#e6db74">&#39;</span> <span style="color:#f92672">%</span> mean)
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#39;Var(X) = </span><span style="color:#e6db74">%.02f</span><span style="color:#e6db74">&#39;</span> <span style="color:#f92672">%</span> variance)
+</span></span></code></pre></div><p><em>This code was updated for Python 3.</em></p>
+]]></content:encoded>
+    </item>
+    
+  </channel>
+</rss>

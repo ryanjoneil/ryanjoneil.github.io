@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>ampl on adventures in optimization</title>
+    <link>https://ryanjoneil.github.io/tags/ampl/</link>
+    <description>Recent content in ampl on adventures in optimization</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Fri, 27 Feb 2009 00:00:00 +0000</lastBuildDate><atom:link href="https://ryanjoneil.github.io/tags/ampl/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>⚡️ On the Beauty of Power Sets</title>
+      <link>https://ryanjoneil.github.io/posts/2009-02-27-on-the-beauty-of-power-sets/</link>
+      <pubDate>Fri, 27 Feb 2009 00:00:00 +0000</pubDate>
+      
+      <guid>https://ryanjoneil.github.io/posts/2009-02-27-on-the-beauty-of-power-sets/</guid>
+      <description>Using power sets in algebraic modeling languages for formulating the Traveling Salesman Problem</description>
+      <content:encoded><![CDATA[<p>One of the difficulties we encounter in solving the <a href="https://www.math.uwaterloo.ca/tsp/">Traveling Salesman Problem</a> (TSP) is that, for even a small numer of cities, a complete description of the problem requires a factorial number of constraints. This is apparent in the standard formulation used to teach the TSP to OR students. Consider a set of $n$ cities with the distance from city $i$ to city $j$ denoted $d_{ij}$.  We attempt to minimize the total distance of a tour entering and leaving each city exactly once. $x_{ij} = 1$ if the edge from city $i$ to city $j$ is included in the tour, $0$ otherwise:</p>
+<p>$$
+\small
+\begin{align*}
+\min\quad       &amp; z = \sum_i \sum_{j\ne i} d_{ij} x_{ij}\\
+\text{s.t.}\quad&amp; \sum_{j\ne i} x_{ij} = 1 &amp;\quad\forall&amp;\ i &amp; \text{leave each city once}\\
+&amp; \sum_{i\ne j} x_{ij} = 1 &amp;\quad\forall&amp;\ j &amp; \text{enter each city once}\\
+&amp; x_{ij} \in \{0,1\}       &amp;\quad\forall&amp;\ i,j
+\end{align*}
+$$</p>
+<p>This appears like a reasonable formulation until we solve it and see that our solution contains disconnected subtours. Suppose we have four cities, labeled $A$ through $D$. Connecting $A$ to $B$, $B$ to $A$, $C$ to $D$ and $D$ to $C$ provides a feasible solution to our formulation, but does not constitute a cycle. Here is a more concrete example of two disconnected subtours $\{(1,5),(5,1)\}$ and $\{(2,3),(3,4),(4,2)\}$ over five cities:</p>
+<pre tabindex="0"><code>ampl: display x;
+x [*,*]
+:   1   2   3   4   5    :=
+1   0   0   0   0   1
+2   0   0   1   0   0
+3   0   0   0   1   0
+4   0   1   0   0   0
+5   1   0   0   0   0
+;
+</code></pre><p>Realizing we just solved the <a href="https://en.wikipedia.org/wiki/Assignment_problem">Assignment Problem</a>, we now add subtour elimination constraints. These require that any proper, non-null subset of our $n$ cities is connected by at most $n-1$ active edges:</p>
+<p>$$
+\sum_{i \in S} \sum_{j \in S} x_{ij} \leq |S|-1 \quad\forall\ S \subset {1, &hellip;, n}, S \ne O
+$$</p>
+<p>Indexing subtour elimination constraints over a <a href="https://en.wikipedia.org/wiki/Power_set">power set</a> of the cities completes the formulation. However, this requires an additional $\sum_{k=2}^{n-1} \begin{pmatrix} n \\ k \end{pmatrix}$ rows tacked on the end of our matrix and is clearly infeasible for large $n$. The most current computers can handle using this approach <a href="http://zimpl.zib.de/download/zimpl.pdf">is around 19 cities</a>. It remains an instructive tool for understanding the <a href="https://en.wikipedia.org/wiki/Combinatorial_explosion">combinatorial explosion</a> that occurs in problems like TSP and is worth translating into a modeling language. So how does one model it on a computer?</p>
+<p>Unfortunately, <a href="https://ampl.com/">AMPL</a>, the gold standard in mathematical modeling languages, is unable to index over sets. Creating a power set in AMPL requires going through a few contortions.  The following code demonstrates power and index sets over four cities:</p>
+<pre tabindex="0"><code>set cities := 1 .. 4 ordered;
+
+param n := card(cities);
+set indices := 0 .. (2^n - 1);
+set power {i in indices} := {c in cities: (i div 2^(ord(c) - 1)) mod 2 = 1};
+
+display cities;
+display n;
+display indices;
+display power;
+</code></pre><p>This yields the following output:</p>
+<pre tabindex="0"><code>set cities := 1 2 3 4;
+
+n = 4
+
+set indices := 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15;
+
+set power[0] := ; # empty
+set power[1] := 1;
+set power[2] := 2;
+set power[3] := 1 2;
+set power[4] := 3;
+set power[5] := 1 3;
+set power[6] := 2 3;
+set power[7] := 1 2 3;
+set power[8] := 4;
+set power[9] := 1 4;
+set power[10] := 2 4;
+set power[11] := 1 2 4;
+set power[12] := 3 4;
+set power[13] := 1 3 4;
+set power[14] := 2 3 4;
+set power[15] := 1 2 3 4;
+</code></pre><p>Note how the index set contains an index for each row in our power set. We can now generate the subtour elimination constraints:</p>
+<pre tabindex="0"><code>var x {cities cross cities} binary;
+s.t. subtours {i in indices: card(power[i]) &gt; 1 and card(power[i]) &lt; card(cities)}:
+sum {(c,k) in power[i] cross power[i]: k != c} x[c,k] &lt;= card(power[i]) - 1;
+
+expand subtours;
+
+subject to subtours[3]:  x[1,2] + x[2,1] &lt;= 1;
+subject to subtours[5]:  x[1,3] + x[3,1] &lt;= 1;
+subject to subtours[6]:  x[2,3] + x[3,2] &lt;= 1;
+subject to subtours[7]:  x[1,2] + x[1,3] + x[2,1] + x[2,3] + x[3,1] + x[3,2] &lt;= 2;
+subject to subtours[9]:  x[1,4] + x[4,1] &lt;= 1;
+subject to subtours[10]: x[2,4] + x[4,2] &lt;= 1;
+subject to subtours[11]: x[1,2] + x[1,4] + x[2,1] + x[2,4] + x[4,1] + x[4,2] &lt;= 2;
+subject to subtours[12]: x[3,4] + x[4,3] &lt;= 1;
+subject to subtours[13]: x[1,3] + x[1,4] + x[3,1] + x[3,4] + x[4,1] + x[4,3] &lt;= 2;
+subject to subtours[14]: x[2,3] + x[2,4] + x[3,2] + x[3,4] + x[4,2] + x[4,3] &lt;= 2;
+</code></pre><p>While this does work, the code for generating the power set looks like <a href="https://en.wikipedia.org/wiki/Voodoo_programming">voodoo</a>. Understanding it required piece-by-piece decomposition, an exercise I suggest you go through yourself if you have a copy of AMPL and 15 minutes to spare:</p>
+<pre tabindex="0"><code>set foo {c in cities} := {ord(c)};
+set bar {c in cities} := {2^(ord(c) - 1)};
+set baz {i in indices} := {c in cities: i div 2^(ord(c) - 1)};
+set qux {i in indices} := {c in cities: (i div 2^(ord(c) - 1)) mod 2 = 1};
+
+display foo;
+display bar;
+display baz;
+display qux;
+</code></pre><p>This may be an instance where open source leads commercial software. The good folks who produce the <a href="https://scipopt.org/">SCIP Optimization Suite</a> provide an AMPL-like language called <a href="https://zimpl.zib.de/">ZIMPL</a> with a few additional useful features. One of these is power sets. Compared to the code above, doesn&rsquo;t this look refreshing?</p>
+<pre tabindex="0"><code>set cities := {1 to 4};
+
+set power[] := powerset(cities);
+set indices := indexset(power);
+</code></pre>]]></content:encoded>
+    </item>
+    
+  </channel>
+</rss>
