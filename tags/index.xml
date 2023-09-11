@@ -6,13 +6,53 @@
     <description>Recent content in Tags on adventures in optimization</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Thu, 08 Oct 2009 00:00:00 +0000</lastBuildDate><atom:link href="https://ryanjoneil.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 23 Nov 2010 00:00:00 +0000</lastBuildDate><atom:link href="https://ryanjoneil.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>classification</title>
+      <link>https://ryanjoneil.github.io/tags/classification/</link>
+      <pubDate>Tue, 23 Nov 2010 00:00:00 +0000</pubDate>
+      
+      <guid>https://ryanjoneil.github.io/tags/classification/</guid>
+      <description></description>
+      <content:encoded><![CDATA[]]></content:encoded>
+    </item>
+    
+    <item>
+      <title>linear programming</title>
+      <link>https://ryanjoneil.github.io/tags/linear-programming/</link>
+      <pubDate>Tue, 23 Nov 2010 00:00:00 +0000</pubDate>
+      
+      <guid>https://ryanjoneil.github.io/tags/linear-programming/</guid>
+      <description></description>
+      <content:encoded><![CDATA[]]></content:encoded>
+    </item>
+    
+    <item>
+      <title>modeling</title>
+      <link>https://ryanjoneil.github.io/tags/modeling/</link>
+      <pubDate>Tue, 23 Nov 2010 00:00:00 +0000</pubDate>
+      
+      <guid>https://ryanjoneil.github.io/tags/modeling/</guid>
+      <description></description>
+      <content:encoded><![CDATA[]]></content:encoded>
+    </item>
+    
     <item>
       <title>python</title>
       <link>https://ryanjoneil.github.io/tags/python/</link>
-      <pubDate>Thu, 08 Oct 2009 00:00:00 +0000</pubDate>
+      <pubDate>Tue, 23 Nov 2010 00:00:00 +0000</pubDate>
       
       <guid>https://ryanjoneil.github.io/tags/python/</guid>
+      <description></description>
+      <content:encoded><![CDATA[]]></content:encoded>
+    </item>
+    
+    <item>
+      <title>scip</title>
+      <link>https://ryanjoneil.github.io/tags/scip/</link>
+      <pubDate>Tue, 23 Nov 2010 00:00:00 +0000</pubDate>
+      
+      <guid>https://ryanjoneil.github.io/tags/scip/</guid>
       <description></description>
       <content:encoded><![CDATA[]]></content:encoded>
     </item>
@@ -33,16 +73,6 @@
       <pubDate>Fri, 27 Feb 2009 00:00:00 +0000</pubDate>
       
       <guid>https://ryanjoneil.github.io/tags/ampl/</guid>
-      <description></description>
-      <content:encoded><![CDATA[]]></content:encoded>
-    </item>
-    
-    <item>
-      <title>modeling</title>
-      <link>https://ryanjoneil.github.io/tags/modeling/</link>
-      <pubDate>Fri, 27 Feb 2009 00:00:00 +0000</pubDate>
-      
-      <guid>https://ryanjoneil.github.io/tags/modeling/</guid>
       <description></description>
       <content:encoded><![CDATA[]]></content:encoded>
     </item>

@@ -13,8 +13,9 @@
       <pubDate>Thu, 08 Oct 2009 00:00:00 +0000</pubDate>
       
       <guid>https://ryanjoneil.github.io/posts/2009-10-08-monte-carlo-simulation-in-python/</guid>
-      <description> A quick introduction to writing and interpreting Monte Carlo simulations in Python</description>
-      <content:encoded><![CDATA[<p>One of the most useful tools one learns in an Operations Research curriculum is <a href="http://en.wikipedia.org/wiki/Monte_Carlo_method">Monte Carlo Simulation</a>. Its utility lies in its simplicity: one can learn vital information about nearly any process, be it deterministic or stochastic, without wading through the grunt work of finding an analytical solution. It can be used for off-the-cuff estimates or as a proper scientific tool. All one needs to know is how to simulate a given process and its appropriate probability distributions and parameters if that process is stochastic.</p>
+      <description>A quick introduction to writing and interpreting Monte Carlo simulations in Python</description>
+      <content:encoded><![CDATA[<p><em>Note: This posted was updated to work with Python 3.</em></p>
+<p>One of the most useful tools one learns in an Operations Research curriculum is <a href="http://en.wikipedia.org/wiki/Monte_Carlo_method">Monte Carlo Simulation</a>. Its utility lies in its simplicity: one can learn vital information about nearly any process, be it deterministic or stochastic, without wading through the grunt work of finding an analytical solution. It can be used for off-the-cuff estimates or as a proper scientific tool. All one needs to know is how to simulate a given process and its appropriate probability distributions and parameters if that process is stochastic.</p>
 <p>Here&rsquo;s how it works:</p>
 <ul>
 <li>Construct a simulation that, given input values, returns a value of interest. This could be a pure quantity, like time spent waiting for a bus, or a boolean indicating whether or not a particular event occurs.</li>
@@ -59,8 +60,7 @@
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#39;E[X] = </span><span style="color:#e6db74">%.02f</span><span style="color:#e6db74">&#39;</span> <span style="color:#f92672">%</span> mean)
 </span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#39;Var(X) = </span><span style="color:#e6db74">%.02f</span><span style="color:#e6db74">&#39;</span> <span style="color:#f92672">%</span> variance)
-</span></span></code></pre></div><p><em>This code was updated for Python 3.</em></p>
-]]></content:encoded>
+</span></span></code></pre></div>]]></content:encoded>
     </item>
     
   </channel>

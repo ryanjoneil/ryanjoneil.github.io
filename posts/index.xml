@@ -34,13 +34,198 @@
     </item>
     
     <item>
+      <title>🧐 Data Fitting 1 - Linear Data Fitting</title>
+      <link>https://ryanjoneil.github.io/posts/2010-11-23-data-fitting-1-linear-data-fitting/</link>
+      <pubDate>Tue, 23 Nov 2010 00:00:00 +0000</pubDate>
+      
+      <guid>https://ryanjoneil.github.io/posts/2010-11-23-data-fitting-1-linear-data-fitting/</guid>
+      <description>An introduction to data fitting and classification using linear optimization in Python</description>
+      <content:encoded><![CDATA[<p><em>Note: This posted was updated to work with Python 3 and <a href="https://github.com/scipopt/PySCIPOpt">PySCIPOpt</a>. The original version used Python 2 and <a href="https://pythonhosted.org/python-zibopt/">python-zibopt</a>.</em></p>
+<h2 id="introduction">Introduction</h2>
+<p>Data fitting is one of those tasks that everyone should have at least some exposure to. Certainly developers and analysts will benefit from a working knowledge of its fundamentals and their implementations. However, in my own reading I&rsquo;ve found it difficult to locate good examples that are simple enough to pick up quickly and come with accompanying source code.</p>
+<p>This article commences an ongoing series introducing basic data fitting techniques. With any luck they won&rsquo;t be overly complex, while still being useful enough to get the point across with a real example and real data. We&rsquo;ll start with a binary classification problem: presented with a series of records, each containing a set number of input values describing it, determine whether or not each record exhibits some property.</p>
+<h2 id="model">Model</h2>
+<p>We&rsquo;ll use the <code>cancer1.dt</code> data from the <code>proben1</code> set of test cases, which you can download <a href="/files/2010-11-23-data-fitting-1-linear-data-fitting/cancer1.dt">here</a>. Each record starts with 9 data points containing physical characteristics of a tumor. The second to last data point contains 1 if a tumor is benign and 0 if it is malignant. We seek to find a linear function we can run on an arbitrary record that will return a value greater than zero if that record&rsquo;s tumor is predicted to be benign and less than zero if it is predicted to be malignant. We will train our linear model on the first 350 records, and test it for accuracy on the remaining rows.</p>
+<p>This is similar to the data fitting problem found in <a href="https://www.thriftbooks.com/w/linear-programming-series-of-books-in-the-mathematical-sciences_vasek-chvatal/249798/#edition=2416723&amp;idiq=15706498">Chvatal</a>. Our inputs consist of a matrix of observed data, $A$, and a vector of classifications, $b$. In order to classify a record, we require another vector $x$ such that the dot product of $x$ and that record will be either greater or less than zero depending on its predicted classification.</p>
+<p>A couple points to note before we start:</p>
+<ul>
+<li>
+<p>Most observed data are noisy. This means it may be impossible to locate a hyperplane that cleanly separates given records of one type from another. In this case, we must resort to finding a function that minimizes our predictive error. For the purposes of this example, we&rsquo;ll minimize the sum of the absolute values of the observed and predicted values. That is, we seek $x$ such that we find $min \sum_i{|a_i^T x-b_i|}$.</p>
+</li>
+<li>
+<p>The <a href="https://www.purplemath.com/modules/strtlneq.htm">slope-intercept</a> form of a line, $f(x)=m^T x+b$, contains an offset. It should be obvious that this is necessary in our model so that our function isn&rsquo;t required to pass through the origin. Thus, we&rsquo;ll be adding an extra variable with the coefficient of 1 to represent our offset value.</p>
+</li>
+<li>
+<p>In order to model this, we use two linear constraints for each absolute value. We minimize the sum of these. Our Linear Programming model thus looks like:</p>
+</li>
+</ul>
+<p>$$
+\begin{align*}
+\min\quad       &amp; z = x_0 + \sum_i{v_i}\\
+\text{s.t.}\quad&amp; v_i \geq x_0 + a_i^\intercal x - 1    &amp;\quad\forall&amp;\quad\text{benign tumors}\\
+&amp; v_i \geq 1 - x_0 - a_i^\intercal x    &amp;\quad\forall&amp;\quad\text{benign tumors}\\
+&amp; v_i \geq x_0 + a_i^\intercal x - (-1) &amp;\quad\forall&amp;\quad\text{malignant tumors}\\
+&amp; v_i \geq -1 - x_0 - a_i^\intercal x   &amp;\quad\forall&amp;\quad\text{malignant tumors}
+\end{align*}
+$$</p>
+<h2 id="code">Code</h2>
+<p>In order to do this in Python, we use <a href="https://www.scipopt.org/">SCIP</a> and <a href="https://soplex.zib.de/">SoPlex</a>. We start by setting constants for benign and malignant outputs and providing a function to read in the training and testing data sets.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># Preferred output values for tumor categories</span>
+</span></span><span style="display:flex;"><span>BENIGN <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>MALIGNANT <span style="color:#f92672">=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">read_proben1_cancer_data</span>(filename, train_size):
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#39;&#39;&#39;Loads a proben1 cancer file into train &amp; test sets&#39;&#39;&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Number of input data points per record</span>
+</span></span><span style="display:flex;"><span>    DATA_POINTS <span style="color:#f92672">=</span> <span style="color:#ae81ff">9</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    train_data <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>    test_data <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">with</span> open(filename) <span style="color:#66d9ef">as</span> infile:
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># Read in the first train_size lines to a training data list, and the</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># others to testing data. This allows us to test how general our model</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># is on something other than the input data.</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> line <span style="color:#f92672">in</span> infile<span style="color:#f92672">.</span>readlines()[<span style="color:#ae81ff">7</span>:]: <span style="color:#75715e"># skip header</span>
+</span></span><span style="display:flex;"><span>            line <span style="color:#f92672">=</span> line<span style="color:#f92672">.</span>split()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># Records = offset (x0) + remaining data points</span>
+</span></span><span style="display:flex;"><span>            input <span style="color:#f92672">=</span> [float(x) <span style="color:#66d9ef">for</span> x <span style="color:#f92672">in</span> line[:DATA_POINTS]]
+</span></span><span style="display:flex;"><span>            output <span style="color:#f92672">=</span> BENIGN <span style="color:#66d9ef">if</span> line[<span style="color:#f92672">-</span><span style="color:#ae81ff">2</span>] <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;1&#39;</span> <span style="color:#66d9ef">else</span> MALIGNANT
+</span></span><span style="display:flex;"><span>            record <span style="color:#f92672">=</span> {<span style="color:#e6db74">&#39;input&#39;</span>: input, <span style="color:#e6db74">&#39;output&#39;</span>: output}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># Determine what data set to put this in</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> len(train_data) <span style="color:#f92672">&gt;=</span> train_size:
+</span></span><span style="display:flex;"><span>                test_data<span style="color:#f92672">.</span>append(record)
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>                train_data<span style="color:#f92672">.</span>append(record)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> train_data, test_data
+</span></span></code></pre></div><p>The next function implements the LP model described above using SoPlex and SCIP. It minimizes the sum of residuals for each training record. This amounts to summing the absolute value of the difference between predicted and observed output data. The following function takes in input and observed output data and returns a list of coefficients. Our resulting model consists of taking the <a href="https://en.wikipedia.org/wiki/Dot_product">dot product</a> of an input record and these coefficients. If the result is greater than or equal to zero, that record is predicted to be a benign tumor, otherwise it is predicted to be malignant.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> pyscipopt <span style="color:#f92672">import</span> Model
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">train_linear_model</span>(train_data):
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#39;&#39;&#39;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    Accepts a set of input training data with known output
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    values.  Returns a list of coefficients to apply to
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    arbitrary records for purposes of binary categorization.
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    &#39;&#39;&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Make sure we have at least one training record.</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">assert</span> len(train_data) <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    num_variables <span style="color:#f92672">=</span> len(train_data[<span style="color:#ae81ff">0</span>][<span style="color:#e6db74">&#39;input&#39;</span>])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Variables are coefficients in front of the data points. It is important</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># that these be unrestricted in sign so they can take negative values.</span>
+</span></span><span style="display:flex;"><span>    m <span style="color:#f92672">=</span> Model()
+</span></span><span style="display:flex;"><span>    x <span style="color:#f92672">=</span> [m<span style="color:#f92672">.</span>addVar(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;x</span><span style="color:#e6db74">{</span>i<span style="color:#e6db74">}</span><span style="color:#e6db74">&#39;</span>, lb<span style="color:#f92672">=</span><span style="color:#66d9ef">None</span>) <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(num_variables)]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Residual for each data row</span>
+</span></span><span style="display:flex;"><span>    residuals <span style="color:#f92672">=</span> [m<span style="color:#f92672">.</span>addVar(lb<span style="color:#f92672">=</span><span style="color:#66d9ef">None</span>, ub<span style="color:#f92672">=</span><span style="color:#66d9ef">None</span>) <span style="color:#66d9ef">for</span> _ <span style="color:#f92672">in</span> train_data]
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> r, d <span style="color:#f92672">in</span> zip(residuals, train_data):
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># r will be the absolute value of the difference between observed and</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># predicted values. We can model absolute values such as r &gt;= |foo| as:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">#</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">#   r &gt;=  foo</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">#   r &gt;= -foo</span>
+</span></span><span style="display:flex;"><span>        m<span style="color:#f92672">.</span>addCons(sum(x <span style="color:#f92672">*</span> y <span style="color:#66d9ef">for</span> x, y <span style="color:#f92672">in</span> zip(x, d[<span style="color:#e6db74">&#39;input&#39;</span>])) <span style="color:#f92672">+</span> r <span style="color:#f92672">&gt;=</span> d[<span style="color:#e6db74">&#39;output&#39;</span>])
+</span></span><span style="display:flex;"><span>        m<span style="color:#f92672">.</span>addCons(sum(x <span style="color:#f92672">*</span> y <span style="color:#66d9ef">for</span> x, y <span style="color:#f92672">in</span> zip(x, d[<span style="color:#e6db74">&#39;input&#39;</span>])) <span style="color:#f92672">-</span> r <span style="color:#f92672">&lt;=</span> d[<span style="color:#e6db74">&#39;output&#39;</span>])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Find and return coefficients that min sum of residuals.</span>
+</span></span><span style="display:flex;"><span>    m<span style="color:#f92672">.</span>setObjective(sum(residuals))
+</span></span><span style="display:flex;"><span>    m<span style="color:#f92672">.</span>setMinimize()
+</span></span><span style="display:flex;"><span>    m<span style="color:#f92672">.</span>optimize()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    solution <span style="color:#f92672">=</span> m<span style="color:#f92672">.</span>getBestSol()
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> [solution[xi] <span style="color:#66d9ef">for</span> xi <span style="color:#f92672">in</span> x]
+</span></span></code></pre></div><p>We also provide a convenience function for counting the number of correct predictions by our resulting model against either the test or training data sets.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">count_correct</span>(data_set, coefficients):
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#39;&#39;&#39;Returns the number of correct predictions.&#39;&#39;&#39;</span>
+</span></span><span style="display:flex;"><span>    correct <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> d <span style="color:#f92672">in</span> data_set:
+</span></span><span style="display:flex;"><span>        result <span style="color:#f92672">=</span> sum(x<span style="color:#f92672">*</span>y <span style="color:#66d9ef">for</span> x, y <span style="color:#f92672">in</span> zip(coefficients, d[<span style="color:#e6db74">&#39;input&#39;</span>]))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># Do we predict the same as the output?</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (result <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">0</span>) <span style="color:#f92672">==</span> (d[<span style="color:#e6db74">&#39;output&#39;</span>] <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">0</span>):
+</span></span><span style="display:flex;"><span>            correct <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> correct
+</span></span></code></pre></div><p>Finally we write a main method to read in the data, build our linear model, and test its efficacy.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> pprint <span style="color:#f92672">import</span> pprint
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;__main__&#39;</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Specs for this input file</span>
+</span></span><span style="display:flex;"><span>    INPUT_FILE_NAME <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;cancer1.dt&#39;</span>
+</span></span><span style="display:flex;"><span>    TRAIN_SIZE <span style="color:#f92672">=</span> <span style="color:#ae81ff">350</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    train_data, test_data <span style="color:#f92672">=</span> read_proben1_cancer_data(
+</span></span><span style="display:flex;"><span>        INPUT_FILE_NAME,
+</span></span><span style="display:flex;"><span>        TRAIN_SIZE
+</span></span><span style="display:flex;"><span>    )
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Add the offset variable to each of our data records</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> data_set <span style="color:#f92672">in</span> [train_data, test_data]:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> row <span style="color:#f92672">in</span> data_set:
+</span></span><span style="display:flex;"><span>            row[<span style="color:#e6db74">&#39;input&#39;</span>] <span style="color:#f92672">=</span> [<span style="color:#ae81ff">1</span>] <span style="color:#f92672">+</span> row[<span style="color:#e6db74">&#39;input&#39;</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    coefficients <span style="color:#f92672">=</span> train_linear_model(train_data)
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#39;coefficients:&#39;</span>)
+</span></span><span style="display:flex;"><span>    pprint(coefficients)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Print % of correct predictions for each data set</span>
+</span></span><span style="display:flex;"><span>    correct <span style="color:#f92672">=</span> count_correct(train_data, coefficients)
+</span></span><span style="display:flex;"><span>    print(
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#39;</span><span style="color:#e6db74">%s</span><span style="color:#e6db74"> / </span><span style="color:#e6db74">%s</span><span style="color:#e6db74"> = </span><span style="color:#e6db74">%.02f%%</span><span style="color:#e6db74"> correct on training set&#39;</span> <span style="color:#f92672">%</span> (
+</span></span><span style="display:flex;"><span>            correct, len(train_data),
+</span></span><span style="display:flex;"><span>            <span style="color:#ae81ff">100</span> <span style="color:#f92672">*</span> float(correct) <span style="color:#f92672">/</span> len(train_data)
+</span></span><span style="display:flex;"><span>        )
+</span></span><span style="display:flex;"><span>    )
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    correct <span style="color:#f92672">=</span> count_correct(test_data, coefficients)
+</span></span><span style="display:flex;"><span>    print(
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#39;</span><span style="color:#e6db74">%s</span><span style="color:#e6db74"> / </span><span style="color:#e6db74">%s</span><span style="color:#e6db74"> = </span><span style="color:#e6db74">%.02f%%</span><span style="color:#e6db74"> correct on testing set&#39;</span> <span style="color:#f92672">%</span> (
+</span></span><span style="display:flex;"><span>            correct, len(test_data),
+</span></span><span style="display:flex;"><span>            <span style="color:#ae81ff">100</span> <span style="color:#f92672">*</span> float(correct) <span style="color:#f92672">/</span> len(test_data)
+</span></span><span style="display:flex;"><span>        )
+</span></span><span style="display:flex;"><span>    )
+</span></span></code></pre></div><h2 id="results">Results</h2>
+<p>The result of running this model against the <code>cancer1.dt</code> data set is:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>coefficients:
+</span></span><span style="display:flex;"><span>[1.4072882449702786,
+</span></span><span style="display:flex;"><span> -0.14014055927954652,
+</span></span><span style="display:flex;"><span> -0.6239513714263405,
+</span></span><span style="display:flex;"><span> -0.26727681774258882,
+</span></span><span style="display:flex;"><span> 0.067107753841131157,
+</span></span><span style="display:flex;"><span> -0.28300216102808429,
+</span></span><span style="display:flex;"><span> -1.0355594670918404,
+</span></span><span style="display:flex;"><span> -0.22774451038152174,
+</span></span><span style="display:flex;"><span> -0.69871243677663608,
+</span></span><span style="display:flex;"><span> -0.072575089848659444]
+</span></span><span style="display:flex;"><span>328 / 350 = 93.71% correct on training set
+</span></span><span style="display:flex;"><span>336 / 349 = 96.28% correct on testing set
+</span></span></code></pre></div><p>The accuracy is pretty good here against the both the training and testing sets, so this particular model generalizes well.  This is about the simplest model we can implement for data fitting, and we&rsquo;ll get to more complicated ones later, but it&rsquo;s nice to see we can do so well so quickly.  The coefficients correspond to using a function of this form, rounding off to three decimal places:</p>
+<p>$$
+\begin{align*}
+f(x) =\ &amp;1.407 - 0.140 x_1 - 0.624 x_2 - 0.267 x_3 + 0.067 x_4 - \\
+&amp;0.283 x_5 - 1.037 x_6 - 0.228 x_7 - 0.699 x_8 - 0.073 x_9
+\end{align*}
+$$</p>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="/files/2010-11-23-data-fitting-1-linear-data-fitting/cancer1.dt"><code>cancer1.dt</code></a> data file from <code>proben1</code></li>
+<li>Full <a href="/files/2010-11-23-data-fitting-1-linear-data-fitting/fit-linear.py">source listing</a></li>
+</ul>
+]]></content:encoded>
+    </item>
+    
+    <item>
       <title>🐍 Monte Carlo Simulation in Python</title>
       <link>https://ryanjoneil.github.io/posts/2009-10-08-monte-carlo-simulation-in-python/</link>
       <pubDate>Thu, 08 Oct 2009 00:00:00 +0000</pubDate>
       
       <guid>https://ryanjoneil.github.io/posts/2009-10-08-monte-carlo-simulation-in-python/</guid>
-      <description> A quick introduction to writing and interpreting Monte Carlo simulations in Python</description>
-      <content:encoded><![CDATA[<p>One of the most useful tools one learns in an Operations Research curriculum is <a href="http://en.wikipedia.org/wiki/Monte_Carlo_method">Monte Carlo Simulation</a>. Its utility lies in its simplicity: one can learn vital information about nearly any process, be it deterministic or stochastic, without wading through the grunt work of finding an analytical solution. It can be used for off-the-cuff estimates or as a proper scientific tool. All one needs to know is how to simulate a given process and its appropriate probability distributions and parameters if that process is stochastic.</p>
+      <description>A quick introduction to writing and interpreting Monte Carlo simulations in Python</description>
+      <content:encoded><![CDATA[<p><em>Note: This posted was updated to work with Python 3.</em></p>
+<p>One of the most useful tools one learns in an Operations Research curriculum is <a href="http://en.wikipedia.org/wiki/Monte_Carlo_method">Monte Carlo Simulation</a>. Its utility lies in its simplicity: one can learn vital information about nearly any process, be it deterministic or stochastic, without wading through the grunt work of finding an analytical solution. It can be used for off-the-cuff estimates or as a proper scientific tool. All one needs to know is how to simulate a given process and its appropriate probability distributions and parameters if that process is stochastic.</p>
 <p>Here&rsquo;s how it works:</p>
 <ul>
 <li>Construct a simulation that, given input values, returns a value of interest. This could be a pure quantity, like time spent waiting for a bus, or a boolean indicating whether or not a particular event occurs.</li>
@@ -85,8 +270,7 @@
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#39;E[X] = </span><span style="color:#e6db74">%.02f</span><span style="color:#e6db74">&#39;</span> <span style="color:#f92672">%</span> mean)
 </span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#39;Var(X) = </span><span style="color:#e6db74">%.02f</span><span style="color:#e6db74">&#39;</span> <span style="color:#f92672">%</span> variance)
-</span></span></code></pre></div><p><em>This code was updated for Python 3.</em></p>
-]]></content:encoded>
+</span></span></code></pre></div>]]></content:encoded>
     </item>
     
     <item>
