@@ -2,13 +2,25 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://ryanjoneil.github.io/posts/2023-09-07-blogging-is-back/</loc>
-    <lastmod>2023-09-07T00:00:00+00:00</lastmod>
-  </url><url>
     <loc>https://ryanjoneil.github.io/</loc>
-    <lastmod>2023-09-07T00:00:00+00:00</lastmod>
+    <lastmod>2023-09-13T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://ryanjoneil.github.io/tags/decision-diagrams/</loc>
+    <lastmod>2023-09-13T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://ryanjoneil.github.io/posts/</loc>
+    <lastmod>2023-09-13T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://ryanjoneil.github.io/tags/</loc>
+    <lastmod>2023-09-13T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://ryanjoneil.github.io/tags/visualization/</loc>
+    <lastmod>2023-09-13T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://ryanjoneil.github.io/posts/2023-09-13-visualizing-decision-diagrams/</loc>
+    <lastmod>2023-09-13T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://ryanjoneil.github.io/posts/2023-09-07-blogging-is-back/</loc>
     <lastmod>2023-09-07T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://ryanjoneil.github.io/speaking/</loc>
@@ -36,9 +48,6 @@
     <lastmod>2010-11-23T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://ryanjoneil.github.io/tags/scip/</loc>
-    <lastmod>2010-11-23T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://ryanjoneil.github.io/tags/</loc>
     <lastmod>2010-11-23T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://ryanjoneil.github.io/posts/2010-11-23-data-fitting-1-linear-data-fitting/</loc>

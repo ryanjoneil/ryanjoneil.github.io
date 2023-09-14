@@ -6,7 +6,355 @@
     <description>Recent content in Posts on adventures in optimization</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Thu, 07 Sep 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://ryanjoneil.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 13 Sep 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://ryanjoneil.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>🖍 Visualizing Decision Diagrams</title>
+      <link>https://ryanjoneil.github.io/posts/2023-09-13-visualizing-decision-diagrams/</link>
+      <pubDate>Wed, 13 Sep 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://ryanjoneil.github.io/posts/2023-09-13-visualizing-decision-diagrams/</guid>
+      <description>A look at a few tools for visualizing decision diagrams</description>
+      <content:encoded><![CDATA[<p>I attended <a href="https://sites.google.com/view/dpsolve2023/">DPSOLVE 2023</a> recently and found lots of good inspiration for the next version of Nextmv&rsquo;s Decision Diagram (DD) solver, <a href="https://www.nextmv.io/blog/how-hop-hops">Hop</a>. It&rsquo;s a few years old now, and we learned a lot applying it in the field. Hop formed the basis for our first routing models. While those models moved to a different structure in our <a href="https://www.nextmv.io/docs/vehicle-routing/get-started">latest routing code</a>, the <a href="https://www.nextmv.io/docs/vehicle-routing/legacy/routing">first version</a> broke ground combining DDs with Adaptive Large Neighborhood Search (ALNS), and its use continues to grow organically.</p>
+<p>A feature I&rsquo;d love for Hop is the ability to visualize DDs and monitor the search. That could work interactively, like Gecode&rsquo;s <a href="https://researchmgt.monash.edu/ws/portalfiles/portal/257776846/3566886_oa.pdf">GIST</a>, or passively during the search process. This requires automatic generation of images representing potentially large diagrams. So I spent a few hours looking at graph rendering options for DDs.</p>
+<h2 id="manual-rendering">Manual rendering</h2>
+<p>We&rsquo;ll start with examples of visualizations built by hand. These form a good standard for how we want DDs to look if we automate rendering. We&rsquo;ll start with some examples from academic literature, look at some we&rsquo;ve used in Nextmv presentations, and show an interesting example that embeds in <a href="https://gohugo.io/">Hugo</a>, the popular static site generator I use for this blog.</p>
+<p>All the literature on using Decision Diagrams (DD) for optimization that I&rsquo;m aware of depicts DDs as top-down, layered, directed graphs (digraphs). Some of the diagrams we come across appear to be coded and rendered, while some are fussily created by hand with a diagramming tool.</p>
+<h3 id="academia">Academia</h3>
+<p>I believe most of of the examples we find in academic literature are coded by hand and rendered using the LaTeX <a href="https://tikz.net/">TikZ</a> package. Below is one of the first diagrams that newcomers to DDs encounter. It&rsquo;s from <a href="https://link.springer.com/book/10.1007/978-3-319-42849-9">Decision Diagrams for Optimization</a> by Bergman et al, 2016.</p>
+<p><img loading="lazy" src="/files/2023-09-13-visualizing-decision-diagrams/ddo-exact-relaxed.png" alt="Exact &amp;amp; relaxed BDDs"  />
+</p>
+<p>It doesn&rsquo;t matter here what model this represents. It&rsquo;s a Binary Decision Diagram (BDD), which means that each variable can be $0$ or $1$. The BDD on the left is exact, while the BDD on the right is a relaxed version of the same.</p>
+<p>There&rsquo;s quite a bit going on, so it&rsquo;s worth an explanation. Let&rsquo;s look at the &ldquo;exact&rdquo; BDD on the left first.</p>
+<ul>
+<li>Horizontal layers group arcs with a binary variable (e.g. $x_1$, $x_2$).</li>
+<li>Arcs assign either the value $0$ or $1$ to their layer&rsquo;s variable. Dotted lines assign $0$ while solid lines assign $1$.</li>
+<li>Arc labels specify their costs. The BDD searches for a longest (or shortest) path from the root node $r$ to the terminal node $t$.</li>
+</ul>
+<p>The &ldquo;relaxed&rdquo; BDD on the right <em>overapproximates</em> both the objective value and the set of feasible solutions of the exact BDD on the left.</p>
+<ul>
+<li>The diagram is limited to a fixed width (2, in this case) at each layer.</li>
+<li>The achieve this, the DD merges exact nodes together.</li>
+<li>Thus, on the left of the relaxed BDD, there is a single node in which $x_2$ can be $0$ or $1$.</li>
+</ul>
+<p>Here&rsquo;s another example of an exact BDD from the same book.</p>
+<p><img loading="lazy" src="/files/2023-09-13-visualizing-decision-diagrams/ddo-exact.png" alt="Exact BDD"  />
+</p>
+<p>In this diagram, each node has a state. For example, the state of $r$ is $\{1,2,3,4,5\}$. If we start at the root node $r$ and assign $x_1 = 0$, we end up at node $u_1$ with state $\{2,3,4,5\}$.</p>
+<p>Most other academic literature about DDs uses images similar to these.</p>
+<h3 id="nextmv">Nextmv</h3>
+<p>We&rsquo;ve rendered a number of DDs over the years at Nextmv. Most of these images demonstrate a concept instead of a particular model. We usually create them by hand in a diagramming tool like <a href="https://whimsical.com/">Whimsical</a>, <a href="https://www.lucidchart.com/">Lucidchart</a>, or <a href="https://excalidraw.com/">Excalidraw</a>. I built the diagrams below by hand in Whimsical. I think the result is nice, if time consuming and fussy.</p>
+<p>This is a representation of an exact DD. It doesn&rsquo;t indicate whether this is a BDD or a Multivalued Decision Diagram (MDD). It doesn&rsquo;t have any labels or variable names. It just shows what a DD search might look like in the abstract.</p>
+<p><img loading="lazy" src="/files/2023-09-13-visualizing-decision-diagrams/nextmv-dd-exact.png" alt="Exact DD"  />
+</p>
+<p>The restricted DD below is more involved. It addition to horizontal layers, it divides nodes into explored and deferred groups. Most of the examples I&rsquo;ve seen mix different types of nodes, like exact and relaxed. I really like differentiating node types like this.</p>
+<p>In this representation, deferred nodes are in Hop&rsquo;s queue for later exploration. Thus they don&rsquo;t connect to any child nodes yet. This is the kind of thing I&rsquo;d like to generate with real diagrams during search so I can examine the state of the solver.</p>
+<p><img loading="lazy" src="/files/2023-09-13-visualizing-decision-diagrams/nextmv-dd-restricted.png" alt="Restricted DD"  />
+</p>
+<p>My favorite of my DD renderings so far is the next one. This shows a single-vehicle pickup-and-delivery problem. The arc labels are stops (e.g. 🐶, 🐱). The path the 🚗 follows to the terminal node is the route. The gray boxes group together nodes to merge based on state to reduce isomorphisms out of the diagram.</p>
+<p><img loading="lazy" src="/files/2023-09-13-visualizing-decision-diagrams/nextmv-pdp-reduced.png" alt="Reduced MDD"  />
+</p>
+<p>We also have some images like those in our <a href="https://www.nextmv.io/blog/introducing-expanders-in-hop">post on expanders</a> by hand. As you can see, coding these by hand gets tedious.</p>
+<h3 id="goat">GoAT</h3>
+<p>TikZ is a program that renders manually coded graphics, while Whimsical is a WYSIWYG diagram editor. I like the Whimsical images a lot better &ndash; they feel cleaner and easier to understand.</p>
+<p>Hugo <a href="https://gohugo.io/content-management/diagrams/#goat-diagrams-ascii">supports GoAT diagrams</a> by default, so I tried that out too. Here is an arbitrary MDD with two layers. The $[[1,2],4]$ node is a relaxed node; it doesn&rsquo;t really matter here what the label means.</p>
+
+
+
+<div class="goat svg-container ">
+  
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      font-family="Menlo,Lucida Console,monospace"
+      
+        viewBox="0 0 424 329"
+      >
+      <g transform='translate(8,16)'>
+<path d='M 160,16 L 248,16' fill='none' stroke='currentColor'></path>
+<path d='M 280,16 L 368,16' fill='none' stroke='currentColor'></path>
+<path d='M 232,80 L 296,80' fill='none' stroke='currentColor'></path>
+<path d='M 232,112 L 264,112' fill='none' stroke='currentColor'></path>
+<path d='M 264,112 L 296,112' fill='none' stroke='currentColor'></path>
+<path d='M 168,144 L 264,144' fill='none' stroke='currentColor'></path>
+<path d='M 144,192 L 152,192' fill='none' stroke='currentColor'></path>
+<path d='M 256,192 L 264,192' fill='none' stroke='currentColor'></path>
+<path d='M 376,192 L 392,192' fill='none' stroke='currentColor'></path>
+<path d='M 144,224 L 152,224' fill='none' stroke='currentColor'></path>
+<path d='M 256,224 L 264,224' fill='none' stroke='currentColor'></path>
+<path d='M 376,224 L 384,224' fill='none' stroke='currentColor'></path>
+<path d='M 384,224 L 392,224' fill='none' stroke='currentColor'></path>
+<path d='M 168,288 L 240,288' fill='none' stroke='currentColor'></path>
+<path d='M 288,288 L 368,288' fill='none' stroke='currentColor'></path>
+<path d='M 144,32 L 144,64' fill='none' stroke='currentColor'></path>
+<path d='M 152,160 L 152,176' fill='none' stroke='currentColor'></path>
+<path d='M 152,224 L 152,272' fill='none' stroke='currentColor'></path>
+<path d='M 264,16 L 264,32' fill='none' stroke='currentColor'></path>
+<path d='M 264,32 L 264,64' fill='none' stroke='currentColor'></path>
+<path d='M 264,112 L 264,144' fill='none' stroke='currentColor'></path>
+<path d='M 264,144 L 264,176' fill='none' stroke='currentColor'></path>
+<path d='M 264,224 L 264,256' fill='none' stroke='currentColor'></path>
+<path d='M 384,32 L 384,64' fill='none' stroke='currentColor'></path>
+<path d='M 384,112 L 384,176' fill='none' stroke='currentColor'></path>
+<path d='M 384,224 L 384,272' fill='none' stroke='currentColor'></path>
+<path d='M 144,64 L 144,72' fill='none' stroke='currentColor'></path>
+<polygon points='160.000000,64.000000 148.000000,58.400002 148.000000,69.599998' fill='currentColor' transform='rotate(90.000000, 144.000000, 64.000000)'></polygon>
+<path d='M 152,176 L 152,184' fill='none' stroke='currentColor'></path>
+<polygon points='168.000000,176.000000 156.000000,170.399994 156.000000,181.600006' fill='currentColor' transform='rotate(90.000000, 152.000000, 176.000000)'></polygon>
+<polygon points='248.000000,288.000000 236.000000,282.399994 236.000000,293.600006' fill='currentColor' transform='rotate(0.000000, 240.000000, 288.000000)'></polygon>
+<path d='M 264,64 L 264,72' fill='none' stroke='currentColor'></path>
+<polygon points='280.000000,64.000000 268.000000,58.400002 268.000000,69.599998' fill='currentColor' transform='rotate(90.000000, 264.000000, 64.000000)'></polygon>
+<path d='M 264,176 L 264,184' fill='none' stroke='currentColor'></path>
+<polygon points='280.000000,176.000000 268.000000,170.399994 268.000000,181.600006' fill='currentColor' transform='rotate(90.000000, 264.000000, 176.000000)'></polygon>
+<path d='M 264,256 L 264,264' fill='none' stroke='currentColor'></path>
+<polygon points='280.000000,256.000000 268.000000,250.399994 268.000000,261.600006' fill='currentColor' transform='rotate(90.000000, 264.000000, 256.000000)'></polygon>
+<polygon points='296.000000,288.000000 284.000000,282.399994 284.000000,293.600006' fill='currentColor' transform='rotate(180.000000, 288.000000, 288.000000)'></polygon>
+<path d='M 384,64 L 384,72' fill='none' stroke='currentColor'></path>
+<polygon points='400.000000,64.000000 388.000000,58.400002 388.000000,69.599998' fill='currentColor' transform='rotate(90.000000, 384.000000, 64.000000)'></polygon>
+<path d='M 384,176 L 384,184' fill='none' stroke='currentColor'></path>
+<polygon points='400.000000,176.000000 388.000000,170.399994 388.000000,181.600006' fill='currentColor' transform='rotate(90.000000, 384.000000, 176.000000)'></polygon>
+<path d='M 264,0 A 16,16 0 0,0 248,16' fill='none' stroke='currentColor'></path>
+<path d='M 264,0 A 16,16 0 0,1 280,16' fill='none' stroke='currentColor'></path>
+<path d='M 160,16 A 16,16 0 0,0 144,32' fill='none' stroke='currentColor'></path>
+<path d='M 368,16 A 16,16 0 0,1 384,32' fill='none' stroke='currentColor'></path>
+<path d='M 248,16 A 16,16 0 0,0 264,32' fill='none' stroke='currentColor'></path>
+<path d='M 280,16 A 16,16 0 0,1 264,32' fill='none' stroke='currentColor'></path>
+<path d='M 144,80 A 16,16 0 0,0 128,96' fill='none' stroke='currentColor'></path>
+<path d='M 144,80 A 16,16 0 0,1 160,96' fill='none' stroke='currentColor'></path>
+<path d='M 232,80 A 16,16 0 0,0 216,96' fill='none' stroke='currentColor'></path>
+<path d='M 296,80 A 16,16 0 0,1 312,96' fill='none' stroke='currentColor'></path>
+<path d='M 384,80 A 16,16 0 0,0 368,96' fill='none' stroke='currentColor'></path>
+<path d='M 384,80 A 16,16 0 0,1 400,96' fill='none' stroke='currentColor'></path>
+<path d='M 128,96 A 16,16 0 0,0 144,112' fill='none' stroke='currentColor'></path>
+<path d='M 160,96 A 16,16 0 0,1 144,112' fill='none' stroke='currentColor'></path>
+<path d='M 216,96 A 16,16 0 0,0 232,112' fill='none' stroke='currentColor'></path>
+<path d='M 312,96 A 16,16 0 0,1 296,112' fill='none' stroke='currentColor'></path>
+<path d='M 368,96 A 16,16 0 0,0 384,112' fill='none' stroke='currentColor'></path>
+<path d='M 400,96 A 16,16 0 0,1 384,112' fill='none' stroke='currentColor'></path>
+<path d='M 168,144 A 16,16 0 0,0 152,160' fill='none' stroke='currentColor'></path>
+<path d='M 144,192 A 16,16 0 0,0 128,208' fill='none' stroke='currentColor'></path>
+<path d='M 152,192 A 16,16 0 0,1 168,208' fill='none' stroke='currentColor'></path>
+<path d='M 256,192 A 16,16 0 0,0 240,208' fill='none' stroke='currentColor'></path>
+<path d='M 264,192 A 16,16 0 0,1 280,208' fill='none' stroke='currentColor'></path>
+<path d='M 376,192 A 16,16 0 0,0 360,208' fill='none' stroke='currentColor'></path>
+<path d='M 392,192 A 16,16 0 0,1 408,208' fill='none' stroke='currentColor'></path>
+<path d='M 128,208 A 16,16 0 0,0 144,224' fill='none' stroke='currentColor'></path>
+<path d='M 168,208 A 16,16 0 0,1 152,224' fill='none' stroke='currentColor'></path>
+<path d='M 240,208 A 16,16 0 0,0 256,224' fill='none' stroke='currentColor'></path>
+<path d='M 280,208 A 16,16 0 0,1 264,224' fill='none' stroke='currentColor'></path>
+<path d='M 360,208 A 16,16 0 0,0 376,224' fill='none' stroke='currentColor'></path>
+<path d='M 408,208 A 16,16 0 0,1 392,224' fill='none' stroke='currentColor'></path>
+<path d='M 264,272 A 16,16 0 0,0 248,288' fill='none' stroke='currentColor'></path>
+<path d='M 264,272 A 16,16 0 0,1 280,288' fill='none' stroke='currentColor'></path>
+<path d='M 152,272 A 16,16 0 0,0 168,288' fill='none' stroke='currentColor'></path>
+<path d='M 384,272 A 16,16 0 0,1 368,288' fill='none' stroke='currentColor'></path>
+<path d='M 248,288 A 16,16 0 0,0 264,304' fill='none' stroke='currentColor'></path>
+<path d='M 280,288 A 16,16 0 0,1 264,304' fill='none' stroke='currentColor'></path>
+<circle cx='264' cy='16' r='6' stroke='currentColor' fill='#fff'></circle>
+<circle cx='264' cy='288' r='6' stroke='currentColor' fill='currentColor'></circle>
+<text text-anchor='middle' x='64' y='100' fill='currentColor' style='font-size:1em'>x</text>
+<text text-anchor='middle' x='64' y='212' fill='currentColor' style='font-size:1em'>x</text>
+<text text-anchor='middle' x='72' y='100' fill='currentColor' style='font-size:1em'>1</text>
+<text text-anchor='middle' x='72' y='212' fill='currentColor' style='font-size:1em'>2</text>
+<text text-anchor='middle' x='144' y='100' fill='currentColor' style='font-size:1em'>0</text>
+<text text-anchor='middle' x='144' y='212' fill='currentColor' style='font-size:1em'>1</text>
+<text text-anchor='middle' x='152' y='212' fill='currentColor' style='font-size:1em'>0</text>
+<text text-anchor='middle' x='232' y='100' fill='currentColor' style='font-size:1em'>[</text>
+<text text-anchor='middle' x='240' y='100' fill='currentColor' style='font-size:1em'>[</text>
+<text text-anchor='middle' x='248' y='100' fill='currentColor' style='font-size:1em'>1</text>
+<text text-anchor='middle' x='256' y='100' fill='currentColor' style='font-size:1em'>,</text>
+<text text-anchor='middle' x='256' y='212' fill='currentColor' style='font-size:1em'>2</text>
+<text text-anchor='middle' x='264' y='100' fill='currentColor' style='font-size:1em'>2</text>
+<text text-anchor='middle' x='264' y='212' fill='currentColor' style='font-size:1em'>0</text>
+<text text-anchor='middle' x='272' y='100' fill='currentColor' style='font-size:1em'>]</text>
+<text text-anchor='middle' x='280' y='100' fill='currentColor' style='font-size:1em'>,</text>
+<text text-anchor='middle' x='288' y='100' fill='currentColor' style='font-size:1em'>4</text>
+<text text-anchor='middle' x='296' y='100' fill='currentColor' style='font-size:1em'>]</text>
+<text text-anchor='middle' x='376' y='212' fill='currentColor' style='font-size:1em'>1</text>
+<text text-anchor='middle' x='384' y='100' fill='currentColor' style='font-size:1em'>3</text>
+<text text-anchor='middle' x='384' y='212' fill='currentColor' style='font-size:1em'>0</text>
+<text text-anchor='middle' x='392' y='212' fill='currentColor' style='font-size:1em'>0</text>
+</g>
+
+    </svg>
+  
+</div>
+<p>I like the way GoAT renders this diagram. It&rsquo;s very readable. Unfortunately, it isn&rsquo;t easy to automate. Creating a GoAT diagram is like using ASCII as a WYSIWYG diagramming tool, as you can see from the code for that image.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>                                .-.
+</span></span><span style="display:flex;"><span>                   .-----------+ o +-----------.
+</span></span><span style="display:flex;"><span>                  |             &#39;+&#39;             |
+</span></span><span style="display:flex;"><span>                  |              |              |
+</span></span><span style="display:flex;"><span>                  v              v              v
+</span></span><span style="display:flex;"><span>                 .-.        .---------.        .-.
+</span></span><span style="display:flex;"><span>        x1      | 0 |      | [[1,2],4] |      | 3 |
+</span></span><span style="display:flex;"><span>                 &#39;-&#39;        &#39;----+----&#39;        &#39;+&#39;
+</span></span><span style="display:flex;"><span>                                 |              |
+</span></span><span style="display:flex;"><span>                    .------------+              |
+</span></span><span style="display:flex;"><span>                   |             |              |
+</span></span><span style="display:flex;"><span>                   v             v              v
+</span></span><span style="display:flex;"><span>                 .--.          .--.           .---.
+</span></span><span style="display:flex;"><span>        x2      | 10 |        | 20 |         | 100 |
+</span></span><span style="display:flex;"><span>                 &#39;-+&#39;          &#39;-+&#39;           &#39;-+-&#39;
+</span></span><span style="display:flex;"><span>                   |             |              |
+</span></span><span style="display:flex;"><span>                   |             v              |
+</span></span><span style="display:flex;"><span>                   |            .-.             |
+</span></span><span style="display:flex;"><span>                    &#39;---------&gt;| * |&lt;----------&#39;
+</span></span><span style="display:flex;"><span>                                &#39;-&#39;
+</span></span></code></pre></div><h2 id="automated-rendering">Automated rendering</h2>
+<p>Now we&rsquo;ll look at a couple options for automatically generating visualizations of DDs. These convert descriptions of graphs into images.</p>
+<h3 id="graphviz">Graphviz</h3>
+<p><a href="https://graphviz.org/">Graphviz</a> is the tried and true graph visualizer. It&rsquo;s used in the <a href="https://go.dev/blog/pprof">Go <code>pprof</code></a> library for examining CPU and memory profiles, and lots of other places.</p>
+<p>Graphviz accepts a language called <a href="https://graphviz.org/doc/info/lang.html">DOT</a>. It uses different <a href="https://graphviz.org/docs/layouts/">layout engines</a> to convert input into a visual representation. The user doesn&rsquo;t have control over node position. That&rsquo;s the job of the layout engine.</p>
+<p>Here&rsquo;s the same MDD as written in DOT. The <code>start -&gt; end</code> lines specify arcs in the digraph. The subgraphs organize nodes into layers. We add a dotted border around each layer and a label to say which variable it assigns. There isn&rsquo;t any way of vertically centering and horizontally aligning the layer labels, so I thought it make more sense this way.</p>
+<pre tabindex="0"><code class="language-dot" data-lang="dot">digraph G {
+    s1 [label = 0]
+    s2 [label = &#34;[[1,2],4]&#34;]
+    s3 [label = 3]
+    s4 [label = 10]
+    s5 [label = 20]
+    s6 [label = 100]
+
+    r -&gt; s1 [label = 2]
+    r -&gt; s2 [label = 4]
+    r -&gt; s3 [label = 1]
+    s2 -&gt; s4 [label = 10]
+    s2 -&gt; s5 [label = 4]
+    s3 -&gt; s6 [label = 2]
+
+    subgraph cluster_0 {
+        label = &#34;x1&#34;
+        labeljust = &#34;l&#34;
+        style = &#34;dotted&#34;
+        s1
+        s2
+        s3
+    }
+
+    subgraph cluster_1 {
+        label = &#34;x2&#34;
+        labeljust = &#34;l&#34;
+        style = &#34;dotted&#34;
+        s4
+        s5
+        s6
+    }
+
+    s4 -&gt; t
+    s5 -&gt; t
+    s6 -&gt; t
+}
+</code></pre><p>The result is comprehensible if not very attractive. With some fiddling, it&rsquo;s possible to improve things like the spacing around arc labels. I couldn&rsquo;t figure out how to align the layer labels and boxes. It doesn&rsquo;t seem possible to move the relaxed nodes into their own column either, but that limitation isn&rsquo;t unique to Graphviz.</p>
+<p><img loading="lazy" src="/files/2023-09-13-visualizing-decision-diagrams/graphviz-dd.png" alt="Graphviz DD"  />
+</p>
+<h3 id="mermaid">Mermaid</h3>
+<p><a href="https://mermaid.js.org/">Mermaid</a> is a JavaScript library for diagramming and charting. One can use it on the web or, presumably, embed it in an application.</p>
+<p>Mermaid is similar to Graphviz in many ways, but it supports more diagram types. The input for that MDD in Mermaid is a bit simpler. Labels go inside arcs (e.g. <code>-- 2 --&gt;</code>), and there are more sensible rendering defaults.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>graph TD
+</span></span><span style="display:flex;"><span>    start((( )))
+</span></span><span style="display:flex;"><span>    stop((( )))
+</span></span><span style="display:flex;"><span>    A(0)
+</span></span><span style="display:flex;"><span>    B(&#34;[[1,2],4]&#34;)
+</span></span><span style="display:flex;"><span>    C(3)
+</span></span><span style="display:flex;"><span>    D(10)
+</span></span><span style="display:flex;"><span>    E(20)
+</span></span><span style="display:flex;"><span>    F(100)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    start -- 2 --&gt; A
+</span></span><span style="display:flex;"><span>    start -- 4 --&gt; B
+</span></span><span style="display:flex;"><span>    start -- 1 --&gt; C
+</span></span><span style="display:flex;"><span>    B -- 10 --&gt; D
+</span></span><span style="display:flex;"><span>    B -- 4 --&gt; E
+</span></span><span style="display:flex;"><span>    C -- 2 --&gt; F
+</span></span><span style="display:flex;"><span>    D --&gt; stop
+</span></span><span style="display:flex;"><span>    E --&gt; stop
+</span></span><span style="display:flex;"><span>    F --&gt; stop
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    subgraph &#34;x1 &#34;
+</span></span><span style="display:flex;"><span>        A; B; C
+</span></span><span style="display:flex;"><span>    end
+</span></span><span style="display:flex;"><span>    subgraph &#34;x2&#34;
+</span></span><span style="display:flex;"><span>        D; E; F
+</span></span><span style="display:flex;"><span>    end
+</span></span></code></pre></div><p>The result has a lot of the same limitations as the Graphviz version, but it looks more like the GoAT version. The biggest problem, as we see below, is that it&rsquo;s not possible to left-align the layer labels. They can be obscured by arcs.</p>
+<script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+    let isDark = document.body.className.includes('dark');
+    mermaid.initialize({theme: (isDark) ? 'dark' : 'neutral'});
+</script>
+
+<center>
+    <div class="mermaid">
+        
+graph TD
+    start((( )))
+    stop((( )))
+    A(0)
+    B("[[1,2],4]")
+    C(3)
+    D(10)
+    E(20)
+    F(100)
+
+    start -- 2 --> A
+    start -- 4 --> B
+    start -- 1 --> C
+    B -- 10 --> D
+    B -- 4 --> E
+    C -- 2 --> F
+    D --> stop
+    E --> stop
+    F --> stop
+
+    subgraph "x1 "
+        A; B; C
+    end
+    subgraph "x2"
+        D; E; F
+    end
+
+    </div>
+</center>
+<p>This got me thinking that there isn&rsquo;t a strong reason DDs have to progress downward layer by layer. They could just as easily go from left to right. If we change the opening line from <code>graph TD</code> to <code>graph LR</code>, then we get the following image.</p>
+<script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+    let isDark = document.body.className.includes('dark');
+    mermaid.initialize({theme: (isDark) ? 'dark' : 'neutral'});
+</script>
+
+<center>
+    <div class="mermaid">
+        
+graph LR
+    start((( )))
+    stop((( )))
+    A(0)
+    B("[[1,2],4]")
+    C(3)
+    D(10)
+    E(20)
+    F(100)
+
+    start -- 2 --> A
+    start -- 4 --> B
+    start -- 1 --> C
+    B -- 10 --> D
+    B -- 4 --> E
+    C -- 2 --> F
+    D --> stop
+    E --> stop
+    F --> stop
+
+    subgraph "x1 "
+        A; B; C
+    end
+    subgraph "x2"
+        D; E; F
+    end
+
+    </div>
+</center>
+<p>I think that&rsquo;s pretty nice for a generated image.</p>
+]]></content:encoded>
+    </item>
+    
     <item>
       <title>🚀 Blogging is back, baby!</title>
       <link>https://ryanjoneil.github.io/posts/2023-09-07-blogging-is-back/</link>
@@ -41,7 +389,6 @@
       <guid>https://ryanjoneil.github.io/posts/2010-11-23-data-fitting-1-linear-data-fitting/</guid>
       <description>An introduction to data fitting and classification using linear optimization in Python</description>
       <content:encoded><![CDATA[<p><em>Note: This posted was updated to work with Python 3 and <a href="https://github.com/scipopt/PySCIPOpt">PySCIPOpt</a>. The original version used Python 2 and <a href="https://pythonhosted.org/python-zibopt/">python-zibopt</a>.</em></p>
-<h2 id="introduction">Introduction</h2>
 <p>Data fitting is one of those tasks that everyone should have at least some exposure to. Certainly developers and analysts will benefit from a working knowledge of its fundamentals and their implementations. However, in my own reading I&rsquo;ve found it difficult to locate good examples that are simple enough to pick up quickly and come with accompanying source code.</p>
 <p>This article commences an ongoing series introducing basic data fitting techniques. With any luck they won&rsquo;t be overly complex, while still being useful enough to get the point across with a real example and real data. We&rsquo;ll start with a binary classification problem: presented with a series of records, each containing a set number of input values describing it, determine whether or not each record exhibits some property.</p>
 <h2 id="model">Model</h2>
