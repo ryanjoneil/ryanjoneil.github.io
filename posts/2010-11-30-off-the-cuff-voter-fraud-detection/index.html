@@ -5,11 +5,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="index, follow">
-<title>🚀 Blogging is back, baby! | adventures in optimization</title>
-<meta name="keywords" content="">
-<meta name="description" content="New adventures in optimization">
+<title>🗳 Off the Cuff Voter Fraud Detection | adventures in optimization</title>
+<meta name="keywords" content="python, modeling">
+<meta name="description" content="Using the exponential distribution to interpret votes in a web survey">
 <meta name="author" content="Ryan O&#39;Neil">
-<link rel="canonical" href="https://ryanjoneil.github.io/posts/2023-09-07-blogging-is-back/">
+<link rel="canonical" href="https://ryanjoneil.github.io/posts/2010-11-30-off-the-cuff-voter-fraud-detection/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.5cfc680b1eeaeef9efbced92d46c2a9e876b72ee14fba85846afc4cff9e6e6f8.css" integrity="sha256-XPxoCx7q7vnvvO2S1Gwqnodrcu4U&#43;6hYRq/Ez/nm5vg=" rel="preload stylesheet" as="style">
 <script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
     onload="hljs.initHighlightingOnLoad();"></script>
@@ -86,16 +86,16 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 </script>
 
-<meta property="og:title" content="🚀 Blogging is back, baby!" />
-<meta property="og:description" content="New adventures in optimization" />
+<meta property="og:title" content="🗳 Off the Cuff Voter Fraud Detection" />
+<meta property="og:description" content="Using the exponential distribution to interpret votes in a web survey" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://ryanjoneil.github.io/posts/2023-09-07-blogging-is-back/" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2023-09-07T00:00:00+00:00" />
-<meta property="article:modified_time" content="2023-09-07T00:00:00+00:00" />
+<meta property="og:url" content="https://ryanjoneil.github.io/posts/2010-11-30-off-the-cuff-voter-fraud-detection/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2010-11-30T00:00:00+00:00" />
+<meta property="article:modified_time" content="2010-11-30T00:00:00+00:00" />
 
 <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="🚀 Blogging is back, baby!"/>
-<meta name="twitter:description" content="New adventures in optimization"/>
+<meta name="twitter:title" content="🗳 Off the Cuff Voter Fraud Detection"/>
+<meta name="twitter:description" content="Using the exponential distribution to interpret votes in a web survey"/>
 
 
 <script type="application/ld+json">
@@ -112,8 +112,8 @@ document.addEventListener("DOMContentLoaded", function() {
     {
       "@type": "ListItem",
       "position":  2 ,
-      "name": "🚀 Blogging is back, baby!",
-      "item": "https://ryanjoneil.github.io/posts/2023-09-07-blogging-is-back/"
+      "name": "🗳 Off the Cuff Voter Fraud Detection",
+      "item": "https://ryanjoneil.github.io/posts/2010-11-30-off-the-cuff-voter-fraud-detection/"
     }
   ]
 }
@@ -122,24 +122,24 @@ document.addEventListener("DOMContentLoaded", function() {
 {
   "@context": "https://schema.org",
   "@type": "BlogPosting",
-  "headline": "🚀 Blogging is back, baby!",
-  "name": "🚀 Blogging is back, baby!",
-  "description": "New adventures in optimization",
+  "headline": "🗳 Off the Cuff Voter Fraud Detection",
+  "name": "🗳 Off the Cuff Voter Fraud Detection",
+  "description": "Using the exponential distribution to interpret votes in a web survey",
   "keywords": [
-    
+    "python", "modeling"
   ],
-  "articleBody": "I’ve been a mostly absent blogger for the past few years. I could make excuses. They might sound like, “I was busy finishing my dissertation!” or “I founded a company and have a toddler!” or “The static site generator I used was abandoned!” Whatever they might be, these excuses would certainly end in exclamation points.\nBut, ultimately, for several years it just felt like blogging was dead. Its space was usurped by Tweets, LinkedIn hustle posts, long form Medium content aimed at attracting talent, and other content trends. RSS feeds dried up bit by bit. That beautiful structure somewhere between a college essay and an academic preprint mostly ceased to be. Sad times, indeed.\nThat trend seems to be reversing. I don’t know whether it’s the result of nudges from Substack, or that all the introverts in tech finally gave up baking pandemic, but there is a lot of good content out there again! Fire up your RSS aggregators and get reading.\nThis post is my own reboot of “adventures in optimization,” a blog I’ve written intermittently since 2009. Unfortunately, it will take some time to move over all my old posts to Hugo. I’ll do that slowly as I create new ones. For now, I’ve ported over a couple early posts and put together a list of the active blogs I’m gleefully catching up on.\nSee you soon!\nConstraint Applications Blog by Helmut Simonis Erling’s blog eugeneyan Harlan D. Harris Lil’Log Nathan Brixius Punk Rock Operations Research Shtetl-Optimized Timefold ",
-  "wordCount" : "250",
+  "articleBody": "Consider this scenario: You run a contest that accepts votes from the general Internet population. In order to encourage user engagement, you record any and all votes into a database over several days, storing nothing more than the competitor voted for, when each vote is cast, and a cookie set on the voter’s computer along with their apparent IP addresses. If a voter already has a recorded cookie set they are denied subsequent votes. This way you can avoid requiring site registration, a huge turnoff for your users. Simple enough.\nUnfortunately, some of the competitors are wily and attached to the idea of winning. They go so far as programming or hiring bots to cast thousands of votes for them. Your manager wants to know which votes are real and which ones are fake Right Now. Given very limited time, and ignoring actions that you could have taken to avoid the problem, how can you tell apart sets of good votes from those that shouldn’t be counted?\nOne quick-and-dirty option involves comparing histograms of interarrival times for sets of votes. Say you’re concerned that all the votes during a particular period of time or from a given IP address might be fraudulent. Put all the vote times you’re concerned about into a list, sort them, and compute their differences:\n# times is a list of datetime instances from vote records times.sort(reversed=True) interarrivals = [y-x for x, y in zip(times, times[1:]] Now use matplotlib to display a histogram of these. Votes that occur naturally are likely to resemble an exponential distribution in their interarrival times. For instance, here are interarrival times for all votes received in a contest:\nThis subset of votes is clearly fraudulent, due to the near determinism of their interarrival times. This is most likely caused by the voting bot not taking random sleep intervals during voting. It casts a vote, receives a response, clears its cookies, and repeats:\nThese votes, on the other hand, are most likely legitimate. They exhibit a nice Erlang shape and appear to have natural interarrival times that one would expect:\nOf course this method is woefully inadequate for rigorous detection of voting fraud. Ideally one would find a method to compute the probability that a set of votes is generated by a bot. This is enough to inform quick, ad hoc decisions though.\n",
+  "wordCount" : "391",
   "inLanguage": "en",
-  "datePublished": "2023-09-07T00:00:00Z",
-  "dateModified": "2023-09-07T00:00:00Z",
+  "datePublished": "2010-11-30T00:00:00Z",
+  "dateModified": "2010-11-30T00:00:00Z",
   "author":{
     "@type": "Person",
     "name": "Ryan O'Neil"
   },
   "mainEntityOfPage": {
     "@type": "WebPage",
-    "@id": "https://ryanjoneil.github.io/posts/2023-09-07-blogging-is-back/"
+    "@id": "https://ryanjoneil.github.io/posts/2010-11-30-off-the-cuff-voter-fraud-detection/"
   },
   "publisher": {
     "@type": "Organization",
@@ -232,49 +232,51 @@ document.addEventListener("DOMContentLoaded", function() {
   <header class="post-header">
     
     <h1 class="post-title">
-      🚀 Blogging is back, baby!
+      🗳 Off the Cuff Voter Fraud Detection
     </h1>
     <div class="post-description">
-      New adventures in optimization
+      Using the exponential distribution to interpret votes in a web survey
     </div>
-    <div class="post-meta"><span title='2023-09-07 00:00:00 +0000 UTC'>September 7, 2023</span>&nbsp;·&nbsp;Ryan O&#39;Neil
+    <div class="post-meta"><span title='2010-11-30 00:00:00 +0000 UTC'>November 30, 2010</span>&nbsp;·&nbsp;Ryan O&#39;Neil
 
 </div>
   </header> 
 
-  <div class="post-content"><p>I&rsquo;ve been a mostly absent blogger for the past few years. I could make excuses. They might sound like, &ldquo;I was busy finishing my dissertation!&rdquo; or &ldquo;I founded a company and have a toddler!&rdquo; or &ldquo;The <a href="https://github.com/eudicots/Cactus">static site generator</a> I used was abandoned!&rdquo; Whatever they might be, these excuses would certainly end in exclamation points.</p>
-<p>But, ultimately, for several years it just felt like blogging was <em>dead</em>. Its space was usurped by Tweets, LinkedIn hustle posts, long form Medium content aimed at attracting talent, and other content trends. RSS feeds dried up bit by bit. That beautiful structure somewhere between a college essay and an academic preprint mostly ceased to be. Sad times, indeed.</p>
-<p>That trend seems to be reversing. I don&rsquo;t know whether it&rsquo;s the result of nudges from Substack, or that all the introverts in tech finally gave up baking pandemic, but there is a lot of good content out there again! Fire up your <a href="https://www.inoreader.com/">RSS aggregators</a> and get reading.</p>
-<p>This post is my own reboot of &ldquo;adventures in optimization,&rdquo; a blog I&rsquo;ve written intermittently since 2009. Unfortunately, it will take some time to move over all my old posts to Hugo. I&rsquo;ll do that slowly as I create new ones. For now, I&rsquo;ve ported over a couple early posts and put together a list of the active blogs I&rsquo;m gleefully catching up on.</p>
-<p>See you soon!</p>
-<ul>
-<li><a href="https://hsimonis.wordpress.com/">Constraint Applications Blog</a> by Helmut Simonis</li>
-<li><a href="https://erlingdandersen.blogspot.com/">Erling&rsquo;s blog</a></li>
-<li><a href="https://eugeneyan.com/">eugeneyan</a></li>
-<li><a href="https://www.harlan.harris.name/">Harlan D. Harris</a></li>
-<li><a href="https://lilianweng.github.io/">Lil&rsquo;Log</a></li>
-<li><a href="https://nathanbrixius.wordpress.com/">Nathan Brixius</a></li>
-<li><a href="https://punkrockor.com/">Punk Rock Operations Research</a></li>
-<li><a href="https://scottaaronson.blog/">Shtetl-Optimized</a></li>
-<li><a href="https://timefold.ai/blog/">Timefold</a></li>
-</ul>
+  <div class="post-content"><p>Consider this scenario: You run a contest that accepts votes from the general Internet population. In order to encourage user engagement, you record any and all votes into a database over several days, storing nothing more than the competitor voted for, when each vote is cast, and a cookie set on the voter&rsquo;s computer along with their apparent IP addresses. If a voter already has a recorded cookie set they are denied subsequent votes. This way you can avoid requiring site registration, a huge turnoff for your users. Simple enough.</p>
+<p>Unfortunately, some of the competitors are wily and attached to the idea of winning. They go so far as programming or hiring bots to cast thousands of votes for them. Your manager wants to know which votes are real and which ones are fake Right Now. Given very limited time, and ignoring actions that you <em>could</em> have taken to avoid the problem, how can you tell apart sets of good votes from those that shouldn&rsquo;t be counted?</p>
+<p>One quick-and-dirty option involves comparing histograms of <a href="http://www.ehow.com/how_5417319_calculate-interarrival-time.html">interarrival times</a> for sets of votes. Say you&rsquo;re concerned that all the votes during a particular period of time or from a given IP address might be fraudulent. Put all the vote times you&rsquo;re concerned about into a list, sort them, and compute their differences:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># times is a list of datetime instances from vote records</span>
+</span></span><span style="display:flex;"><span>times<span style="color:#f92672">.</span>sort(reversed<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)
+</span></span><span style="display:flex;"><span>interarrivals <span style="color:#f92672">=</span> [y<span style="color:#f92672">-</span>x <span style="color:#66d9ef">for</span> x, y <span style="color:#f92672">in</span> zip(times, times[<span style="color:#ae81ff">1</span>:]]
+</span></span></code></pre></div><p>Now use matplotlib to <a href="https://matplotlib.org/2.0.2/users/pyplot_tutorial.html#working-with-text">display a histogram</a> of these. Votes that occur naturally are likely to resemble an <a href="http://en.wikipedia.org/wiki/Exponential_distribution">exponential distribution</a> in their interarrival times. For instance, here are interarrival times for all votes received in a contest:</p>
+<p><img loading="lazy" src="/files/2010-11-30-off-the-cuff-voter-fraud-detection/all-votes.png" alt="Interarrival times for all submissions"  />
+</p>
+<p>This subset of votes is clearly fraudulent, due to the near determinism of their interarrival times. This is most likely caused by the voting bot not taking random sleep intervals during voting. It casts a vote, receives a response, clears its cookies, and repeats:</p>
+<p><img loading="lazy" src="/files/2010-11-30-off-the-cuff-voter-fraud-detection/fraud-plot.png" alt="Interarrival times for clearly fraudulent votes"  />
+</p>
+<p>These votes, on the other hand, are most likely legitimate. They exhibit a nice <!-- raw HTML omitted -->Erlang<!-- raw HTML omitted --> shape and appear to have natural interarrival times that one would expect:</p>
+<p><img loading="lazy" src="/files/2010-11-30-off-the-cuff-voter-fraud-detection/not-fraud.png" alt="Proper-looking interarrival times"  />
+</p>
+<p>Of course this method is woefully inadequate for rigorous detection of voting fraud. Ideally one would find a method to compute the probability that a set of votes is generated by a bot. This is enough to inform quick, ad hoc decisions though.</p>
 
 
   </div>
 
   <footer class="post-footer">
     <ul class="post-tags">
+      <li><a href="https://ryanjoneil.github.io/tags/python/">python</a></li>
+      <li><a href="https://ryanjoneil.github.io/tags/modeling/">modeling</a></li>
     </ul>
 <nav class="paginav">
-  <a class="prev" href="https://ryanjoneil.github.io/posts/2023-09-13-visualizing-decision-diagrams/">
+  <a class="prev" href="https://ryanjoneil.github.io/posts/2023-09-07-blogging-is-back/">
     <span class="title">« Prev</span>
     <br>
-    <span>🖍 Visualizing Decision Diagrams</span>
+    <span>🚀 Blogging is back, baby!</span>
   </a>
-  <a class="next" href="https://ryanjoneil.github.io/posts/2010-11-30-off-the-cuff-voter-fraud-detection/">
+  <a class="next" href="https://ryanjoneil.github.io/posts/2010-11-23-data-fitting-1-linear-data-fitting/">
     <span class="title">Next »</span>
     <br>
-    <span>🗳 Off the Cuff Voter Fraud Detection</span>
+    <span>🧐 Data Fitting 1 - Linear Data Fitting</span>
   </a>
 </nav>
 
