@@ -389,55 +389,53 @@ graph LR
       <guid>https://ryanjoneil.github.io/speaking/</guid>
       <description>This is a running list of talks I&amp;rsquo;ve given and am scheduled to give. It probably isn&amp;rsquo;t exhaustive. Some of them have slides or videos available.
 The future&amp;hellip;
-September 20, 2023 - DecisionCAMP 2023 - Decision model, meet the real world: Testing optimization models for use in production environments (abstract, slides)
-October 17, 2023 - INFORMS Annual Meeting - Adapting to Change in On-Demand Delivery: Unpacking a Suite of Testing Methodologies (abstract)</description>
+October 17, 2023 - INFORMS Annual Meeting - Adapting to Change in On-Demand Delivery: Unpacking a Suite of Testing Methodologies (📄) The past&amp;hellip;
+September 20, 2023 - DecisionCAMP 2023 - Decision model, meet the real world: Testing optimization models for use in production environments (📄, 💻, 🎥)</description>
       <content:encoded><![CDATA[<p>This is a running list of talks I&rsquo;ve given and am scheduled to give. It probably isn&rsquo;t exhaustive. Some of them have slides or videos available.</p>
 <p><strong>The future&hellip;</strong></p>
 <ul>
-<li>
-<p>September 20, 2023 - <a href="https://decisioncamp2023.wordpress.com/">DecisionCAMP 2023</a> - Decision model, meet the real world: Testing optimization models for use in production environments (<a href="https://decisioncamp2023.wordpress.com/program/#NEXTMV">abstract</a>, <a href="https://decisioncamp2023.files.wordpress.com/2023/09/decisioncamp2023.nextmv.pdf">slides</a>)</p>
-</li>
-<li>
-<p>October 17, 2023 - <a href="https://meetings.informs.org/wordpress/phoenix2023/">INFORMS Annual Meeting</a> - Adapting to Change in On-Demand Delivery: Unpacking a Suite of Testing Methodologies (<a href="https://www.abstractsonline.com/pp8/?__hstc=194041586.cc5f446034c6d268dfea27d9b7ceb6dc.1681140481721.1691273766763.1691449438596.35&amp;__hssc=194041586.3.1691449438596&amp;__hsfp=1912911101&amp;hsCtaTracking=8f511889-324a-41b3-a438-37ad295392e9%7C0c80c5d7-cc8d-4989-9b70-52de4c44b90b#!/10856/presentation/7867">abstract</a>)</p>
-</li>
+<li>October 17, 2023 - <a href="https://meetings.informs.org/wordpress/phoenix2023/">INFORMS Annual Meeting</a> - Adapting to Change in On-Demand Delivery: Unpacking a Suite of Testing Methodologies (<a href="https://www.abstractsonline.com/pp8/?__hstc=194041586.cc5f446034c6d268dfea27d9b7ceb6dc.1681140481721.1691273766763.1691449438596.35&amp;__hssc=194041586.3.1691449438596&amp;__hsfp=1912911101&amp;hsCtaTracking=8f511889-324a-41b3-a438-37ad295392e9%7C0c80c5d7-cc8d-4989-9b70-52de4c44b90b#!/10856/presentation/7867">📄</a>)</li>
 </ul>
 <p><strong>The past&hellip;</strong></p>
 <ul>
 <li>
-<p>August 27, 2023 - <a href="https://sites.google.com/view/dpsolve2023/">DPSOLVE 2023</a> - Implementing Decision Diagrams in Production Systems (<a href="/slides/2023-dpsolve.pdf">slides</a>)</p>
+<p>September 20, 2023 - <a href="https://decisioncamp2023.wordpress.com/">DecisionCAMP 2023</a> - Decision model, meet the real world: Testing optimization models for use in production environments (<a href="https://decisioncamp2023.wordpress.com/program/#NEXTMV">📄</a>, <a href="/slides/2023-decisioncamp.pdf">💻</a>, <a href="https://www.youtube.com/watch?v=jh767AIuFP0">🎥</a>)</p>
 </li>
 <li>
-<p>May 11, 2023 - <a href="https://www.nextmv.io/videos">Nextmv Videos</a> - Several people are optimizing: Collaborative workflows for decision model operations (<a href="https://www.youtube.com/watch?v=8WkHltfgVPw">video</a>)</p>
+<p>August 27, 2023 - <a href="https://sites.google.com/view/dpsolve2023/">DPSOLVE 2023</a> - Implementing Decision Diagrams in Production Systems (<a href="/slides/2023-dpsolve.pdf">💻</a>)</p>
 </li>
 <li>
-<p>April 18, 2023 - <a href="https://meetings.informs.org/wordpress/analytics2023/">INFORMS Business Analytics Conference</a> - Decision Model, Meet Production: A Collaborative Workflow for Optimizing More Operations (<a href="https://meetings.informs.org/wordpress/analytics2023/tracks/technology-tutorials/">abstract</a>)</p>
+<p>May 11, 2023 - <a href="https://www.nextmv.io/videos">Nextmv Videos</a> - Several people are optimizing: Collaborative workflows for decision model operations (<a href="https://www.youtube.com/watch?v=8WkHltfgVPw">🎥</a>)</p>
 </li>
 <li>
-<p>March 1, 2023 - <a href="https://www.nextmv.io/videos">Nextmv Videos</a> - What are decision diagrams? How are they used to model and solve optimization problems? (<a href="https://www.youtube.com/watch?v=WtdUhYH5Szs">video</a>)</p>
+<p>April 18, 2023 - <a href="https://meetings.informs.org/wordpress/analytics2023/">INFORMS Business Analytics Conference</a> - Decision Model, Meet Production: A Collaborative Workflow for Optimizing More Operations (<a href="https://meetings.informs.org/wordpress/analytics2023/tracks/technology-tutorials/">📄</a>)</p>
 </li>
 <li>
-<p>January 18, 2023 - <a href="https://www.nextmv.io/videos">Nextmv Videos</a> - In conversation with Karla Hoffman (<a href="https://www.youtube.com/watch?v=p4R9cglMP4Y">video</a>)</p>
+<p>March 1, 2023 - <a href="https://www.nextmv.io/videos">Nextmv Videos</a> - What are decision diagrams? How are they used to model and solve optimization problems? (<a href="https://www.youtube.com/watch?v=WtdUhYH5Szs">🎥</a>)</p>
 </li>
 <li>
-<p>October 5, 2020 - <a href="https://connect.informs.org/phillychapter/home">INFORMS Philadelphia Chapter</a> - Real-Time Routing for On-Demand Delivery (<a href="https://youtu.be/t6rI2JFVqG4">video</a>)</p>
+<p>January 18, 2023 - <a href="https://www.nextmv.io/videos">Nextmv Videos</a> - In conversation with Karla Hoffman (<a href="https://www.youtube.com/watch?v=p4R9cglMP4Y">🎥</a>)</p>
 </li>
 <li>
-<p>October 22, 2019 - INFORMS Annual Meeting - Decision Diagrams for Real-Time Routing (<a href="/slides/2019-informs.pdf">slides</a>)</p>
+<p>October 5, 2020 - <a href="https://connect.informs.org/phillychapter/home">INFORMS Philadelphia Chapter</a> - Real-Time Routing for On-Demand Delivery (<a href="https://youtu.be/t6rI2JFVqG4">🎥</a>)</p>
 </li>
 <li>
-<p>July 6, 2017 - <a href="https://pydata.org/seattle2017/">PyData Seattle 2017</a> - Practical Optimization for Stats Nerds (<a href="https://pydata.org/seattle2017/schedule/presentation/81/">abstract</a>, <a href="https://youtu.be/n9Fz74pFiA4?list=PLGVZCDnMOq0rxoq9Nx0B4tqtr891vaCn7">video</a>)</p>
+<p>October 22, 2019 - INFORMS Annual Meeting - Decision Diagrams for Real-Time Routing (<a href="/slides/2019-informs.pdf">💻</a>)</p>
 </li>
 <li>
-<p>March 5, 2017 - <a href="https://www.meetup.com/Data-Science-DC/events/238107178/">Data Science DC</a> - Practical Optimization for Stats Nerds (<a href="https://nbviewer.org/github/ryanjoneil/talks/blob/master/2017/07/pydata-seattle/practical-optimization-for-stats-nerds.slides.html#/">slides</a>)</p>
+<p>July 6, 2017 - <a href="https://pydata.org/seattle2017/">PyData Seattle 2017</a> - Practical Optimization for Stats Nerds (<a href="https://pydata.org/seattle2017/schedule/presentation/81/">📄</a>, <a href="https://youtu.be/n9Fz74pFiA4?list=PLGVZCDnMOq0rxoq9Nx0B4tqtr891vaCn7">🎥</a>)</p>
 </li>
 <li>
-<p>December 4, 2015 - PyData NYC 2015 - Optimize your Docker Infrastructure with Python (<a href="https://nbviewer.org/github/ryanjoneil/talks/blob/master/2015/11/pydata-nyc/optimize-your-docker-infrastructure-with-python.ipynb">slides</a>, <a href="https://www.youtube.com/watch?v=l6NjecDJFb8">video</a>)</p>
+<p>March 5, 2017 - <a href="https://www.meetup.com/Data-Science-DC/events/238107178/">Data Science DC</a> - Practical Optimization for Stats Nerds (<a href="https://nbviewer.org/github/ryanjoneil/talks/blob/master/2017/07/pydata-seattle/practical-optimization-for-stats-nerds.slides.html#/">💻</a>)</p>
 </li>
 <li>
-<p>July 17, 2014 - IFORS 2014 - A MIP-Based Dual Bounding Technique for the Irregular Nesting Problem (<a href="https://www.euro-online.org/conferences/program/#abstract/13132">abstract</a>, <a href="/slides/2014-ifors.pdf">slides</a>)</p>
+<p>December 4, 2015 - PyData NYC 2015 - Optimize your Docker Infrastructure with Python (<a href="https://nbviewer.org/github/ryanjoneil/talks/blob/master/2015/11/pydata-nyc/optimize-your-docker-infrastructure-with-python.ipynb">💻</a>, <a href="https://www.youtube.com/watch?v=l6NjecDJFb8">🎥</a>)</p>
 </li>
 <li>
-<p>February 19, 2010 - <a href="https://pyvideo.org/events/pycon-us-2010.html">PyCon 2010</a> - Optimal Resource Allocation using Python (<a href="https://pyvideo.org/pycon-us-2010/pycon-2010--optimal-resource-allocation-using-pyt.html">video</a>)</p>
+<p>July 17, 2014 - IFORS 2014 - A MIP-Based Dual Bounding Technique for the Irregular Nesting Problem (<a href="https://www.euro-online.org/conferences/program/#abstract/13132">📄</a>, <a href="/slides/2014-ifors.pdf">💻</a>)</p>
+</li>
+<li>
+<p>February 19, 2010 - <a href="https://pyvideo.org/events/pycon-us-2010.html">PyCon 2010</a> - Optimal Resource Allocation using Python (<a href="https://pyvideo.org/pycon-us-2010/pycon-2010--optimal-resource-allocation-using-pyt.html">🎥</a>)</p>
 </li>
 </ul>
 ]]></content:encoded>
@@ -451,28 +449,28 @@ October 17, 2023 - INFORMS Annual Meeting - Adapting to Change in On-Demand Deli
       <guid>https://ryanjoneil.github.io/writing/</guid>
       <description>I&amp;rsquo;m an desultory blogger and intermittent academic. Nonetheless, I like the research and writing process. Most of my current and old posts live here. Some of my other writings and collaborations are listed below.
 Papers, patents &amp;amp; preprints&amp;hellip;
-June 2023 - USPTO - Runners for optimization solvers and simulators describes technology for creating and executing Decision Diagram-based optimization solvers and state-based simulators in cloud environments. (patent)
+June 2023 - USPTO - Runners for optimization solvers and simulators describes technology for creating and executing Decision Diagram-based optimization solvers and state-based simulators in cloud environments. (📄)
 September 2020 - Operations Research Forum - MIPLIBing: Seamless Benchmarking of Mathematical Optimization Problems and Metadata Extensions presents a Python library that automatically downloads queried subsets from the current versions of MIPLIB, MINLPLib, and QPLIB, provides a centralized local cache across projects, and tracks the best solution values and bounds on record for each problem.</description>
       <content:encoded><![CDATA[<p>I&rsquo;m an desultory blogger and intermittent academic. Nonetheless, I like the research and writing process. Most of my current and old posts live <a href="/posts">here</a>. Some of my other writings and collaborations are listed below.</p>
 <p><strong>Papers, patents &amp; preprints&hellip;</strong></p>
 <ul>
 <li>
-<p>June 2023 - <a href="https://www.uspto.gov/">USPTO</a> - <a href="https://patents.google.com/patent/US11675688B2/en">Runners for optimization solvers and simulators</a> describes technology for creating and executing Decision Diagram-based optimization solvers and state-based simulators in cloud environments. (<a href="https://patentimages.storage.googleapis.com/c6/08/09/060978f00373e0/US11675688.pdf">patent</a>)</p>
+<p>June 2023 - <a href="https://www.uspto.gov/">USPTO</a> - <a href="https://patents.google.com/patent/US11675688B2/en">Runners for optimization solvers and simulators</a> describes technology for creating and executing Decision Diagram-based optimization solvers and state-based simulators in cloud environments. (<a href="https://patentimages.storage.googleapis.com/c6/08/09/060978f00373e0/US11675688.pdf">📄</a>)</p>
 </li>
 <li>
-<p>September 2020 - <a href="https://www.springer.com/journal/43069">Operations Research Forum</a> - <a href="https://link.springer.com/article/10.1007/s43069-020-00024-1">MIPLIBing: Seamless Benchmarking of Mathematical Optimization Problems and Metadata Extensions</a> presents a Python library that automatically downloads queried subsets from the current versions of MIPLIB, MINLPLib, and QPLIB, provides a centralized local cache across projects, and tracks the best solution values and bounds on record for each problem. (<a href="https://digitalcommons.bucknell.edu/cgi/viewcontent.cgi?article=2883&amp;context=fac_journ">preprint</a>)</p>
+<p>September 2020 - <a href="https://www.springer.com/journal/43069">Operations Research Forum</a> - <a href="https://link.springer.com/article/10.1007/s43069-020-00024-1">MIPLIBing: Seamless Benchmarking of Mathematical Optimization Problems and Metadata Extensions</a> presents a Python library that automatically downloads queried subsets from the current versions of MIPLIB, MINLPLib, and QPLIB, provides a centralized local cache across projects, and tracks the best solution values and bounds on record for each problem. (<a href="https://digitalcommons.bucknell.edu/cgi/viewcontent.cgi?article=2883&amp;context=fac_journ">📄</a>)</p>
 </li>
 <li>
-<p>May 2019 - <a href="https://www.sciencedirect.com/journal/operations-research-letters">Operations Research Letters</a> - <a href="https://www.sciencedirect.com/science/article/abs/pii/S0167637718305364">Decision diagrams for solving traveling salesman problems with pickup and delivery in real time</a> explores the use of Multivalued Decision Diagrams and Assignment Problem inference duals for real-time optimization of TSPPDs. (<a href="http://www.optimization-online.org/DB_FILE/2018/10/6853.pdf">preprint</a>)</p>
+<p>May 2019 - <a href="https://www.sciencedirect.com/journal/operations-research-letters">Operations Research Letters</a> - <a href="https://www.sciencedirect.com/science/article/abs/pii/S0167637718305364">Decision diagrams for solving traveling salesman problems with pickup and delivery in real time</a> explores the use of Multivalued Decision Diagrams and Assignment Problem inference duals for real-time optimization of TSPPDs. (<a href="http://www.optimization-online.org/DB_FILE/2018/10/6853.pdf">📄</a>)</p>
 </li>
 <li>
-<p>October 2018 - <a href="https://optimization-online.org/author/roneil1/">Optimization Online</a> - <a href="https://optimization-online.org/2018/10/6838/">Integer Models for the Asymmetric Traveling Salesman Problem with Pickup and Delivery</a> proposes a new ATSPPD model, new valid inequalities for the Sarin-Sherali-Bhootra ATSPPD, and studies the impact of relaxing complicating constraints in these. (<a href="http://www.optimization-online.org/DB_FILE/2018/10/6838.pdf">preprint</a>)</p>
+<p>October 2018 - <a href="https://optimization-online.org/author/roneil1/">Optimization Online</a> - <a href="https://optimization-online.org/2018/10/6838/">Integer Models for the Asymmetric Traveling Salesman Problem with Pickup and Delivery</a> proposes a new ATSPPD model, new valid inequalities for the Sarin-Sherali-Bhootra ATSPPD, and studies the impact of relaxing complicating constraints in these. (<a href="http://www.optimization-online.org/DB_FILE/2018/10/6838.pdf">📄</a>)</p>
 </li>
 <li>
-<p>September 2018 - <a href="https://optimization-online.org/author/roneil1/">Optimization Online</a> - <a href="http://www.optimization-online.org/DB_HTML/2017/12/6370.html">Exact Methods for Solving Traveling Salesman Problems with Pickup and Delivery in Real Time</a> examines exact methods for solving TSPPDs with consolidation in real-time applications. It considers enumerative, Mixed Integer Programming, Constraint Programming, and hybrid optimization approaches under various time budgets. (<a href="http://www.optimization-online.org/DB_FILE/2017/12/6370.pdf">preprint</a>)</p>
+<p>September 2018 - <a href="https://optimization-online.org/author/roneil1/">Optimization Online</a> - <a href="http://www.optimization-online.org/DB_HTML/2017/12/6370.html">Exact Methods for Solving Traveling Salesman Problems with Pickup and Delivery in Real Time</a> examines exact methods for solving TSPPDs with consolidation in real-time applications. It considers enumerative, Mixed Integer Programming, Constraint Programming, and hybrid optimization approaches under various time budgets. (<a href="http://www.optimization-online.org/DB_FILE/2017/12/6370.pdf">📄</a>)</p>
 </li>
 <li>
-<p>March 2018 - <a href="https://optimization-online.org/author/roneil1/">Optimization Online</a> -<a href="https://optimization-online.org/2018/04/6571/">The Meal Delivery Routing Problem</a> introduces the MDRP to formalize and study an important emerging class of dynamic delivery operations. It also develops optimization-based algorithms tailored to solve the courier assignment (dynamic vehicle routing) and capacity management (offline shift scheduling) problems encountered in meal delivery operations. (<a href="https://optimization-online.org/wp-content/uploads/2018/04/6571.pdf">preprint</a>)</p>
+<p>March 2018 - <a href="https://optimization-online.org/author/roneil1/">Optimization Online</a> -<a href="https://optimization-online.org/2018/04/6571/">The Meal Delivery Routing Problem</a> introduces the MDRP to formalize and study an important emerging class of dynamic delivery operations. It also develops optimization-based algorithms tailored to solve the courier assignment (dynamic vehicle routing) and capacity management (offline shift scheduling) problems encountered in meal delivery operations. (<a href="https://optimization-online.org/wp-content/uploads/2018/04/6571.pdf">📄</a>)</p>
 </li>
 </ul>
 <p><strong>Other blogs&hellip;</strong></p>
