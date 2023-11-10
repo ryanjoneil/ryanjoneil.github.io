@@ -17,7 +17,7 @@
       <content:encoded><![CDATA[<p>I attended <a href="https://sites.google.com/view/dpsolve2023/">DPSOLVE 2023</a> recently and found lots of good inspiration for the next version of Nextmv&rsquo;s Decision Diagram (DD) solver, <a href="https://www.nextmv.io/blog/how-hop-hops">Hop</a>. It&rsquo;s a few years old now, and we learned a lot applying it in the field. Hop formed the basis for our first routing models. While those models moved to a different structure in our <a href="https://www.nextmv.io/docs/vehicle-routing/get-started">latest routing code</a>, the <a href="https://www.nextmv.io/docs/vehicle-routing/legacy/routing">first version</a> broke ground combining DDs with Adaptive Large Neighborhood Search (ALNS), and its use continues to grow organically.</p>
 <p>A feature I&rsquo;d love for Hop is the ability to visualize DDs and monitor the search. That could work interactively, like Gecode&rsquo;s <a href="https://researchmgt.monash.edu/ws/portalfiles/portal/257776846/3566886_oa.pdf">GIST</a>, or passively during the search process. This requires automatic generation of images representing potentially large diagrams. So I spent a few hours looking at graph rendering options for DDs.</p>
 <h2 id="manual-rendering">Manual rendering</h2>
-<p>We&rsquo;ll start with examples of visualizations built by hand. These form a good standard for how we want DDs to look if we automate rendering. We&rsquo;ll start with some examples from academic literature, look at some we&rsquo;ve used in Nextmv presentations, and show an interesting example that embeds in <a href="https://gohugo.io/">Hugo</a>, the popular static site generator I use for this blog.</p>
+<p>We&rsquo;ll start with examples of visualizations built by hand. These form a good standard for how we want DDs to look if we automate rendering. We&rsquo;ll start with some examples from academic literature, look at some we&rsquo;ve used in <a href="https://nextmv.io">Nextmv</a> presentations, and show an interesting example that embeds in <a href="https://gohugo.io/">Hugo</a>, the popular static site generator I use for this blog.</p>
 <p>All the literature on using Decision Diagrams (DD) for optimization that I&rsquo;m aware of depicts DDs as top-down, layered, directed graphs (digraphs). Some of the diagrams we come across appear to be coded and rendered, while some are fussily created by hand with a diagramming tool.</p>
 <h3 id="academia">Academia</h3>
 <p>I believe most of of the examples we find in academic literature are coded by hand and rendered using the LaTeX <a href="https://tikz.net/">TikZ</a> package. Below is one of the first diagrams that newcomers to DDs encounter. It&rsquo;s from <a href="https://link.springer.com/book/10.1007/978-3-319-42849-9">Decision Diagrams for Optimization</a> by Bergman et al, 2016.</p>
@@ -42,7 +42,7 @@
 <p>In this diagram, each node has a state. For example, the state of $r$ is $\{1,2,3,4,5\}$. If we start at the root node $r$ and assign $x_1 = 0$, we end up at node $u_1$ with state $\{2,3,4,5\}$.</p>
 <p>Most other academic literature about DDs uses images similar to these.</p>
 <h3 id="nextmv">Nextmv</h3>
-<p>We&rsquo;ve rendered a number of DDs over the years at Nextmv. Most of these images demonstrate a concept instead of a particular model. We usually create them by hand in a diagramming tool like <a href="https://whimsical.com/">Whimsical</a>, <a href="https://www.lucidchart.com/">Lucidchart</a>, or <a href="https://excalidraw.com/">Excalidraw</a>. I built the diagrams below by hand in Whimsical. I think the result is nice, if time consuming and fussy.</p>
+<p>We&rsquo;ve rendered a number of DDs over the years at <a href="https://nextmv.io">Nextmv</a>. Most of these images demonstrate a concept instead of a particular model. We usually create them by hand in a diagramming tool like <a href="https://whimsical.com/">Whimsical</a>, <a href="https://www.lucidchart.com/">Lucidchart</a>, or <a href="https://excalidraw.com/">Excalidraw</a>. I built the diagrams below by hand in Whimsical. I think the result is nice, if time consuming and fussy.</p>
 <p>This is a representation of an exact DD. It doesn&rsquo;t indicate whether this is a BDD or a Multivalued Decision Diagram (MDD). It doesn&rsquo;t have any labels or variable names. It just shows what a DD search might look like in the abstract.</p>
 <p><img loading="lazy" src="/files/2023-09-13-visualizing-decision-diagrams/nextmv-dd-exact.png" alt="Exact DD"  />
 </p>
@@ -388,60 +388,47 @@ graph LR
       
       <guid>https://ryanjoneil.github.io/speaking/</guid>
       <description>This is a running list of talks I&amp;rsquo;ve given and am scheduled to give. It probably isn&amp;rsquo;t exhaustive. Some of them have slides or videos available.
-The future&amp;hellip;
-November 16, 2023 - Nextmv Videos - Forecast, schedule, route: 3 starter models for on-demand logistics (📝) The past&amp;hellip;
-October 17, 2023 - INFORMS Annual Meeting - Adapting to Change in On-Demand Delivery: Unpacking a Suite of Testing Methodologies (📄)
-September 20, 2023 - DecisionCAMP 2023 - Decision model, meet the real world: Testing optimization models for use in production environments (📄, 💻, 🎥)</description>
+Upcoming talks November 16, 2023 - Nextmv Videos - 🎟 registration
+Forecast, schedule, route: 3 starter models for on-demand logistics
+December 6-8, 2023 - PyData Global 2023 - 📄 abstract, 🎟 registration
+Order up! How do I deliver it? Build on-demand logistics apps with Python, OR-Tools, and DecisionOps</description>
       <content:encoded><![CDATA[<p>This is a running list of talks I&rsquo;ve given and am scheduled to give. It probably isn&rsquo;t exhaustive. Some of them have slides or videos available.</p>
-<p><strong>The future&hellip;</strong></p>
-<ul>
-<li>November 16, 2023 - <a href="https://www.nextmv.io/videos">Nextmv Videos</a> - Forecast, schedule, route: 3 starter models for on-demand logistics (<a href="https://www.nextmv.io/videos/forecast-schedule-route-3-starter-models-for-on-demand-logistics">📝</a>)</li>
-</ul>
-<p><strong>The past&hellip;</strong></p>
-<ul>
-<li>
-<p>October 17, 2023 - <a href="https://meetings.informs.org/wordpress/phoenix2023/">INFORMS Annual Meeting</a> - Adapting to Change in On-Demand Delivery: Unpacking a Suite of Testing Methodologies (<a href="https://www.abstractsonline.com/pp8/?__hstc=194041586.cc5f446034c6d268dfea27d9b7ceb6dc.1681140481721.1691273766763.1691449438596.35&amp;__hssc=194041586.3.1691449438596&amp;__hsfp=1912911101&amp;hsCtaTracking=8f511889-324a-41b3-a438-37ad295392e9%7C0c80c5d7-cc8d-4989-9b70-52de4c44b90b#!/10856/presentation/7867">📄</a>)</p>
-</li>
-<li>
-<p>September 20, 2023 - <a href="https://decisioncamp2023.wordpress.com/">DecisionCAMP 2023</a> - Decision model, meet the real world: Testing optimization models for use in production environments (<a href="https://decisioncamp2023.wordpress.com/program/#NEXTMV">📄</a>, <a href="/slides/2023-decisioncamp.pdf">💻</a>, <a href="https://www.youtube.com/watch?v=jh767AIuFP0">🎥</a>)</p>
-</li>
-<li>
-<p>August 27, 2023 - <a href="https://sites.google.com/view/dpsolve2023/">DPSOLVE 2023</a> - Implementing Decision Diagrams in Production Systems (<a href="/slides/2023-dpsolve.pdf">💻</a>)</p>
-</li>
-<li>
-<p>May 11, 2023 - <a href="https://www.nextmv.io/videos">Nextmv Videos</a> - Several people are optimizing: Collaborative workflows for decision model operations (<a href="https://www.youtube.com/watch?v=8WkHltfgVPw">🎥</a>)</p>
-</li>
-<li>
-<p>April 18, 2023 - <a href="https://meetings.informs.org/wordpress/analytics2023/">INFORMS Business Analytics Conference</a> - Decision Model, Meet Production: A Collaborative Workflow for Optimizing More Operations (<a href="https://meetings.informs.org/wordpress/analytics2023/tracks/technology-tutorials/">📄</a>)</p>
-</li>
-<li>
-<p>March 1, 2023 - <a href="https://www.nextmv.io/videos">Nextmv Videos</a> - What are decision diagrams? How are they used to model and solve optimization problems? (<a href="https://www.youtube.com/watch?v=WtdUhYH5Szs">🎥</a>)</p>
-</li>
-<li>
-<p>January 18, 2023 - <a href="https://www.nextmv.io/videos">Nextmv Videos</a> - In conversation with Karla Hoffman (<a href="https://www.youtube.com/watch?v=p4R9cglMP4Y">🎥</a>)</p>
-</li>
-<li>
-<p>October 5, 2020 - <a href="https://connect.informs.org/phillychapter/home">INFORMS Philadelphia Chapter</a> - Real-Time Routing for On-Demand Delivery (<a href="https://youtu.be/t6rI2JFVqG4">🎥</a>)</p>
-</li>
-<li>
-<p>October 22, 2019 - INFORMS Annual Meeting - Decision Diagrams for Real-Time Routing (<a href="/slides/2019-informs.pdf">💻</a>)</p>
-</li>
-<li>
-<p>July 6, 2017 - <a href="https://pydata.org/seattle2017/">PyData Seattle 2017</a> - Practical Optimization for Stats Nerds (<a href="https://pydata.org/seattle2017/schedule/presentation/81/">📄</a>, <a href="https://youtu.be/n9Fz74pFiA4?list=PLGVZCDnMOq0rxoq9Nx0B4tqtr891vaCn7">🎥</a>)</p>
-</li>
-<li>
-<p>March 5, 2017 - <a href="https://www.meetup.com/Data-Science-DC/events/238107178/">Data Science DC</a> - Practical Optimization for Stats Nerds (<a href="https://nbviewer.org/github/ryanjoneil/talks/blob/master/2017/07/pydata-seattle/practical-optimization-for-stats-nerds.slides.html#/">💻</a>)</p>
-</li>
-<li>
-<p>December 4, 2015 - PyData NYC 2015 - Optimize your Docker Infrastructure with Python (<a href="https://nbviewer.org/github/ryanjoneil/talks/blob/master/2015/11/pydata-nyc/optimize-your-docker-infrastructure-with-python.ipynb">💻</a>, <a href="https://www.youtube.com/watch?v=l6NjecDJFb8">🎥</a>)</p>
-</li>
-<li>
-<p>July 17, 2014 - IFORS 2014 - A MIP-Based Dual Bounding Technique for the Irregular Nesting Problem (<a href="https://www.euro-online.org/conferences/program/#abstract/13132">📄</a>, <a href="/slides/2014-ifors.pdf">💻</a>)</p>
-</li>
-<li>
-<p>February 19, 2010 - <a href="https://pyvideo.org/events/pycon-us-2010.html">PyCon 2010</a> - Optimal Resource Allocation using Python (<a href="https://pyvideo.org/pycon-us-2010/pycon-2010--optimal-resource-allocation-using-pyt.html">🎥</a>)</p>
-</li>
-</ul>
+<h2 id="upcoming-talks">Upcoming talks</h2>
+<p>November 16, 2023 - <a href="https://www.nextmv.io/videos">Nextmv Videos</a> - <a href="https://www.nextmv.io/videos/forecast-schedule-route-3-starter-models-for-on-demand-logistics">🎟 registration</a><br>
+Forecast, schedule, route: 3 starter models for on-demand logistics</p>
+<p>December 6-8, 2023 - <a href="https://pydata.org/global2023/">PyData Global 2023</a> - <a href="https://global2023.pydata.org/cfp/talk/review/QWNCD3B7EP8MR9BZMN7VVG8PG97ZG3L3">📄 abstract</a>, <a href="https://pydata.org/global2023/tickets">🎟 registration</a><br>
+Order up! How do I deliver it? Build on-demand logistics apps with Python, OR-Tools, and DecisionOps</p>
+<h2 id="past-talks">Past talks</h2>
+<h3 id="2023">2023</h3>
+<p>October 17, 2023 - <a href="https://meetings.informs.org/wordpress/phoenix2023/">INFORMS Annual Meeting</a> - <a href="https://www.abstractsonline.com/pp8/?__hstc=194041586.cc5f446034c6d268dfea27d9b7ceb6dc.1681140481721.1691273766763.1691449438596.35&amp;__hssc=194041586.3.1691449438596&amp;__hsfp=1912911101&amp;hsCtaTracking=8f511889-324a-41b3-a438-37ad295392e9%7C0c80c5d7-cc8d-4989-9b70-52de4c44b90b#!/10856/presentation/7867">📄 abstract</a><br>
+Adapting to Change in On-Demand Delivery: Unpacking a Suite of Testing Methodologies</p>
+<p>September 20, 2023 - <a href="https://decisioncamp2023.wordpress.com/">DecisionCAMP 2023</a> - <a href="https://decisioncamp2023.wordpress.com/program/#NEXTMV">📄 abstract</a>, <a href="/slides/2023-decisioncamp.pdf">💻 slides</a>, <a href="https://www.youtube.com/watch?v=jh767AIuFP0">🎥 video</a><br>
+Decision model, meet the real world: Testing optimization models for use in production environments</p>
+<p>August 27, 2023 - <a href="https://sites.google.com/view/dpsolve2023/">DPSOLVE 2023</a> - <a href="/slides/2023-dpsolve.pdf">💻 slides</a><br>
+Implementing Decision Diagrams in Production Systems</p>
+<p>May 11, 2023 - <a href="https://www.nextmv.io/videos">Nextmv Videos</a> - <a href="https://www.youtube.com/watch?v=8WkHltfgVPw">🎥 video</a><br>
+Several people are optimizing: Collaborative workflows for decision model operations</p>
+<p>April 18, 2023 - <a href="https://meetings.informs.org/wordpress/analytics2023/">INFORMS Business Analytics Conference</a> - <a href="https://meetings.informs.org/wordpress/analytics2023/tracks/technology-tutorials/">📄 abstract</a><br>
+Decision Model, Meet Production: A Collaborative Workflow for Optimizing More Operations</p>
+<p>March 1, 2023 - <a href="https://www.nextmv.io/videos">Nextmv Videos</a> - <a href="https://www.youtube.com/watch?v=WtdUhYH5Szs">🎥 video</a><br>
+What are decision diagrams? How are they used to model and solve optimization problems?</p>
+<p>January 18, 2023 - <a href="https://www.nextmv.io/videos">Nextmv Videos</a> - <a href="https://www.youtube.com/watch?v=p4R9cglMP4Y">🎥 video</a><br>
+In conversation with Karla Hoffman</p>
+<h3 id="ancient-history">Ancient history</h3>
+<p>October 5, 2020 - <a href="https://connect.informs.org/phillychapter/home">INFORMS Philadelphia Chapter</a> - <a href="https://youtu.be/t6rI2JFVqG4">🎥 video</a><br>
+Real-Time Routing for On-Demand Delivery</p>
+<p>October 22, 2019 - INFORMS Annual Meeting - <a href="/slides/2019-informs.pdf">💻 slides</a><br>
+Decision Diagrams for Real-Time Routing</p>
+<p>July 6, 2017 - <a href="https://pydata.org/seattle2017/">PyData Seattle 2017</a> - <a href="https://pydata.org/seattle2017/schedule/presentation/81/">📄 abstract</a>, <a href="https://youtu.be/n9Fz74pFiA4?list=PLGVZCDnMOq0rxoq9Nx0B4tqtr891vaCn7">🎥 video</a><br>
+Practical Optimization for Stats Nerds</p>
+<p>March 5, 2017 - <a href="https://www.meetup.com/Data-Science-DC/events/238107178/">Data Science DC</a> - <a href="https://nbviewer.org/github/ryanjoneil/talks/blob/master/2017/07/pydata-seattle/practical-optimization-for-stats-nerds.slides.html#/">💻 slides</a><br>
+Practical Optimization for Stats Nerds</p>
+<p>December 4, 2015 - PyData NYC 2015 - <a href="https://nbviewer.org/github/ryanjoneil/talks/blob/master/2015/11/pydata-nyc/optimize-your-docker-infrastructure-with-python.ipynb">💻 slides</a>, <a href="https://www.youtube.com/watch?v=l6NjecDJFb8">🎥 video</a><br>
+Optimize your Docker Infrastructure with Python</p>
+<p>July 17, 2014 - IFORS 2014 - <a href="https://www.euro-online.org/conferences/program/#abstract/13132">📄 abstract</a>, <a href="/slides/2014-ifors.pdf">💻 slides</a><br>
+A MIP-Based Dual Bounding Technique for the Irregular Nesting Problem</p>
+<p>February 19, 2010 - <a href="https://pyvideo.org/events/pycon-us-2010.html">PyCon 2010</a> - <a href="https://pyvideo.org/pycon-us-2010/pycon-2010--optimal-resource-allocation-using-pyt.html">🎥 video</a><br>
+Optimal Resource Allocation using Python</p>
 ]]></content:encoded>
     </item>
     
@@ -452,52 +439,36 @@ September 20, 2023 - DecisionCAMP 2023 - Decision model, meet the real world: Te
       
       <guid>https://ryanjoneil.github.io/writing/</guid>
       <description>I&amp;rsquo;m an desultory blogger and intermittent academic. Nonetheless, I like the research and writing process. Most of my current and old posts live here. Some of my other writings and collaborations are listed below.
-Papers, patents &amp;amp; preprints&amp;hellip;
-June 2023 - USPTO - Runners for optimization solvers and simulators describes technology for creating and executing Decision Diagram-based optimization solvers and state-based simulators in cloud environments. (📄)
-September 2020 - Operations Research Forum - MIPLIBing: Seamless Benchmarking of Mathematical Optimization Problems and Metadata Extensions presents a Python library that automatically downloads queried subsets from the current versions of MIPLIB, MINLPLib, and QPLIB, provides a centralized local cache across projects, and tracks the best solution values and bounds on record for each problem.</description>
+Papers, patents &amp;amp; preprints June 2023 - USPTO - 📄 patent
+Runners for optimization solvers and simulators describes technology for creating and executing Decision Diagram-based optimization solvers and state-based simulators in cloud environments.
+September 2020 - Operations Research Forum - 📄 preprint</description>
       <content:encoded><![CDATA[<p>I&rsquo;m an desultory blogger and intermittent academic. Nonetheless, I like the research and writing process. Most of my current and old posts live <a href="/posts">here</a>. Some of my other writings and collaborations are listed below.</p>
-<p><strong>Papers, patents &amp; preprints&hellip;</strong></p>
-<ul>
-<li>
-<p>June 2023 - <a href="https://www.uspto.gov/">USPTO</a> - <a href="https://patents.google.com/patent/US11675688B2/en">Runners for optimization solvers and simulators</a> describes technology for creating and executing Decision Diagram-based optimization solvers and state-based simulators in cloud environments. (<a href="https://patentimages.storage.googleapis.com/c6/08/09/060978f00373e0/US11675688.pdf">📄</a>)</p>
-</li>
-<li>
-<p>September 2020 - <a href="https://www.springer.com/journal/43069">Operations Research Forum</a> - <a href="https://link.springer.com/article/10.1007/s43069-020-00024-1">MIPLIBing: Seamless Benchmarking of Mathematical Optimization Problems and Metadata Extensions</a> presents a Python library that automatically downloads queried subsets from the current versions of MIPLIB, MINLPLib, and QPLIB, provides a centralized local cache across projects, and tracks the best solution values and bounds on record for each problem. (<a href="https://digitalcommons.bucknell.edu/cgi/viewcontent.cgi?article=2883&amp;context=fac_journ">📄</a>)</p>
-</li>
-<li>
-<p>May 2019 - <a href="https://www.sciencedirect.com/journal/operations-research-letters">Operations Research Letters</a> - <a href="https://www.sciencedirect.com/science/article/abs/pii/S0167637718305364">Decision diagrams for solving traveling salesman problems with pickup and delivery in real time</a> explores the use of Multivalued Decision Diagrams and Assignment Problem inference duals for real-time optimization of TSPPDs. (<a href="http://www.optimization-online.org/DB_FILE/2018/10/6853.pdf">📄</a>)</p>
-</li>
-<li>
-<p>October 2018 - <a href="https://optimization-online.org/author/roneil1/">Optimization Online</a> - <a href="https://optimization-online.org/2018/10/6838/">Integer Models for the Asymmetric Traveling Salesman Problem with Pickup and Delivery</a> proposes a new ATSPPD model, new valid inequalities for the Sarin-Sherali-Bhootra ATSPPD, and studies the impact of relaxing complicating constraints in these. (<a href="http://www.optimization-online.org/DB_FILE/2018/10/6838.pdf">📄</a>)</p>
-</li>
-<li>
-<p>September 2018 - <a href="https://optimization-online.org/author/roneil1/">Optimization Online</a> - <a href="http://www.optimization-online.org/DB_HTML/2017/12/6370.html">Exact Methods for Solving Traveling Salesman Problems with Pickup and Delivery in Real Time</a> examines exact methods for solving TSPPDs with consolidation in real-time applications. It considers enumerative, Mixed Integer Programming, Constraint Programming, and hybrid optimization approaches under various time budgets. (<a href="http://www.optimization-online.org/DB_FILE/2017/12/6370.pdf">📄</a>)</p>
-</li>
-<li>
-<p>March 2018 - <a href="https://optimization-online.org/author/roneil1/">Optimization Online</a> -<a href="https://optimization-online.org/2018/04/6571/">The Meal Delivery Routing Problem</a> introduces the MDRP to formalize and study an important emerging class of dynamic delivery operations. It also develops optimization-based algorithms tailored to solve the courier assignment (dynamic vehicle routing) and capacity management (offline shift scheduling) problems encountered in meal delivery operations. (<a href="https://optimization-online.org/wp-content/uploads/2018/04/6571.pdf">📄</a>)</p>
-</li>
-</ul>
-<p><strong>Other blogs&hellip;</strong></p>
-<ul>
-<li>
-<p>April 20, 2022 - <a href="https://www.nextmv.io/blog">Nextmv Blog</a> - <a href="https://www.nextmv.io/blog/you-need-a-solver-what-is-a-solver">You need a solver. What is a solver?</a></p>
-</li>
-<li>
-<p>March 2, 2021 - <a href="https://www.nextmv.io/blog">Nextmv Blog</a> - <a href="https://www.nextmv.io/blog/binaries-are-beautiful">Binaries are beautiful</a></p>
-</li>
-<li>
-<p>March 2, 2020 - <a href="https://www.nextmv.io/blog">Nextmv Blog</a> - <a href="https://www.nextmv.io/blog/how-hop-hops">How Hop Hops</a></p>
-</li>
-<li>
-<p>September 13, 2018 - <a href="https://bytes.grubhub.com/">Grubhub Bytes</a> - <a href="https://bytes.grubhub.com/decisions-are-first-class-citizens-9994fd8fe802">Decisions are first class citizens: an introduction to Decision Engineering</a></p>
-</li>
-<li>
-<p>January 5, 2015 - <a href="https://web.archive.org/web/20161107120859/http://blog.yhat.com/">The Yhat Blog</a> - <a href="https://web.archive.org/web/20160909032804/http://blog.yhat.com/posts/currency-portfolio-optimization-using-scienceops.html">Currency Portfolio Optimization Using ScienceOps</a></p>
-</li>
-<li>
-<p>November 10, 2014 - <a href="https://web.archive.org/web/20161107120859/http://blog.yhat.com/">The Yhat Blog</a> - <a href="https://web.archive.org/web/20160308065802/http://blog.yhat.com/posts/how-yhat-does-cloud-balancing.html">How Yhat Does Cloud Balancing: A Case Study</a></p>
-</li>
-</ul>
+<h2 id="papers-patents--preprints">Papers, patents &amp; preprints</h2>
+<p>June 2023 - <a href="https://www.uspto.gov/">USPTO</a> - <a href="https://patentimages.storage.googleapis.com/c6/08/09/060978f00373e0/US11675688.pdf">📄 patent</a><br>
+<a href="https://patents.google.com/patent/US11675688B2/en">Runners for optimization solvers and simulators</a> describes technology for creating and executing Decision Diagram-based optimization solvers and state-based simulators in cloud environments.</p>
+<p>September 2020 - <a href="https://www.springer.com/journal/43069">Operations Research Forum</a> - <a href="https://digitalcommons.bucknell.edu/cgi/viewcontent.cgi?article=2883&amp;context=fac_journ">📄 preprint</a><br>
+<a href="https://link.springer.com/article/10.1007/s43069-020-00024-1">MIPLIBing: Seamless Benchmarking of Mathematical Optimization Problems and Metadata Extensions</a> presents a Python library that automatically downloads queried subsets from the current versions of MIPLIB, MINLPLib, and QPLIB, provides a centralized local cache across projects, and tracks the best solution values and bounds on record for each problem.</p>
+<p>May 2019 - <a href="https://www.sciencedirect.com/journal/operations-research-letters">Operations Research Letters</a> - <a href="http://www.optimization-online.org/DB_FILE/2018/10/6853.pdf">📄 preprint</a><br>
+<a href="https://www.sciencedirect.com/science/article/abs/pii/S0167637718305364">Decision diagrams for solving traveling salesman problems with pickup and delivery in real time</a> explores the use of Multivalued Decision Diagrams and Assignment Problem inference duals for real-time optimization of TSPPDs.</p>
+<p>October 2018 - <a href="https://optimization-online.org/author/roneil1/">Optimization Online</a> - <a href="http://www.optimization-online.org/DB_FILE/2018/10/6838.pdf">📄 preprint</a><br>
+<a href="https://optimization-online.org/2018/10/6838/">Integer Models for the Asymmetric Traveling Salesman Problem with Pickup and Delivery</a> proposes a new ATSPPD model, new valid inequalities for the Sarin-Sherali-Bhootra ATSPPD, and studies the impact of relaxing complicating constraints in these.</p>
+<p>September 2018 - <a href="https://optimization-online.org/author/roneil1/">Optimization Online</a> - <a href="http://www.optimization-online.org/DB_FILE/2017/12/6370.pdf">📄 preprint</a><br>
+<a href="http://www.optimization-online.org/DB_HTML/2017/12/6370.html">Exact Methods for Solving Traveling Salesman Problems with Pickup and Delivery in Real Time</a> examines exact methods for solving TSPPDs with consolidation in real-time applications. It considers enumerative, Mixed Integer Programming, Constraint Programming, and hybrid optimization approaches under various time budgets.</p>
+<p>March 2018 - <a href="https://optimization-online.org/author/roneil1/">Optimization Online</a> - <a href="https://optimization-online.org/wp-content/uploads/2018/04/6571.pdf">📄 preprint</a><br>
+<a href="https://optimization-online.org/2018/04/6571/">The Meal Delivery Routing Problem</a> introduces the MDRP to formalize and study an important emerging class of dynamic delivery operations. It also develops optimization-based algorithms tailored to solve the courier assignment (dynamic vehicle routing) and capacity management (offline shift scheduling) problems encountered in meal delivery operations.</p>
+<h2 id="other-blogs">Other blogs</h2>
+<p>April 20, 2022 - <a href="https://www.nextmv.io/blog">Nextmv Blog</a><br>
+<a href="https://www.nextmv.io/blog/you-need-a-solver-what-is-a-solver">You need a solver. What is a solver?</a></p>
+<p>March 2, 2021 - <a href="https://www.nextmv.io/blog">Nextmv Blog</a><br>
+<a href="https://www.nextmv.io/blog/binaries-are-beautiful">Binaries are beautiful</a></p>
+<p>March 2, 2020 - <a href="https://www.nextmv.io/blog">Nextmv Blog</a><br>
+<a href="https://www.nextmv.io/blog/how-hop-hops">How Hop Hops</a></p>
+<p>September 13, 2018 - <a href="https://bytes.grubhub.com/">Grubhub Bytes</a><br>
+<a href="https://bytes.grubhub.com/decisions-are-first-class-citizens-9994fd8fe802">Decisions are first class citizens: an introduction to Decision Engineering</a></p>
+<p>January 5, 2015 - <a href="https://web.archive.org/web/20161107120859/http://blog.yhat.com/">The Yhat Blog</a><br>
+<a href="https://web.archive.org/web/20160909032804/http://blog.yhat.com/posts/currency-portfolio-optimization-using-scienceops.html">Currency Portfolio Optimization Using ScienceOps</a></p>
+<p>November 10, 2014 - <a href="https://web.archive.org/web/20161107120859/http://blog.yhat.com/">The Yhat Blog</a><br>
+<a href="https://web.archive.org/web/20160308065802/http://blog.yhat.com/posts/how-yhat-does-cloud-balancing.html">How Yhat Does Cloud Balancing: A Case Study</a></p>
 ]]></content:encoded>
     </item>
     
@@ -507,14 +478,14 @@ September 2020 - Operations Research Forum - MIPLIBing: Seamless Benchmarking of
       <pubDate>Wed, 06 Sep 2023 00:00:00 +0000</pubDate>
       
       <guid>https://ryanjoneil.github.io/about/</guid>
-      <description>I use data and models to simplify complex decisions.
+      <description>I build Optimization AI tools.
 By day, I am an operations research analyst, Go coder, and co-founder of Nextmv. I&amp;rsquo;m interested in hybrid optimization, decision diagrams, and mixed integer programming. My applications skew heavily toward logistics for delivery platforms, with detours into cutting and packing.
-For the past several years, I&amp;rsquo;ve worked in real-time optimization for on-demand delivery, scheduling, forecasting, and simulation. I did a MS in Operations Research by night at [George Mason University], then a PhD in the same field under the advisement of Karla Hoffman.</description>
+For the past several years, I&amp;rsquo;ve worked in real-time optimization for on-demand delivery, scheduling, forecasting, and simulation. I did a MS in Operations Research by night at George Mason University, then a PhD in the same department under the advisement of Karla Hoffman.</description>
       <content:encoded><![CDATA[<p><img loading="lazy" src="/img/ryan.jpg" alt="me"  />
 </p>
-<p>I use data and models to simplify complex decisions.</p>
+<p>I build Optimization AI tools.</p>
 <p>By day, I am an <a href="https://www.informs.org/Explore/Operations-Research-Analytics">operations research analyst</a>, <a href="https://go.dev">Go</a> coder, and co-founder of <a href="https://nextmv.io">Nextmv</a>. I&rsquo;m interested in hybrid optimization, <a href="https://www.andrew.cmu.edu/user/vanhoeve/mdd/">decision diagrams</a>, and <a href="https://en.wikipedia.org/wiki/Integer_programming">mixed integer programming</a>. My applications skew heavily toward logistics for delivery platforms, with detours into <a href="https://www.euro-online.org/websites/esicup/">cutting and packing</a>.</p>
-<p>For the past several years, I&rsquo;ve worked in real-time optimization for on-demand delivery, scheduling, forecasting, and simulation. I did a MS in Operations Research by night at [George Mason University], then a PhD in the same field under the advisement of <a href="https://seor.vse.gmu.edu/~khoffman/">Karla Hoffman</a>.</p>
+<p>For the past several years, I&rsquo;ve worked in real-time optimization for on-demand delivery, scheduling, forecasting, and simulation. I did a MS in Operations Research by night at <a href="https://seor.gmu.edu/">George Mason University</a>, then a PhD in the same department under the advisement of <a href="https://seor.vse.gmu.edu/~khoffman/">Karla Hoffman</a>.</p>
 <p>By night, I am am amateur cellist, and a cat and early music enthusiast.</p>
 ]]></content:encoded>
     </item>
@@ -526,40 +497,19 @@ For the past several years, I&amp;rsquo;ve worked in real-time optimization for 
       
       <guid>https://ryanjoneil.github.io/coding/</guid>
       <description>Most of my work is proprietary, but some of it is open. Here are a few projects I&amp;rsquo;ve built or made significant contributions. I&amp;rsquo;ve also made significant contributions to projects such as PuLP, MIPLIBing, and MDRPlib.
-Alive&amp;hellip;
-The Ruby Algebraic Modeling System is a simple modeling tool for formulating and solving MILPs in Ruby.
+Active projects The Ruby Algebraic Modeling System is a simple modeling tool for formulating and solving MILPs in Ruby.
 ap.cpp is an incremental primal-dual assignment problem solver written in C++. It can vastly improve propagation in hybrid optimization models that use AP relaxations.</description>
       <content:encoded><![CDATA[<p>Most of my work is proprietary, but some of it is open. Here are a few projects I&rsquo;ve built or made significant contributions. I&rsquo;ve also made significant contributions to projects such as <a href="https://coin-or.github.io/pulp/">PuLP</a>, <a href="https://github.com/thserra/MIPLIBing">MIPLIBing</a>, and <a href="https://github.com/grubhub/mdrplib">MDRPlib</a>.</p>
-<p><strong>Alive&hellip;</strong></p>
-<ul>
-<li>
+<h2 id="active-projects">Active projects</h2>
 <p>The <a href="https://github.com/ryanjoneil/rams">Ruby Algebraic Modeling System</a> is a simple modeling tool for formulating and solving MILPs in Ruby.</p>
-</li>
-<li>
 <p><a href="https://github.com/ryanjoneil/ap.cpp">ap.cpp</a> is an incremental primal-dual assignment problem solver written in C++. It can vastly improve propagation in hybrid optimization models that use AP relaxations. I use it within custom propagators in <a href="https://www.gecode.org/">Gecode</a> and in Decision Diagrams for solving the Traveling Salesman Problem with side constraints.</p>
-</li>
-<li>
 <p><a href="https://github.com/ryanjoneil/ap">ap</a> is a Go version of ap.cpp.</p>
-</li>
-<li>
 <p><a href="https://github.com/ryanjoneil/tsppd-hybrid">TSPPD Hybrid Optimization Code</a> and <a href="https://github.com/ryanjoneil/tsppd-dd">TSPPD Decision Diagram Code</a> are both used in my dissertation. The former contains C++14 code for hybrid CP and MIP models for solving TSPPDs. The latter uses a hybridized Decision Diagram implementation with an Assignment Problem inference dual inside a branch-and-bound.</p>
-</li>
-<li>
 <p><a href="https://github.com/grubhub/tsppdlib">TSPPDlib</a> is a standard test set for TSPPDs. The instances are based on observed meal delivery data at Grubhub.</p>
-</li>
-</ul>
-<p><strong>Defunct&hellip;</strong></p>
-<ul>
-<li>
+<h2 id="defunct-projects">Defunct projects</h2>
 <p><a href="https://pythonhosted.org/python-zibopt/">python-zibopt</a> was a Python interface to the <a href="https://www.scipopt.org/">SCIP Optimization Suite</a>. This was no longer necessary once <a href="https://github.com/scipopt/PySCIPOpt">PySCIPOpt</a> emerged.</p>
-</li>
-<li>
 <p><a href="https://github.com/ryanjoneil/chute">Chute</a> was a simple, lightweight tool for running discrete event simulations in Python.</p>
-</li>
-<li>
 <p><a href="https://code.google.com/archive/p/pygep/">PyGEP</a> was a simple library suitable for academic study of GEP (Gene Expression Programming) in Python 2.</p>
-</li>
-</ul>
 ]]></content:encoded>
     </item>
     
