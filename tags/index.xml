@@ -28,9 +28,19 @@
     </item>
     
     <item>
+      <title>classification</title>
+      <link>https://ryanjoneil.github.io/tags/classification/</link>
+      <pubDate>Tue, 15 Feb 2011 00:00:00 +0000</pubDate>
+      
+      <guid>https://ryanjoneil.github.io/tags/classification/</guid>
+      <description></description>
+      <content:encoded><![CDATA[]]></content:encoded>
+    </item>
+    
+    <item>
       <title>modeling</title>
       <link>https://ryanjoneil.github.io/tags/modeling/</link>
-      <pubDate>Tue, 30 Nov 2010 00:00:00 +0000</pubDate>
+      <pubDate>Tue, 15 Feb 2011 00:00:00 +0000</pubDate>
       
       <guid>https://ryanjoneil.github.io/tags/modeling/</guid>
       <description></description>
@@ -40,7 +50,7 @@
     <item>
       <title>python</title>
       <link>https://ryanjoneil.github.io/tags/python/</link>
-      <pubDate>Tue, 30 Nov 2010 00:00:00 +0000</pubDate>
+      <pubDate>Tue, 15 Feb 2011 00:00:00 +0000</pubDate>
       
       <guid>https://ryanjoneil.github.io/tags/python/</guid>
       <description></description>
@@ -48,11 +58,11 @@
     </item>
     
     <item>
-      <title>classification</title>
-      <link>https://ryanjoneil.github.io/tags/classification/</link>
-      <pubDate>Tue, 23 Nov 2010 00:00:00 +0000</pubDate>
+      <title>regression</title>
+      <link>https://ryanjoneil.github.io/tags/regression/</link>
+      <pubDate>Tue, 15 Feb 2011 00:00:00 +0000</pubDate>
       
-      <guid>https://ryanjoneil.github.io/tags/classification/</guid>
+      <guid>https://ryanjoneil.github.io/tags/regression/</guid>
       <description></description>
       <content:encoded><![CDATA[]]></content:encoded>
     </item>

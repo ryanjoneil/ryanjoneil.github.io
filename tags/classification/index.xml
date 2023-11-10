@@ -6,7 +6,371 @@
     <description>Recent content in classification on adventures in optimization</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Tue, 23 Nov 2010 00:00:00 +0000</lastBuildDate><atom:link href="https://ryanjoneil.github.io/tags/classification/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 15 Feb 2011 00:00:00 +0000</lastBuildDate><atom:link href="https://ryanjoneil.github.io/tags/classification/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>🧐 Data Fitting 2 - Very, Very Simple Linear Regression</title>
+      <link>https://ryanjoneil.github.io/posts/2011-02-15-data-fitting-2-very-very-simple-linear-regression-in-python/</link>
+      <pubDate>Tue, 15 Feb 2011 00:00:00 +0000</pubDate>
+      
+      <guid>https://ryanjoneil.github.io/posts/2011-02-15-data-fitting-2-very-very-simple-linear-regression-in-python/</guid>
+      <description>Predict how much people like cats and dogs based on their ice cream preferences. Also, Python and numpy.</description>
+      <content:encoded><![CDATA[<p>This post is based on a memo I sent to some former colleagues at the Post. I&rsquo;ve edited it for use here since it fits well as the second in a series on simple data fitting techniques. If you&rsquo;re among the many enlightened individuals already using regression analysis, then this post is probably not for you. If you aren&rsquo;t, then hopefully this provides everything you need to develop rudimentary predictive models that yield surprising levels of accuracy.</p>
+<h2 id="data">Data</h2>
+<p>For purposes of a simple working example, we have collected six records of input data over three dimensions with the goal of predicting two outputs. The input data are:</p>
+<p>$$
+\begin{align*}
+x_1 &amp;= \text{How much a respondent likes vanilla [0-10]}\\
+x_2 &amp;= \text{How much a respondent likes strawberry [0-10]}\\
+x_3 &amp;= \text{How much a respondent likes chocolate [0-10]}
+\end{align*}
+$$</p>
+<p>Output data consist of:</p>
+<p>$$
+\begin{align*}
+b_1 &amp;= \text{How much a respondent likes dogs [0-10]}\\
+b_2 &amp;= \text{How much a respondent likes cats [0-10]}
+\end{align*}
+$$</p>
+<p>Below are anonymous data collected from a random sample of people.</p>
+<table>
+<thead>
+<tr>
+<th>respondent</th>
+<th style="text-align:right">vanilla ❤️</th>
+<th style="text-align:right">strawberry ❤️</th>
+<th style="text-align:right">chocolate ❤️</th>
+<th style="text-align:right">dog ❤️</th>
+<th style="text-align:right">cat ❤️</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Alyssa P Hacker</td>
+<td style="text-align:right">9</td>
+<td style="text-align:right">4</td>
+<td style="text-align:right">9</td>
+<td style="text-align:right">9</td>
+<td style="text-align:right">8</td>
+</tr>
+<tr>
+<td>Ben Bitdiddle</td>
+<td style="text-align:right">8</td>
+<td style="text-align:right">6</td>
+<td style="text-align:right">4</td>
+<td style="text-align:right">10</td>
+<td style="text-align:right">4</td>
+</tr>
+<tr>
+<td>Cy D. Fect</td>
+<td style="text-align:right">9</td>
+<td style="text-align:right">4</td>
+<td style="text-align:right">8</td>
+<td style="text-align:right">2</td>
+<td style="text-align:right">6</td>
+</tr>
+<tr>
+<td>Eva Lu Ator</td>
+<td style="text-align:right">3</td>
+<td style="text-align:right">7</td>
+<td style="text-align:right">9</td>
+<td style="text-align:right">4</td>
+<td style="text-align:right">6</td>
+</tr>
+<tr>
+<td>Lem E. Tweakit</td>
+<td style="text-align:right">6</td>
+<td style="text-align:right">8</td>
+<td style="text-align:right">5</td>
+<td style="text-align:right">2</td>
+<td style="text-align:right">5</td>
+</tr>
+<tr>
+<td>Louis Reasoner</td>
+<td style="text-align:right">4</td>
+<td style="text-align:right">5</td>
+<td style="text-align:right">3</td>
+<td style="text-align:right">10</td>
+<td style="text-align:right">3</td>
+</tr>
+</tbody>
+</table>
+<p>Our input is in three dimensions. Each output requires its own model, so we&rsquo;ll have one for dogs and one for cats. We&rsquo;re looking for functions, <code>dog(x)</code> and <code>cat(x)</code>, that can predict $b_1$ and $b_2$ based on given values of $x_1$, $x_2$, and $x_3$.</p>
+<h2 id="model-1">Model 1</h2>
+<p>For both models we want to find parameters that minimize their squared residuals (read: errors). There&rsquo;s a number of names for this. Optimization folks like to think of it as unconstrained quadratic optimization, but it&rsquo;s more common to call it least squares or linear regression. It&rsquo;s not necessary to entirely understand why for our purposes, but the function that minimizes these errors is:</p>
+<p>$$\beta = ({A^t}A)^{-1}{A^t}b$$</p>
+<p>This is implemented for you in the <code>numpy.linalg</code> Python package, which we&rsquo;ll use for examples. Much more information than you probably want can be found <a href="http://en.wikipedia.org/wiki/Least_squares">here</a>.</p>
+<p>Below is a first stab at a Python version. It runs least squares against our input and output data exactly as they are. You can see the matrix $A$ and outputs $b_1$ and $b_2$ (dog and cat love, respectively) are represented just as they are in the table.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># Version 1: No offset, no squared inputs</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> numpy
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>A <span style="color:#f92672">=</span> numpy<span style="color:#f92672">.</span>vstack([
+</span></span><span style="display:flex;"><span>    [<span style="color:#ae81ff">9</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">9</span>],
+</span></span><span style="display:flex;"><span>    [<span style="color:#ae81ff">8</span>, <span style="color:#ae81ff">6</span>, <span style="color:#ae81ff">4</span>],
+</span></span><span style="display:flex;"><span>    [<span style="color:#ae81ff">9</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">8</span>],
+</span></span><span style="display:flex;"><span>    [<span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">7</span>, <span style="color:#ae81ff">9</span>],
+</span></span><span style="display:flex;"><span>    [<span style="color:#ae81ff">6</span>, <span style="color:#ae81ff">8</span>, <span style="color:#ae81ff">5</span>],
+</span></span><span style="display:flex;"><span>    [<span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">3</span>]
+</span></span><span style="display:flex;"><span>])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>b1 <span style="color:#f92672">=</span> numpy<span style="color:#f92672">.</span>array([<span style="color:#ae81ff">9</span>, <span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">10</span>])
+</span></span><span style="display:flex;"><span>b2 <span style="color:#f92672">=</span> numpy<span style="color:#f92672">.</span>array([<span style="color:#ae81ff">9</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">6</span>, <span style="color:#ae81ff">6</span>, <span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">3</span>])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#39;dog ❤️:&#39;</span>, numpy<span style="color:#f92672">.</span>linalg<span style="color:#f92672">.</span>lstsq(A, b1, rcond<span style="color:#f92672">=</span><span style="color:#66d9ef">None</span>)[<span style="color:#ae81ff">0</span>])
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#39;cat ❤️:&#39;</span>, numpy<span style="color:#f92672">.</span>linalg<span style="color:#f92672">.</span>lstsq(A, b2, rcond<span style="color:#f92672">=</span><span style="color:#66d9ef">None</span>)[<span style="color:#ae81ff">0</span>])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Output:</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># dog ❤️: [0.72548294      0.53045642     -0.29952361]</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># cat ❤️: [2.36110929e-01  2.61934385e-05  6.26892476e-01]</span>
+</span></span></code></pre></div><p>The resulting model is:</p>
+<pre tabindex="0"><code>dog(x) = 0.72548294 * x1 + 0.53045642 * x2 - 0.29952361 * x3
+cat(x) = 2.36110929e-01 * x1 + 2.61934385e-05 * x2 + 6.26892476e-01 * x3
+</code></pre><p>The coefficients before our variables correspond to beta in the formula above. Errors between observed and predicted data, shown below, are calculated and summed. For these six records, <code>dog(x)</code> has a total error of 20.76 and <code>cat(x)</code> has 3.74. Not great.</p>
+<table>
+<thead>
+<tr>
+<th>respondent</th>
+<th style="text-align:right">predicted b1</th>
+<th style="text-align:right">b1 error</th>
+<th style="text-align:right">predicted b2</th>
+<th style="text-align:right">b2 error</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Alyssa P Hacker</td>
+<td style="text-align:right">5.96</td>
+<td style="text-align:right">3.04</td>
+<td style="text-align:right">7.77</td>
+<td style="text-align:right">1.23</td>
+</tr>
+<tr>
+<td>Ben Bitdiddle</td>
+<td style="text-align:right">7.79</td>
+<td style="text-align:right">2.21</td>
+<td style="text-align:right">4.40</td>
+<td style="text-align:right">0.40</td>
+</tr>
+<tr>
+<td>Cy D. Fect</td>
+<td style="text-align:right">6.25</td>
+<td style="text-align:right">4.25</td>
+<td style="text-align:right">7.14</td>
+<td style="text-align:right">1.14</td>
+</tr>
+<tr>
+<td>Eva Lu Ator</td>
+<td style="text-align:right">3.19</td>
+<td style="text-align:right">0.81</td>
+<td style="text-align:right">6.35</td>
+<td style="text-align:right">0.35</td>
+</tr>
+<tr>
+<td>Lem E. Tweakit</td>
+<td style="text-align:right">7.10</td>
+<td style="text-align:right">5.10</td>
+<td style="text-align:right">4.55</td>
+<td style="text-align:right">0.45</td>
+</tr>
+<tr>
+<td>Louis Reasoner</td>
+<td style="text-align:right">4.66</td>
+<td style="text-align:right">5.34</td>
+<td style="text-align:right">2.83</td>
+<td style="text-align:right">0.17</td>
+</tr>
+<tr>
+<td>Total error:</td>
+<td style="text-align:right"></td>
+<td style="text-align:right">20.76</td>
+<td style="text-align:right"></td>
+<td style="text-align:right">3.74</td>
+</tr>
+</tbody>
+</table>
+<h2 id="model-2">Model 2</h2>
+<p>One problem with this model is that <code>dog(x)</code> and <code>cat(x)</code> are forced to pass through the origin. <em>(Why is that?)</em> We can improve it somewhat if we add an offset. This amounts to prepending 1 to every row in $A$ and adding a constant to the resulting functions. You can see the very slight difference between the code for this model and that of the previous:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># Version 2: Offset, no squared inputs</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> numpy
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>A <span style="color:#f92672">=</span> numpy<span style="color:#f92672">.</span>vstack([
+</span></span><span style="display:flex;"><span>    [<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">9</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">9</span>],
+</span></span><span style="display:flex;"><span>    [<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">8</span>, <span style="color:#ae81ff">6</span>, <span style="color:#ae81ff">4</span>],
+</span></span><span style="display:flex;"><span>    [<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">9</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">8</span>],
+</span></span><span style="display:flex;"><span>    [<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">7</span>, <span style="color:#ae81ff">9</span>],
+</span></span><span style="display:flex;"><span>    [<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">6</span>, <span style="color:#ae81ff">8</span>, <span style="color:#ae81ff">5</span>],
+</span></span><span style="display:flex;"><span>    [<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">3</span>]
+</span></span><span style="display:flex;"><span>])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#39;dog ❤️:&#39;</span>, numpy<span style="color:#f92672">.</span>linalg<span style="color:#f92672">.</span>lstsq(A, b1, rcond<span style="color:#f92672">=</span><span style="color:#66d9ef">None</span>)[<span style="color:#ae81ff">0</span>])
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#39;cat ❤️:&#39;</span>, numpy<span style="color:#f92672">.</span>linalg<span style="color:#f92672">.</span>lstsq(A, b2, rcond<span style="color:#f92672">=</span><span style="color:#66d9ef">None</span>)[<span style="color:#ae81ff">0</span>])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Output:</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># dog ❤️: [20.92975427  -0.27831197  -1.43135684  -0.76469017]</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># cat ❤️: [-0.31744124   0.25133547   0.02978098   0.63394765]</span>
+</span></span></code></pre></div><p>This yields the seconds version of our models:</p>
+<pre tabindex="0"><code>dog(x) = 20.92975427 - 0.27831197 * x1 - 1.43135684 * x2 - 0.76469017 * x3
+cat(x) = -0.31744124 + 0.25133547 * x1 + 0.02978098 * x2 + 0.63394765 * x3
+</code></pre><p>These models provide errors of 13.87 and 3.79.  A little better on the dog side, but still not quite usable.</p>
+<table>
+<thead>
+<tr>
+<th>respondent</th>
+<th style="text-align:right">predicted b1</th>
+<th style="text-align:right">b1 error</th>
+<th style="text-align:right">predicted b2</th>
+<th style="text-align:right">b2 error</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Alyssa P Hacker</td>
+<td style="text-align:right">5.82</td>
+<td style="text-align:right">3.18</td>
+<td style="text-align:right">7.77</td>
+<td style="text-align:right">1.23</td>
+</tr>
+<tr>
+<td>Ben Bitdiddle</td>
+<td style="text-align:right">7.06</td>
+<td style="text-align:right">2.94</td>
+<td style="text-align:right">4.41</td>
+<td style="text-align:right">0.41</td>
+</tr>
+<tr>
+<td>Cy D. Fect</td>
+<td style="text-align:right">6.58</td>
+<td style="text-align:right">4.58</td>
+<td style="text-align:right">7.14</td>
+<td style="text-align:right">1.14</td>
+</tr>
+<tr>
+<td>Eva Lu Ator</td>
+<td style="text-align:right">3.19</td>
+<td style="text-align:right">0.81</td>
+<td style="text-align:right">6.35</td>
+<td style="text-align:right">0.35</td>
+</tr>
+<tr>
+<td>Lem E. Tweakit</td>
+<td style="text-align:right">3.99</td>
+<td style="text-align:right">1.99</td>
+<td style="text-align:right">4.60</td>
+<td style="text-align:right">0.40</td>
+</tr>
+<tr>
+<td>Louis Reasoner</td>
+<td style="text-align:right">10.37</td>
+<td style="text-align:right">0.37</td>
+<td style="text-align:right">2.74</td>
+<td style="text-align:right">0.26</td>
+</tr>
+<tr>
+<td>Total error:</td>
+<td style="text-align:right"></td>
+<td style="text-align:right">13.87</td>
+<td style="text-align:right"></td>
+<td style="text-align:right">3.79</td>
+</tr>
+</tbody>
+</table>
+<h2 id="model-3">Model 3</h2>
+<p>The problem is that <code>dog(x)</code> and <code>cat(x)</code> are linear functions. Most observed data don&rsquo;t conform to straight lines. Take a moment and draw the line $f(x) = x$ and the curve $f(x) = x^2$. The former makes a poor approximation of the latter.</p>
+<p>Most of the time, people just use squares of the input data to add curvature to their models. We do this in our next version of the code by just adding squares of the input row values to our $A$ matrix. Everything else is the same. (In reality, you can add any function of the input data you feel best models the data, if you understand it well enough.)</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># Version 3: Offset with squared inputs</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> numpy
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>A <span style="color:#f92672">=</span> numpy<span style="color:#f92672">.</span>vstack([
+</span></span><span style="display:flex;"><span>    [<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">9</span>, <span style="color:#ae81ff">9</span><span style="color:#f92672">**</span><span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">4</span><span style="color:#f92672">**</span><span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">9</span>, <span style="color:#ae81ff">9</span><span style="color:#f92672">**</span><span style="color:#ae81ff">2</span>],
+</span></span><span style="display:flex;"><span>    [<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">8</span>, <span style="color:#ae81ff">8</span><span style="color:#f92672">**</span><span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">6</span>, <span style="color:#ae81ff">6</span><span style="color:#f92672">**</span><span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">4</span><span style="color:#f92672">**</span><span style="color:#ae81ff">2</span>],
+</span></span><span style="display:flex;"><span>    [<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">9</span>, <span style="color:#ae81ff">9</span><span style="color:#f92672">**</span><span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">4</span><span style="color:#f92672">**</span><span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">8</span>, <span style="color:#ae81ff">8</span><span style="color:#f92672">**</span><span style="color:#ae81ff">2</span>],
+</span></span><span style="display:flex;"><span>    [<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">3</span><span style="color:#f92672">**</span><span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">7</span>, <span style="color:#ae81ff">7</span><span style="color:#f92672">**</span><span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">9</span>, <span style="color:#ae81ff">9</span><span style="color:#f92672">**</span><span style="color:#ae81ff">2</span>],
+</span></span><span style="display:flex;"><span>    [<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">6</span>, <span style="color:#ae81ff">6</span><span style="color:#f92672">**</span><span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">8</span>, <span style="color:#ae81ff">8</span><span style="color:#f92672">**</span><span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">5</span><span style="color:#f92672">**</span><span style="color:#ae81ff">2</span>],
+</span></span><span style="display:flex;"><span>    [<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">4</span><span style="color:#f92672">**</span><span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">5</span><span style="color:#f92672">**</span><span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">3</span><span style="color:#f92672">**</span><span style="color:#ae81ff">2</span>]
+</span></span><span style="display:flex;"><span>])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>b1 <span style="color:#f92672">=</span> numpy<span style="color:#f92672">.</span>array([<span style="color:#ae81ff">9</span>, <span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">10</span>])
+</span></span><span style="display:flex;"><span>b2 <span style="color:#f92672">=</span> numpy<span style="color:#f92672">.</span>array([<span style="color:#ae81ff">9</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">6</span>, <span style="color:#ae81ff">6</span>, <span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">3</span>])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#39;dog ❤️:&#39;</span>, numpy<span style="color:#f92672">.</span>linalg<span style="color:#f92672">.</span>lstsq(A, b1, rcond<span style="color:#f92672">=</span><span style="color:#66d9ef">None</span>)[<span style="color:#ae81ff">0</span>])
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#39;cat ❤️:&#39;</span>, numpy<span style="color:#f92672">.</span>linalg<span style="color:#f92672">.</span>lstsq(A, b2, rcond<span style="color:#f92672">=</span><span style="color:#66d9ef">None</span>)[<span style="color:#ae81ff">0</span>])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># dog ❤️: [1.29368307  7.03633306  -0.44795498  9.98093332</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#  -0.75689575  -19.00757486  1.52985734]</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># cat ❤️: [0.47945896  5.30866067  -0.39644128 -1.28704188</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#   0.12634295   -4.32392606  0.43081918]</span>
+</span></span></code></pre></div><p>This gives us our final version of the model:</p>
+<pre tabindex="0"><code>dog(x) = 1.29368307 + 7.03633306 * x1 - 0.44795498 * x1**2 + 9.98093332 * x2 - 0.75689575 * x2**2 - 19.00757486 * x3 + 1.52985734 * x3**2
+cat(x) = 0.47945896 + 5.30866067 * x1 - 0.39644128 * x1**2 - 1.28704188 * x2 + 0.12634295 * x2**2 - 4.32392606 * x3 + 0.43081918 * x3**2
+</code></pre><p>Adding curvature to our model eliminates all perceived error, at least within 1e-16. This may seem unbelievable, but when you consider that we only have six input records, it isn&rsquo;t really.</p>
+<table>
+<thead>
+<tr>
+<th>respondent</th>
+<th style="text-align:right">predicted b1</th>
+<th style="text-align:right">b1 error</th>
+<th style="text-align:right">predicted b2</th>
+<th style="text-align:right">b2 error</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Alyssa P Hacker</td>
+<td style="text-align:right">9</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">9</td>
+<td style="text-align:right">0</td>
+</tr>
+<tr>
+<td>Ben Bitdiddle</td>
+<td style="text-align:right">10</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">4</td>
+<td style="text-align:right">0</td>
+</tr>
+<tr>
+<td>Cy D. Fect</td>
+<td style="text-align:right">2</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">6</td>
+<td style="text-align:right">0</td>
+</tr>
+<tr>
+<td>Eva Lu Ator</td>
+<td style="text-align:right">4</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">6</td>
+<td style="text-align:right">0</td>
+</tr>
+<tr>
+<td>Lem E. Tweakit</td>
+<td style="text-align:right">2</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">5</td>
+<td style="text-align:right">0</td>
+</tr>
+<tr>
+<td>Louis Reasoner</td>
+<td style="text-align:right">10</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">3</td>
+<td style="text-align:right">0</td>
+</tr>
+<tr>
+<td>Total error:</td>
+<td style="text-align:right"></td>
+<td style="text-align:right">0</td>
+<td style="text-align:right"></td>
+<td style="text-align:right">0</td>
+</tr>
+</tbody>
+</table>
+<p>It should be fairly obvious how one can take this and extrapolate to much larger models. I hope this is useful and that least squares becomes an important part of your lives.</p>
+]]></content:encoded>
+    </item>
+    
     <item>
       <title>🧐 Data Fitting 1 - Linear Data Fitting</title>
       <link>https://ryanjoneil.github.io/posts/2010-11-23-data-fitting-1-linear-data-fitting/</link>
