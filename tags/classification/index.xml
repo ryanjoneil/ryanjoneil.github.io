@@ -6,9 +6,103 @@
     <description>Recent content in classification on adventures in optimization</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Tue, 15 Feb 2011 00:00:00 +0000</lastBuildDate><atom:link href="https://ryanjoneil.github.io/tags/classification/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 16 Feb 2011 00:00:00 +0000</lastBuildDate><atom:link href="https://ryanjoneil.github.io/tags/classification/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>🧐 Data Fitting 2 - Very, Very Simple Linear Regression</title>
+      <title>🧐 Data Fitting 2a - Very, Very Simple Linear Regression in R</title>
+      <link>https://ryanjoneil.github.io/posts/2011-02-16-data-fitting-2a-very-very-simple-linear-regression-in-r/</link>
+      <pubDate>Wed, 16 Feb 2011 00:00:00 +0000</pubDate>
+      
+      <guid>https://ryanjoneil.github.io/posts/2011-02-16-data-fitting-2a-very-very-simple-linear-regression-in-r/</guid>
+      <description>Predict how much people like cats and dogs based on their ice cream preferences. Also, R.</description>
+      <content:encoded><![CDATA[<p>I thought it might be useful to follow up the <a href="../2011-02-15-data-fitting-2-very-very-simple-linear-regression-in-python/">last post</a> with another one showing the same examples in R.</p>
+<p>R provides a function called <code>lm</code>, which is similar in spirit to <a href="https://numpy.org/">NumPy</a>&rsquo;s <code>linalg.lstsq</code>. As you&rsquo;ll see, <code>lm</code>&rsquo;s interface is a bit more tuned to the concepts of modeling.<!-- raw HTML omitted --></p>
+<p>We begin by reading in the example CSV into a data frame:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>responses <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">read.csv</span>(<span style="color:#e6db74">&#39;example_data.csv&#39;</span>)
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>&gt; responses
+</span></span><span style="display:flex;"><span>  respondent vanilla.love strawberry.love chocolate.love
+</span></span><span style="display:flex;"><span>1     Aylssa            9               4              9
+</span></span><span style="display:flex;"><span>2        Ben            8               6              4
+</span></span><span style="display:flex;"><span>3         Cy            9               4              8
+</span></span><span style="display:flex;"><span>4        Eva            3               7              9
+</span></span><span style="display:flex;"><span>5        Lem            6               8              5
+</span></span><span style="display:flex;"><span>6      Louis            4               5              3
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  dog.love cat.love
+</span></span><span style="display:flex;"><span>1        9        9
+</span></span><span style="display:flex;"><span>2       10        4
+</span></span><span style="display:flex;"><span>3        2        6
+</span></span><span style="display:flex;"><span>4        4        6
+</span></span><span style="display:flex;"><span>5        2        5
+</span></span><span style="display:flex;"><span>6       10        3
+</span></span></code></pre></div><p>A data frame is sort of like a matrix, but with named columns. That is, we can refer to entire columns using the dollar sign. We are now ready to run least squares. We&rsquo;ll create the model for predicting &ldquo;dog love.&rdquo;  To create the &ldquo;cat love&rdquo; model, simply use that column name instead:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>fit1 <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">lm</span>(responses<span style="color:#f92672">$</span>dog.love <span style="color:#f92672">~</span> responses<span style="color:#f92672">$</span>vanilla.love
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">+</span> responses<span style="color:#f92672">$</span>strawberry.love <span style="color:#f92672">+</span> responses<span style="color:#f92672">$</span>chocolate.love)
+</span></span></code></pre></div><p>The syntax for lm is a little off-putting at first.  This call tells it to create a model for &ldquo;dog love&rdquo; with respect to <em>(the ~)</em> a function of the form <em>offset + x1 * vanilla love + x2 * strawberry love + x3 * chocolate love</em>. Note that the offset is conveniently implied when using <code>lm</code>, so this is the same as the second model we created in Python. Now that we&rsquo;ve computed the coefficients for our &ldquo;dog love&rdquo; model, we can ask R about it:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#a6e22e">summary</span>(fit1)
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>Call:
+</span></span><span style="display:flex;"><span>lm(formula = responses$dog.love ~ responses$vanilla.love
+</span></span><span style="display:flex;"><span>  + responses$strawberry.love + responses$chocolate.love)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Residuals:
+</span></span><span style="display:flex;"><span>      1       2       3       4       5       6
+</span></span><span style="display:flex;"><span> 3.1827  2.9436 -4.5820  0.8069 -1.9856 -0.3657
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Coefficients:
+</span></span><span style="display:flex;"><span>                          Estimate Std. Error t value Pr(&gt;|t|)
+</span></span><span style="display:flex;"><span>(Intercept)                20.9298    15.0654   1.389    0.299
+</span></span><span style="display:flex;"><span>responses$vanilla.love     -0.2783     0.9934  -0.280    0.806
+</span></span><span style="display:flex;"><span>responses$strawberry.love  -1.4314     1.5905  -0.900    0.463
+</span></span><span style="display:flex;"><span>responses$chocolate.love   -0.7647     0.8214  -0.931    0.450
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Residual standard error: 4.718 on 2 degrees of freedom
+</span></span><span style="display:flex;"><span>Multiple R-squared: 0.4206,     Adjusted R-squared: -0.4485
+</span></span><span style="display:flex;"><span>F-statistic: 0.484 on 3 and 2 DF,  p-value: 0.7272
+</span></span></code></pre></div><p>This gives us quite a bit of information, including the coefficients for our &ldquo;dog love&rdquo; model and various error metrics. You can find the offset and coefficients under the Estimate column above. We quickly verify this using R&rsquo;s vectorized arithmetic:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#ae81ff">20.9298</span> <span style="color:#f92672">-</span> <span style="color:#ae81ff">0.2783</span> <span style="color:#f92672">*</span> responses<span style="color:#f92672">$</span>vanilla.love
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">-</span> <span style="color:#ae81ff">1.4314</span> <span style="color:#f92672">*</span> responses<span style="color:#f92672">$</span>strawberry.love
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">-</span> <span style="color:#ae81ff">0.7647</span> <span style="color:#f92672">*</span> responses<span style="color:#f92672">$</span>chocolate.love
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>[1]  5.8172  7.0562  6.5819  3.1928  3.9853 10.3655
+</span></span></code></pre></div><p>You&rsquo;ll notice the model is essentially the same as the one we got from NumPy. Our next step is to add in the squared inputs. We do this by adding extra terms to the modeling formula. The <code>I()</code> function allows us to easily add additional operators to columns. That&rsquo;s how we accomplish the squaring. We could alternatively add squared input values to the data frame, but using <code>I()</code> is more convenient and natural.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>fit2 <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">lm</span>(responses<span style="color:#f92672">$</span>dog.love <span style="color:#f92672">~</span> responses<span style="color:#f92672">$</span>vanilla.love
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">+</span> <span style="color:#a6e22e">I</span>(responses<span style="color:#f92672">$</span>vanilla.love^2) <span style="color:#f92672">+</span> responses<span style="color:#f92672">$</span>strawberry.love
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">+</span> <span style="color:#a6e22e">I</span>(responses<span style="color:#f92672">$</span>strawberry.love^2) <span style="color:#f92672">+</span> responses<span style="color:#f92672">$</span>chocolate.love
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">+</span> <span style="color:#a6e22e">I</span>(responses<span style="color:#f92672">$</span>chocolate.love^2))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">summary</span>(fit2)
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>Call:
+</span></span><span style="display:flex;"><span>lm(formula = responses$dog.love ~ responses$vanilla.love
+</span></span><span style="display:flex;"><span>  + I(responses$vanilla.love^2) + responses$strawberry.love
+</span></span><span style="display:flex;"><span>  + I(responses$strawberry.love^2) + responses$chocolate.love
+</span></span><span style="display:flex;"><span>  + I(responses$chocolate.love^2))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Residuals:
+</span></span><span style="display:flex;"><span>ALL 6 residuals are 0: no residual degrees of freedom!
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Coefficients: (1 not defined because of singularities)
+</span></span><span style="display:flex;"><span>                               Estimate Std. Error t value Pr(&gt;|t|)
+</span></span><span style="display:flex;"><span>(Intercept)                    -357.444         NA      NA       NA
+</span></span><span style="display:flex;"><span>responses$vanilla.love           72.444         NA      NA       NA
+</span></span><span style="display:flex;"><span>I(responses$vanilla.love^2)      -6.111         NA      NA       NA
+</span></span><span style="display:flex;"><span>responses$strawberry.love        59.500         NA      NA       NA
+</span></span><span style="display:flex;"><span>I(responses$strawberry.love^2)   -5.722         NA      NA       NA
+</span></span><span style="display:flex;"><span>responses$chocolate.love          7.000         NA      NA       NA
+</span></span><span style="display:flex;"><span>I(responses$chocolate.love^2)        NA         NA      NA       NA
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Residual standard error: NaN on 0 degrees of freedom
+</span></span><span style="display:flex;"><span>Multiple R-squared:     1,      Adjusted R-squared:   NaN
+</span></span><span style="display:flex;"><span>F-statistic:   NaN on 5 and 0 DF,  p-value: NA
+</span></span></code></pre></div><p>We can see that we get the same &ldquo;dog love&rdquo; model as produced by the third Python version of the last post. Again, we quickly verify that the output is the same (minus some rounding errors):</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#ae81ff">-357.444</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">72.444</span> <span style="color:#f92672">*</span> responses<span style="color:#f92672">$</span>vanilla.love
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">-</span> <span style="color:#ae81ff">6.111</span> <span style="color:#f92672">*</span> responses<span style="color:#f92672">$</span>vanilla.love^2
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">+</span> <span style="color:#ae81ff">59.5</span> <span style="color:#f92672">*</span> responses<span style="color:#f92672">$</span>strawberry.love
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">-</span> <span style="color:#ae81ff">5.722</span> <span style="color:#f92672">*</span> responses<span style="color:#f92672">$</span>strawberry.love^2
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">+</span> <span style="color:#ae81ff">7</span> <span style="color:#f92672">*</span> responses<span style="color:#f92672">$</span>chocolate.love
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>[1]  9.009 10.012  2.009  4.011  2.016 10.006
+</span></span></code></pre></div>]]></content:encoded>
+    </item>
+    
+    <item>
+      <title>🧐 Data Fitting 2 - Very, Very Simple Linear Regression in Python</title>
       <link>https://ryanjoneil.github.io/posts/2011-02-15-data-fitting-2-very-very-simple-linear-regression-in-python/</link>
       <pubDate>Tue, 15 Feb 2011 00:00:00 +0000</pubDate>
       

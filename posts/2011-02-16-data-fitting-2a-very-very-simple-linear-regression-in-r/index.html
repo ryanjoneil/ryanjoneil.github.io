@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>🧐 Data Fitting 2a - Very, Very Simple Linear Regression in R | adventures in optimization</title>
+<meta name="keywords" content="classification, regression, r, modeling">
+<meta name="description" content="Predict how much people like cats and dogs based on their ice cream preferences. Also, R.">
+<meta name="author" content="Ryan O&#39;Neil">
+<link rel="canonical" href="https://ryanjoneil.github.io/posts/2011-02-16-data-fitting-2a-very-very-simple-linear-regression-in-r/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.7c3f0ab5ecc8326dc20e6644afa4081b33304fef3299b2c1179eaee195843a6a.css" integrity="sha256-fD8KtezIMm3CDmZEr6QIGzMwT&#43;8ymbLBF56u4ZWEOmo=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://ryanjoneil.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://ryanjoneil.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://ryanjoneil.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://ryanjoneil.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://ryanjoneil.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css"
+    integrity="sha384-GvrOXuhMATgEsSwCs4smul74iXGOixntILdUW9XmUC6+HX0sLNAK3q71HotJqlAn"
+    crossorigin="anonymous"/>
+<script
+    src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"
+    integrity="sha384-cpW21h6RZv/phavutF+AuVYrr+dA8xD9zs6FwLpaCct6O9ctzYFfFr4dgmgccOTx"
+    crossorigin="anonymous">
+</script>
+
+<script
+    src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"
+    integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05"
+    crossorigin="anonymous"
+    onload="renderMathInElement(document.body);">
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    renderMathInElement(document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "$", right: "$", display: false}
+        ]
+    });
+});
+</script>
+
+<meta property="og:title" content="🧐 Data Fitting 2a - Very, Very Simple Linear Regression in R" />
+<meta property="og:description" content="Predict how much people like cats and dogs based on their ice cream preferences. Also, R." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://ryanjoneil.github.io/posts/2011-02-16-data-fitting-2a-very-very-simple-linear-regression-in-r/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2011-02-16T00:00:00+00:00" />
+<meta property="article:modified_time" content="2011-02-16T00:00:00+00:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="🧐 Data Fitting 2a - Very, Very Simple Linear Regression in R"/>
+<meta name="twitter:description" content="Predict how much people like cats and dogs based on their ice cream preferences. Also, R."/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://ryanjoneil.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "🧐 Data Fitting 2a - Very, Very Simple Linear Regression in R",
+      "item": "https://ryanjoneil.github.io/posts/2011-02-16-data-fitting-2a-very-very-simple-linear-regression-in-r/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "🧐 Data Fitting 2a - Very, Very Simple Linear Regression in R",
+  "name": "🧐 Data Fitting 2a - Very, Very Simple Linear Regression in R",
+  "description": "Predict how much people like cats and dogs based on their ice cream preferences. Also, R.",
+  "keywords": [
+    "classification", "regression", "r", "modeling"
+  ],
+  "articleBody": "I thought it might be useful to follow up the last post with another one showing the same examples in R.\nR provides a function called lm, which is similar in spirit to NumPy’s linalg.lstsq. As you’ll see, lm’s interface is a bit more tuned to the concepts of modeling.\nWe begin by reading in the example CSV into a data frame:\nresponses \u003c- read.csv('example_data.csv') \u003e responses respondent vanilla.love strawberry.love chocolate.love 1 Aylssa 9 4 9 2 Ben 8 6 4 3 Cy 9 4 8 4 Eva 3 7 9 5 Lem 6 8 5 6 Louis 4 5 3 dog.love cat.love 1 9 9 2 10 4 3 2 6 4 4 6 5 2 5 6 10 3 A data frame is sort of like a matrix, but with named columns. That is, we can refer to entire columns using the dollar sign. We are now ready to run least squares. We’ll create the model for predicting “dog love.” To create the “cat love” model, simply use that column name instead:\nfit1 \u003c- lm(responses$dog.love ~ responses$vanilla.love + responses$strawberry.love + responses$chocolate.love) The syntax for lm is a little off-putting at first. This call tells it to create a model for “dog love” with respect to (the ~) a function of the form offset + x1 * vanilla love + x2 * strawberry love + x3 * chocolate love. Note that the offset is conveniently implied when using lm, so this is the same as the second model we created in Python. Now that we’ve computed the coefficients for our “dog love” model, we can ask R about it:\nsummary(fit1) Call: lm(formula = responses$dog.love ~ responses$vanilla.love + responses$strawberry.love + responses$chocolate.love) Residuals: 1 2 3 4 5 6 3.1827 2.9436 -4.5820 0.8069 -1.9856 -0.3657 Coefficients: Estimate Std. Error t value Pr(\u003e|t|) (Intercept) 20.9298 15.0654 1.389 0.299 responses$vanilla.love -0.2783 0.9934 -0.280 0.806 responses$strawberry.love -1.4314 1.5905 -0.900 0.463 responses$chocolate.love -0.7647 0.8214 -0.931 0.450 Residual standard error: 4.718 on 2 degrees of freedom Multiple R-squared: 0.4206, Adjusted R-squared: -0.4485 F-statistic: 0.484 on 3 and 2 DF, p-value: 0.7272 This gives us quite a bit of information, including the coefficients for our “dog love” model and various error metrics. You can find the offset and coefficients under the Estimate column above. We quickly verify this using R’s vectorized arithmetic:\n20.9298 - 0.2783 * responses$vanilla.love - 1.4314 * responses$strawberry.love - 0.7647 * responses$chocolate.love [1] 5.8172 7.0562 6.5819 3.1928 3.9853 10.3655 You’ll notice the model is essentially the same as the one we got from NumPy. Our next step is to add in the squared inputs. We do this by adding extra terms to the modeling formula. The I() function allows us to easily add additional operators to columns. That’s how we accomplish the squaring. We could alternatively add squared input values to the data frame, but using I() is more convenient and natural.\nfit2 \u003c- lm(responses$dog.love ~ responses$vanilla.love + I(responses$vanilla.love^2) + responses$strawberry.love + I(responses$strawberry.love^2) + responses$chocolate.love + I(responses$chocolate.love^2)) summary(fit2) Call: lm(formula = responses$dog.love ~ responses$vanilla.love + I(responses$vanilla.love^2) + responses$strawberry.love + I(responses$strawberry.love^2) + responses$chocolate.love + I(responses$chocolate.love^2)) Residuals: ALL 6 residuals are 0: no residual degrees of freedom! Coefficients: (1 not defined because of singularities) Estimate Std. Error t value Pr(\u003e|t|) (Intercept) -357.444 NA NA NA responses$vanilla.love 72.444 NA NA NA I(responses$vanilla.love^2) -6.111 NA NA NA responses$strawberry.love 59.500 NA NA NA I(responses$strawberry.love^2) -5.722 NA NA NA responses$chocolate.love 7.000 NA NA NA I(responses$chocolate.love^2) NA NA NA NA Residual standard error: NaN on 0 degrees of freedom Multiple R-squared: 1, Adjusted R-squared: NaN F-statistic: NaN on 5 and 0 DF, p-value: NA We can see that we get the same “dog love” model as produced by the third Python version of the last post. Again, we quickly verify that the output is the same (minus some rounding errors):\n-357.444 + 72.444 * responses$vanilla.love - 6.111 * responses$vanilla.love^2 + 59.5 * responses$strawberry.love - 5.722 * responses$strawberry.love^2 + 7 * responses$chocolate.love [1] 9.009 10.012 2.009 4.011 2.016 10.006 ",
+  "wordCount" : "657",
+  "inLanguage": "en",
+  "datePublished": "2011-02-16T00:00:00Z",
+  "dateModified": "2011-02-16T00:00:00Z",
+  "author":{
+    "@type": "Person",
+    "name": "Ryan O'Neil"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://ryanjoneil.github.io/posts/2011-02-16-data-fitting-2a-very-very-simple-linear-regression-in-r/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "adventures in optimization",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://ryanjoneil.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://ryanjoneil.github.io/" accesskey="h" title="adventures in optimization (Alt + H)">adventures in optimization</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://ryanjoneil.github.io/about" title="about">
+                    <span>about</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://ryanjoneil.github.io/coding" title="coding">
+                    <span>coding</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://ryanjoneil.github.io/posts" title="posting">
+                    <span>posting</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://ryanjoneil.github.io/speaking" title="speaking">
+                    <span>speaking</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://ryanjoneil.github.io/writing" title="writing">
+                    <span>writing</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://ryanjoneil.github.io/search" title="🔍">
+                    <span>🔍</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title">
+      🧐 Data Fitting 2a - Very, Very Simple Linear Regression in R
+    </h1>
+    <div class="post-description">
+      Predict how much people like cats and dogs based on their ice cream preferences. Also, R.
+    </div>
+    <div class="post-meta"><span title='2011-02-16 00:00:00 +0000 UTC'>February 16, 2011</span>&nbsp;·&nbsp;Ryan O&#39;Neil
+
+</div>
+  </header> 
+
+  <div class="post-content"><p>I thought it might be useful to follow up the <a href="../2011-02-15-data-fitting-2-very-very-simple-linear-regression-in-python/">last post</a> with another one showing the same examples in R.</p>
+<p>R provides a function called <code>lm</code>, which is similar in spirit to <a href="https://numpy.org/">NumPy</a>&rsquo;s <code>linalg.lstsq</code>. As you&rsquo;ll see, <code>lm</code>&rsquo;s interface is a bit more tuned to the concepts of modeling.<!-- raw HTML omitted --></p>
+<p>We begin by reading in the example CSV into a data frame:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>responses <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">read.csv</span>(<span style="color:#e6db74">&#39;example_data.csv&#39;</span>)
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>&gt; responses
+</span></span><span style="display:flex;"><span>  respondent vanilla.love strawberry.love chocolate.love
+</span></span><span style="display:flex;"><span>1     Aylssa            9               4              9
+</span></span><span style="display:flex;"><span>2        Ben            8               6              4
+</span></span><span style="display:flex;"><span>3         Cy            9               4              8
+</span></span><span style="display:flex;"><span>4        Eva            3               7              9
+</span></span><span style="display:flex;"><span>5        Lem            6               8              5
+</span></span><span style="display:flex;"><span>6      Louis            4               5              3
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  dog.love cat.love
+</span></span><span style="display:flex;"><span>1        9        9
+</span></span><span style="display:flex;"><span>2       10        4
+</span></span><span style="display:flex;"><span>3        2        6
+</span></span><span style="display:flex;"><span>4        4        6
+</span></span><span style="display:flex;"><span>5        2        5
+</span></span><span style="display:flex;"><span>6       10        3
+</span></span></code></pre></div><p>A data frame is sort of like a matrix, but with named columns. That is, we can refer to entire columns using the dollar sign. We are now ready to run least squares. We&rsquo;ll create the model for predicting &ldquo;dog love.&rdquo;  To create the &ldquo;cat love&rdquo; model, simply use that column name instead:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>fit1 <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">lm</span>(responses<span style="color:#f92672">$</span>dog.love <span style="color:#f92672">~</span> responses<span style="color:#f92672">$</span>vanilla.love
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">+</span> responses<span style="color:#f92672">$</span>strawberry.love <span style="color:#f92672">+</span> responses<span style="color:#f92672">$</span>chocolate.love)
+</span></span></code></pre></div><p>The syntax for lm is a little off-putting at first.  This call tells it to create a model for &ldquo;dog love&rdquo; with respect to <em>(the ~)</em> a function of the form <em>offset + x1 * vanilla love + x2 * strawberry love + x3 * chocolate love</em>. Note that the offset is conveniently implied when using <code>lm</code>, so this is the same as the second model we created in Python. Now that we&rsquo;ve computed the coefficients for our &ldquo;dog love&rdquo; model, we can ask R about it:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#a6e22e">summary</span>(fit1)
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>Call:
+</span></span><span style="display:flex;"><span>lm(formula = responses$dog.love ~ responses$vanilla.love
+</span></span><span style="display:flex;"><span>  + responses$strawberry.love + responses$chocolate.love)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Residuals:
+</span></span><span style="display:flex;"><span>      1       2       3       4       5       6
+</span></span><span style="display:flex;"><span> 3.1827  2.9436 -4.5820  0.8069 -1.9856 -0.3657
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Coefficients:
+</span></span><span style="display:flex;"><span>                          Estimate Std. Error t value Pr(&gt;|t|)
+</span></span><span style="display:flex;"><span>(Intercept)                20.9298    15.0654   1.389    0.299
+</span></span><span style="display:flex;"><span>responses$vanilla.love     -0.2783     0.9934  -0.280    0.806
+</span></span><span style="display:flex;"><span>responses$strawberry.love  -1.4314     1.5905  -0.900    0.463
+</span></span><span style="display:flex;"><span>responses$chocolate.love   -0.7647     0.8214  -0.931    0.450
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Residual standard error: 4.718 on 2 degrees of freedom
+</span></span><span style="display:flex;"><span>Multiple R-squared: 0.4206,     Adjusted R-squared: -0.4485
+</span></span><span style="display:flex;"><span>F-statistic: 0.484 on 3 and 2 DF,  p-value: 0.7272
+</span></span></code></pre></div><p>This gives us quite a bit of information, including the coefficients for our &ldquo;dog love&rdquo; model and various error metrics. You can find the offset and coefficients under the Estimate column above. We quickly verify this using R&rsquo;s vectorized arithmetic:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#ae81ff">20.9298</span> <span style="color:#f92672">-</span> <span style="color:#ae81ff">0.2783</span> <span style="color:#f92672">*</span> responses<span style="color:#f92672">$</span>vanilla.love
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">-</span> <span style="color:#ae81ff">1.4314</span> <span style="color:#f92672">*</span> responses<span style="color:#f92672">$</span>strawberry.love
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">-</span> <span style="color:#ae81ff">0.7647</span> <span style="color:#f92672">*</span> responses<span style="color:#f92672">$</span>chocolate.love
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>[1]  5.8172  7.0562  6.5819  3.1928  3.9853 10.3655
+</span></span></code></pre></div><p>You&rsquo;ll notice the model is essentially the same as the one we got from NumPy. Our next step is to add in the squared inputs. We do this by adding extra terms to the modeling formula. The <code>I()</code> function allows us to easily add additional operators to columns. That&rsquo;s how we accomplish the squaring. We could alternatively add squared input values to the data frame, but using <code>I()</code> is more convenient and natural.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>fit2 <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">lm</span>(responses<span style="color:#f92672">$</span>dog.love <span style="color:#f92672">~</span> responses<span style="color:#f92672">$</span>vanilla.love
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">+</span> <span style="color:#a6e22e">I</span>(responses<span style="color:#f92672">$</span>vanilla.love^2) <span style="color:#f92672">+</span> responses<span style="color:#f92672">$</span>strawberry.love
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">+</span> <span style="color:#a6e22e">I</span>(responses<span style="color:#f92672">$</span>strawberry.love^2) <span style="color:#f92672">+</span> responses<span style="color:#f92672">$</span>chocolate.love
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">+</span> <span style="color:#a6e22e">I</span>(responses<span style="color:#f92672">$</span>chocolate.love^2))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">summary</span>(fit2)
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>Call:
+</span></span><span style="display:flex;"><span>lm(formula = responses$dog.love ~ responses$vanilla.love
+</span></span><span style="display:flex;"><span>  + I(responses$vanilla.love^2) + responses$strawberry.love
+</span></span><span style="display:flex;"><span>  + I(responses$strawberry.love^2) + responses$chocolate.love
+</span></span><span style="display:flex;"><span>  + I(responses$chocolate.love^2))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Residuals:
+</span></span><span style="display:flex;"><span>ALL 6 residuals are 0: no residual degrees of freedom!
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Coefficients: (1 not defined because of singularities)
+</span></span><span style="display:flex;"><span>                               Estimate Std. Error t value Pr(&gt;|t|)
+</span></span><span style="display:flex;"><span>(Intercept)                    -357.444         NA      NA       NA
+</span></span><span style="display:flex;"><span>responses$vanilla.love           72.444         NA      NA       NA
+</span></span><span style="display:flex;"><span>I(responses$vanilla.love^2)      -6.111         NA      NA       NA
+</span></span><span style="display:flex;"><span>responses$strawberry.love        59.500         NA      NA       NA
+</span></span><span style="display:flex;"><span>I(responses$strawberry.love^2)   -5.722         NA      NA       NA
+</span></span><span style="display:flex;"><span>responses$chocolate.love          7.000         NA      NA       NA
+</span></span><span style="display:flex;"><span>I(responses$chocolate.love^2)        NA         NA      NA       NA
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Residual standard error: NaN on 0 degrees of freedom
+</span></span><span style="display:flex;"><span>Multiple R-squared:     1,      Adjusted R-squared:   NaN
+</span></span><span style="display:flex;"><span>F-statistic:   NaN on 5 and 0 DF,  p-value: NA
+</span></span></code></pre></div><p>We can see that we get the same &ldquo;dog love&rdquo; model as produced by the third Python version of the last post. Again, we quickly verify that the output is the same (minus some rounding errors):</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#ae81ff">-357.444</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">72.444</span> <span style="color:#f92672">*</span> responses<span style="color:#f92672">$</span>vanilla.love
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">-</span> <span style="color:#ae81ff">6.111</span> <span style="color:#f92672">*</span> responses<span style="color:#f92672">$</span>vanilla.love^2
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">+</span> <span style="color:#ae81ff">59.5</span> <span style="color:#f92672">*</span> responses<span style="color:#f92672">$</span>strawberry.love
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">-</span> <span style="color:#ae81ff">5.722</span> <span style="color:#f92672">*</span> responses<span style="color:#f92672">$</span>strawberry.love^2
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">+</span> <span style="color:#ae81ff">7</span> <span style="color:#f92672">*</span> responses<span style="color:#f92672">$</span>chocolate.love
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>[1]  9.009 10.012  2.009  4.011  2.016 10.006
+</span></span></code></pre></div>
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://ryanjoneil.github.io/tags/classification/">classification</a></li>
+      <li><a href="https://ryanjoneil.github.io/tags/regression/">regression</a></li>
+      <li><a href="https://ryanjoneil.github.io/tags/r/">r</a></li>
+      <li><a href="https://ryanjoneil.github.io/tags/modeling/">modeling</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://ryanjoneil.github.io/posts/2023-09-07-blogging-is-back/">
+    <span class="title">« Prev</span>
+    <br>
+    <span>🚀 Blogging is back, baby!</span>
+  </a>
+  <a class="next" href="https://ryanjoneil.github.io/posts/2011-02-15-data-fitting-2-very-very-simple-linear-regression-in-python/">
+    <span class="title">Next »</span>
+    <br>
+    <span>🧐 Data Fitting 2 - Very, Very Simple Linear Regression in Python</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2023 <a href="https://ryanjoneil.github.io/">adventures in optimization</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>
