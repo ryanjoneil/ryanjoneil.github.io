@@ -14,7 +14,7 @@
       
       <guid>https://ryanjoneil.github.io/posts/2010-11-23-data-fitting-1-linear-data-fitting/</guid>
       <description>An introduction to data fitting and classification using linear optimization in Python</description>
-      <content:encoded><![CDATA[<p><em>Note: This posted was updated to work with Python 3 and <a href="https://github.com/scipopt/PySCIPOpt">PySCIPOpt</a>. The original version used Python 2 and <a href="https://pythonhosted.org/python-zibopt/">python-zibopt</a>.</em></p>
+      <content:encoded><![CDATA[<p><em>Note: This post was updated to work with Python 3 and <a href="https://github.com/scipopt/PySCIPOpt">PySCIPOpt</a>. The original version used Python 2 and <a href="https://pythonhosted.org/python-zibopt/">python-zibopt</a>.</em></p>
 <p>Data fitting is one of those tasks that everyone should have at least some exposure to. Certainly developers and analysts will benefit from a working knowledge of its fundamentals and their implementations. However, in my own reading I&rsquo;ve found it difficult to locate good examples that are simple enough to pick up quickly and come with accompanying source code.</p>
 <p>This article commences an ongoing series introducing basic data fitting techniques. With any luck they won&rsquo;t be overly complex, while still being useful enough to get the point across with a real example and real data. We&rsquo;ll start with a binary classification problem: presented with a series of records, each containing a set number of input values describing it, determine whether or not each record exhibits some property.</p>
 <h2 id="model">Model</h2>

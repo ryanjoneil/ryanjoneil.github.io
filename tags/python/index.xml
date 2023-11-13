@@ -404,7 +404,7 @@ cat(x) = 0.47945896 + 5.30866067 * x1 - 0.39644128 * x1**2 - 1.28704188 * x2 + 0
       
       <guid>https://ryanjoneil.github.io/posts/2010-11-23-data-fitting-1-linear-data-fitting/</guid>
       <description>An introduction to data fitting and classification using linear optimization in Python</description>
-      <content:encoded><![CDATA[<p><em>Note: This posted was updated to work with Python 3 and <a href="https://github.com/scipopt/PySCIPOpt">PySCIPOpt</a>. The original version used Python 2 and <a href="https://pythonhosted.org/python-zibopt/">python-zibopt</a>.</em></p>
+      <content:encoded><![CDATA[<p><em>Note: This post was updated to work with Python 3 and <a href="https://github.com/scipopt/PySCIPOpt">PySCIPOpt</a>. The original version used Python 2 and <a href="https://pythonhosted.org/python-zibopt/">python-zibopt</a>.</em></p>
 <p>Data fitting is one of those tasks that everyone should have at least some exposure to. Certainly developers and analysts will benefit from a working knowledge of its fundamentals and their implementations. However, in my own reading I&rsquo;ve found it difficult to locate good examples that are simple enough to pick up quickly and come with accompanying source code.</p>
 <p>This article commences an ongoing series introducing basic data fitting techniques. With any luck they won&rsquo;t be overly complex, while still being useful enough to get the point across with a real example and real data. We&rsquo;ll start with a binary classification problem: presented with a series of records, each containing a set number of input values describing it, determine whether or not each record exhibits some property.</p>
 <h2 id="model">Model</h2>
@@ -587,7 +587,7 @@ $$</p>
       
       <guid>https://ryanjoneil.github.io/posts/2009-10-08-monte-carlo-simulation-in-python/</guid>
       <description>A quick introduction to writing and interpreting Monte Carlo simulations in Python</description>
-      <content:encoded><![CDATA[<p><em>Note: This posted was updated to work with Python 3.</em></p>
+      <content:encoded><![CDATA[<p><em>Note: This post was updated to work with Python 3.</em></p>
 <p>One of the most useful tools one learns in an Operations Research curriculum is <a href="http://en.wikipedia.org/wiki/Monte_Carlo_method">Monte Carlo Simulation</a>. Its utility lies in its simplicity: one can learn vital information about nearly any process, be it deterministic or stochastic, without wading through the grunt work of finding an analytical solution. It can be used for off-the-cuff estimates or as a proper scientific tool. All one needs to know is how to simulate a given process and its appropriate probability distributions and parameters if that process is stochastic.</p>
 <p>Here&rsquo;s how it works:</p>
 <ul>
