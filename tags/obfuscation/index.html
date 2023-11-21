@@ -178,6 +178,20 @@ document.addEventListener("DOMContentLoaded", function() {
 
 <article class="post-entry tag-entry"> 
   <header class="entry-header">
+    <h2>🐪 Reformed JAPHs: Huffman Coding
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Note: This post was edited for clarity.
+At this point, tricking python into printing strings via indirect means got a little boring. So I switched to obfuscating fundamental computer science algorithms. Here’s a JAPH that takes in a Huffman coded version of &#39;just another python hacker&#39;, decodes, and prints it.
+# Build coding tree def build_tree(scheme): if scheme.startswith(&#39;*&#39;): left, scheme = build_tree(scheme[1:]) right, scheme = build_tree(scheme) return (left, right), scheme else: return scheme[0], scheme[1:] def decode(tree, encoded): ret = &#39;&#39; node = tree for direction in encoded: if direction == &#39;0&#39;: node = node[0] else: node = node[1] if isinstance(node, str): ret &#43;= node node = tree return ret tree = build_tree(&#39;*****ju*sp*er***yct* h**ka*no&#39;)[0] print( decode(tree, bin(10627344201836243859174935587)....</p>
+  </div>
+  <footer class="entry-footer"><span title='2011-04-14 00:00:00 +0000 UTC'>April 14, 2011</span>&nbsp;·&nbsp;Ryan O&#39;Neil</footer>
+  <a class="entry-link" aria-label="post link to 🐪 Reformed JAPHs: Huffman Coding" href="https://ryanjoneil.github.io/posts/2011-04-14-reformed-japhs-huffman-coding/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
     <h2>🐪 Reformed JAPHs: Rolling Effect
     </h2>
   </header>

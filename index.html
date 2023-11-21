@@ -276,6 +276,20 @@ But, ultimately, for several years it just felt like blogging was dead. Its spac
 
 <article class="post-entry"> 
   <header class="entry-header">
+    <h2>🐪 Reformed JAPHs: Huffman Coding
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Note: This post was edited for clarity.
+At this point, tricking python into printing strings via indirect means got a little boring. So I switched to obfuscating fundamental computer science algorithms. Here’s a JAPH that takes in a Huffman coded version of &#39;just another python hacker&#39;, decodes, and prints it.
+# Build coding tree def build_tree(scheme): if scheme.startswith(&#39;*&#39;): left, scheme = build_tree(scheme[1:]) right, scheme = build_tree(scheme) return (left, right), scheme else: return scheme[0], scheme[1:] def decode(tree, encoded): ret = &#39;&#39; node = tree for direction in encoded: if direction == &#39;0&#39;: node = node[0] else: node = node[1] if isinstance(node, str): ret &#43;= node node = tree return ret tree = build_tree(&#39;*****ju*sp*er***yct* h**ka*no&#39;)[0] print( decode(tree, bin(10627344201836243859174935587)....</p>
+  </div>
+  <footer class="entry-footer"><span title='2011-04-14 00:00:00 +0000 UTC'>April 14, 2011</span>&nbsp;·&nbsp;Ryan O&#39;Neil</footer>
+  <a class="entry-link" aria-label="post link to 🐪 Reformed JAPHs: Huffman Coding" href="https://ryanjoneil.github.io/posts/2011-04-14-reformed-japhs-huffman-coding/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
     <h2>🐪 Reformed JAPHs: Rolling Effect
     </h2>
   </header>
@@ -366,18 +380,6 @@ We begin by reading in the example CSV into a data frame:...</p>
   </div>
   <footer class="entry-footer"><span title='2011-02-15 00:00:00 +0000 UTC'>February 15, 2011</span>&nbsp;·&nbsp;Ryan O&#39;Neil</footer>
   <a class="entry-link" aria-label="post link to 🧐 Data Fitting 2 - Very, Very Simple Linear Regression in Python" href="https://ryanjoneil.github.io/posts/2011-02-15-data-fitting-2-very-very-simple-linear-regression-in-python/"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2>🗳 Off the Cuff Voter Fraud Detection
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>Consider this scenario: You run a contest that accepts votes from the general Internet population. In order to encourage user engagement, you record any and all votes into a database over several days, storing nothing more than the competitor voted for, when each vote is cast, and a cookie set on the voter’s computer along with their apparent IP addresses. If a voter already has a recorded cookie set they are denied subsequent votes....</p>
-  </div>
-  <footer class="entry-footer"><span title='2010-11-30 00:00:00 +0000 UTC'>November 30, 2010</span>&nbsp;·&nbsp;Ryan O&#39;Neil</footer>
-  <a class="entry-link" aria-label="post link to 🗳 Off the Cuff Voter Fraud Detection" href="https://ryanjoneil.github.io/posts/2010-11-30-off-the-cuff-voter-fraud-detection/"></a>
 </article>
 <footer class="page-footer">
   <nav class="pagination">
