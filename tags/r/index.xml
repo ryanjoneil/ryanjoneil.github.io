@@ -6,7 +6,98 @@
     <description>Recent content in r on adventures in optimization</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Wed, 16 Feb 2011 00:00:00 +0000</lastBuildDate><atom:link href="https://ryanjoneil.github.io/tags/r/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 23 Feb 2011 00:00:00 +0000</lastBuildDate><atom:link href="https://ryanjoneil.github.io/tags/r/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>📈 Simulating GDP Growth</title>
+      <link>https://ryanjoneil.github.io/posts/2011-02-23-simulating-gdp-growth/</link>
+      <pubDate>Wed, 23 Feb 2011 00:00:00 +0000</pubDate>
+      
+      <guid>https://ryanjoneil.github.io/posts/2011-02-23-simulating-gdp-growth/</guid>
+      <description>Writing and interpreting simulations about GDP growth in R</description>
+      <content:encoded><![CDATA[<p>I hope you saw <a href="https://www.washingtonpost.com/wp-srv/special/business/china-growth/">&ldquo;China’s way to the top&rdquo;</a> on the Post&rsquo;s website recently. It&rsquo;s a very clear presentation of their statement and is certainly worth a look.<!-- raw HTML omitted --></p>
+<p>So say you&rsquo;re an economist and you actually do need to produce a realistic estimate of when China&rsquo;s GDP surpasses that of the USA. Can you use such an approach? Not really.  There are several simplifying assumptions the Post made that are perfectly reasonable.  However, if the goal is an analytical output from a highly random system such as GDP growth, one should not assume the inputs are fixed. <em>(I&rsquo;m not saying I have any gripe with their interactive. This post has a different purpose.)</em></p>
+<p>Why is this? The short answer is that randomness in any system can change its output drastically from one run to the next. Even if the mean from a deterministic analysis is correct, it tells us nothing about the variance of our output. We really need a confidence interval of years when China is likely to overtake the USA.</p>
+<p>We&rsquo;ll move in the great tradition of all simulation studies. First we pepare our input. A CSV of GDP in current US dollars for both countries from 1960 to 2009 is available from the World Bank <a href="https://data.worldbank.org/country/china">data</a> <a href="https://data.worldbank.org/country/usa">files</a>. We read this into a data frame and calculate their growth rates year over year. Note that the first value for growth has to be NA.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>gdp <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">read.csv</span>(<span style="color:#e6db74">&#39;gdp.csv&#39;</span>)
+</span></span><span style="display:flex;"><span>gdp<span style="color:#f92672">$</span>USA.growth <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">rep</span>(<span style="color:#66d9ef">NA</span>, <span style="color:#a6e22e">length</span>(gdp<span style="color:#f92672">$</span>USA))
+</span></span><span style="display:flex;"><span>gdp<span style="color:#f92672">$</span>China.growth <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">rep</span>(<span style="color:#66d9ef">NA</span>, <span style="color:#a6e22e">length</span>(gdp<span style="color:#f92672">$</span>China))
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">for </span>(i in <span style="color:#ae81ff">2</span><span style="color:#f92672">:</span><span style="color:#a6e22e">length</span>(gdp<span style="color:#f92672">$</span>USA)) {
+</span></span><span style="display:flex;"><span>  gdp<span style="color:#f92672">$</span>USA.growth[i] <span style="color:#f92672">&lt;-</span> <span style="color:#ae81ff">100</span> <span style="color:#f92672">*</span> (gdp<span style="color:#f92672">$</span>USA[i] <span style="color:#f92672">-</span> gdp<span style="color:#f92672">$</span>USA[i<span style="color:#ae81ff">-1</span>]) <span style="color:#f92672">/</span> gdp<span style="color:#f92672">$</span>USA[i<span style="color:#ae81ff">-1</span>]
+</span></span><span style="display:flex;"><span>  gdp<span style="color:#f92672">$</span>China.growth[i] <span style="color:#f92672">&lt;-</span> <span style="color:#ae81ff">100</span> <span style="color:#f92672">*</span> (gdp<span style="color:#f92672">$</span>China[i] <span style="color:#f92672">-</span> gdp<span style="color:#f92672">$</span>China[i<span style="color:#ae81ff">-1</span>]) <span style="color:#f92672">/</span> gdp<span style="color:#f92672">$</span>China[i<span style="color:#ae81ff">-1</span>]
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>We now analyze our inputs and assign probability distributions to the annual growth rates. In a full study this would involve comparing a number of different distributions and choosing the one that fits the input data best, but that&rsquo;s well beyond the scope of this post. Instead, we&rsquo;ll use the poor man&rsquo;s way out: plot histograms and visually verify what we hope to be true, that the distributions are normal.</p>
+<p><img loading="lazy" src="/files/2011-02-23-simulating-gdp-growth/us-gdp-percent-growth-histogram.png" alt="GDP growth histogram for the USA"  />
+</p>
+<p><img loading="lazy" src="/files/2011-02-23-simulating-gdp-growth/china-gdp-percent-growth-histogram.png" alt="GDP growth histogram for China"  />
+</p>
+<p>And they pretty much are. That&rsquo;s good enough for our purposes. Now all we need are the distribution parameters, which are mean and standard deviation for normal distributions.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">mean</span>(gdp<span style="color:#f92672">$</span>USA.growth[<span style="color:#f92672">!</span><span style="color:#a6e22e">is.na</span>(gdp<span style="color:#f92672">$</span>USA.growth)])
+</span></span><span style="display:flex;"><span>[1] <span style="color:#ae81ff">7.00594</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">sd</span>(gdp<span style="color:#f92672">$</span>USA.growth[<span style="color:#f92672">!</span><span style="color:#a6e22e">is.na</span>(gdp<span style="color:#f92672">$</span>USA.growth)])
+</span></span><span style="display:flex;"><span>[1] <span style="color:#ae81ff">2.889808</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">mean</span>(gdp<span style="color:#f92672">$</span>China.growth[<span style="color:#f92672">!</span><span style="color:#a6e22e">is.na</span>(gdp<span style="color:#f92672">$</span>China.growth)])
+</span></span><span style="display:flex;"><span>[1] <span style="color:#ae81ff">9.90896</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">sd</span>(gdp<span style="color:#f92672">$</span>China.growth[<span style="color:#f92672">!</span><span style="color:#a6e22e">is.na</span>(gdp<span style="color:#f92672">$</span>China.growth)])
+</span></span><span style="display:flex;"><span>[1] <span style="color:#ae81ff">10.5712</span><span style="color:#f92672">&lt;/</span>code<span style="color:#f92672">&gt;&lt;/</span>pre<span style="color:#f92672">&gt;</span>
+</span></span></code></pre></div><p>Now our input analysis is done. These are the inputs:</p>
+<p>$$
+\begin{align*}
+\text{USA Growth} &amp;\sim \mathcal{N}(7.00594, 2.889808^2)\\
+\text{China Growth} &amp;\sim \mathcal{N}(9.90896, 10.5712^2)
+\end{align*}
+$$</p>
+<p>This should make the advantage of such an approach much more obvious. Compare the standard deviations for the two countries. China is a lot more likely to have negative GDP growth in any given year. They&rsquo;re also more likely to have astronomical growth.</p>
+<p>We now build and run our simulation study. The more times we run the simulation the tighter we can make our confidence interval <em>(to a point)</em>, so we&rsquo;ll pick a pretty big number somewhat arbitrarily. If we want to, we can be fairly scientific about determining how many iterations are necessary after we&rsquo;ve done some runs, but we have to start somewhere.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>repetitions <span style="color:#f92672">&lt;-</span> <span style="color:#ae81ff">10000</span>
+</span></span></code></pre></div><p>This is the code for our simulation. For each iteration, it starts both countries at their 2009 GDPs. It then iterates, changing GDP randomly until China&rsquo;s GDP is at least the same value as the USA&rsquo;s. When that happens, it records the current year.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>results <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">rep</span>(<span style="color:#66d9ef">NA</span>, repetitions)
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">for </span>(i in <span style="color:#ae81ff">1</span><span style="color:#f92672">:</span>repetitions) {
+</span></span><span style="display:flex;"><span>  usa <span style="color:#f92672">&lt;-</span> gdp<span style="color:#f92672">$</span>USA<span style="color:#a6e22e">[length</span>(gdp<span style="color:#f92672">$</span>USA)]
+</span></span><span style="display:flex;"><span>  china <span style="color:#f92672">&lt;-</span> gdp<span style="color:#f92672">$</span>China<span style="color:#a6e22e">[length</span>(gdp<span style="color:#f92672">$</span>China)]
+</span></span><span style="display:flex;"><span>  year <span style="color:#f92672">&lt;-</span> gdp<span style="color:#f92672">$</span>Year<span style="color:#a6e22e">[length</span>(gdp<span style="color:#f92672">$</span>Year)]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">while </span>(<span style="color:#66d9ef">TRUE</span>) {
+</span></span><span style="display:flex;"><span>    year <span style="color:#f92672">&lt;-</span> year <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    usa.growth <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">rnorm</span>(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">7.00594</span>, <span style="color:#ae81ff">2.889808</span>)
+</span></span><span style="display:flex;"><span>    china.growth <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">rnorm</span>(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">9.90896</span>, <span style="color:#ae81ff">10.5712</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    usa <span style="color:#f92672">&lt;-</span> usa <span style="color:#f92672">*</span> (<span style="color:#ae81ff">1</span> <span style="color:#f92672">+</span> (usa.growth <span style="color:#f92672">/</span> <span style="color:#ae81ff">100</span>))
+</span></span><span style="display:flex;"><span>    china <span style="color:#f92672">&lt;-</span> china <span style="color:#f92672">*</span> (<span style="color:#ae81ff">1</span> <span style="color:#f92672">+</span> (china.growth <span style="color:#f92672">/</span> <span style="color:#ae81ff">100</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">if </span>(china <span style="color:#f92672">&gt;=</span> usa) {
+</span></span><span style="display:flex;"><span>      results[i] <span style="color:#f92672">&lt;-</span> year
+</span></span><span style="display:flex;"><span>      break
+</span></span><span style="display:flex;"><span>     }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>From the results vector we see that, given the data and assumptions for this model, China should surpass the USA in 2058. We also see that we can be 95% confident that the mean year this will happen is between 2057 and 2059. This is not quite the same as saying we are confident this will actually happen between those years. The result of our simulation is a probability distribution and we are discovering information about it.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">mean</span>(results)
+</span></span><span style="display:flex;"><span>[1] <span style="color:#ae81ff">2058.494</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">mean</span>(results) <span style="color:#f92672">+</span> (<span style="color:#a6e22e">sd</span>(results) <span style="color:#f92672">/</span> <span style="color:#a6e22e">sqrt</span>(<span style="color:#a6e22e">length</span>(results)) <span style="color:#f92672">*</span> <span style="color:#a6e22e">qnorm</span>(<span style="color:#ae81ff">0.025</span>))
+</span></span><span style="display:flex;"><span>[1] <span style="color:#ae81ff">2057.873</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">mean</span>(results) <span style="color:#f92672">+</span> (<span style="color:#a6e22e">sd</span>(results) <span style="color:#f92672">/</span> <span style="color:#a6e22e">sqrt</span>(<span style="color:#a6e22e">length</span>(results)) <span style="color:#f92672">*</span> <span style="color:#a6e22e">qnorm</span>(<span style="color:#ae81ff">0.975</span>))
+</span></span><span style="display:flex;"><span>[1] <span style="color:#ae81ff">2059.114</span><span style="color:#f92672">&lt;/</span>code<span style="color:#f92672">&gt;&lt;/</span>pre<span style="color:#f92672">&gt;</span>
+</span></span></code></pre></div><p>So what&rsquo;s wrong with this model? Well, we had to make a number of assumptions:</p>
+<ul>
+<li>We assume we actually used the right data set. This was more of a how-to than a proper analysis, so that wasn&rsquo;t too much of a concern.</li>
+<li>We assume future growth for the next 40-50 years resembles past growth from 1960-2009.  This is a bit ridiculous, of course, but that&rsquo;s the problem with forecasting.</li>
+<li>*We assume growth is normally distributed and that we don&rsquo;t encounter heavy-tailed behaviors in our distributions. We assume each year&rsquo;s growth is independent of the year before it. See the last exercise.</li>
+</ul>
+<p>Here are some good simulation exercises if you&rsquo;re looking to do more:</p>
+<ul>
+<li>Note how the outputs are quite a bit different from the Post graphic. I expect that&rsquo;s largely due to the inclusion of data back to 1960. Try running the simulation for yourself using just the past 10, 20, and 30 years and see how that changes the result.&lt;</li>
+<li>Write a simulation to determine the probability China&rsquo;s GDP surpasses the USA&rsquo;s in the next 25 years. Now plot the mean GDP and 95% confidence intervals for each country per year.</li>
+<li>Assume that there are actually two distributions for growth for each country: one when the previous year had positive growth and another when it was negative. How does that change the output?</li>
+</ul>
+]]></content:encoded>
+    </item>
+    
     <item>
       <title>🧐 Data Fitting 2a - Very, Very Simple Linear Regression in R</title>
       <link>https://ryanjoneil.github.io/posts/2011-02-16-data-fitting-2a-very-very-simple-linear-regression-in-r/</link>

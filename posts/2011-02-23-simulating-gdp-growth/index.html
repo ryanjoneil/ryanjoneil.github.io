@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>📈 Simulating GDP Growth | adventures in optimization</title>
+<meta name="keywords" content="simulation, r">
+<meta name="description" content="Writing and interpreting simulations about GDP growth in R">
+<meta name="author" content="Ryan O&#39;Neil">
+<link rel="canonical" href="https://ryanjoneil.github.io/posts/2011-02-23-simulating-gdp-growth/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.7c3f0ab5ecc8326dc20e6644afa4081b33304fef3299b2c1179eaee195843a6a.css" integrity="sha256-fD8KtezIMm3CDmZEr6QIGzMwT&#43;8ymbLBF56u4ZWEOmo=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://ryanjoneil.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://ryanjoneil.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://ryanjoneil.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://ryanjoneil.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://ryanjoneil.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css"
+    integrity="sha384-GvrOXuhMATgEsSwCs4smul74iXGOixntILdUW9XmUC6+HX0sLNAK3q71HotJqlAn"
+    crossorigin="anonymous"/>
+<script
+    src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"
+    integrity="sha384-cpW21h6RZv/phavutF+AuVYrr+dA8xD9zs6FwLpaCct6O9ctzYFfFr4dgmgccOTx"
+    crossorigin="anonymous">
+</script>
+
+<script
+    src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"
+    integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05"
+    crossorigin="anonymous"
+    onload="renderMathInElement(document.body);">
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    renderMathInElement(document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "$", right: "$", display: false}
+        ]
+    });
+});
+</script>
+
+<meta property="og:title" content="📈 Simulating GDP Growth" />
+<meta property="og:description" content="Writing and interpreting simulations about GDP growth in R" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://ryanjoneil.github.io/posts/2011-02-23-simulating-gdp-growth/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2011-02-23T00:00:00+00:00" />
+<meta property="article:modified_time" content="2011-02-23T00:00:00+00:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="📈 Simulating GDP Growth"/>
+<meta name="twitter:description" content="Writing and interpreting simulations about GDP growth in R"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://ryanjoneil.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "📈 Simulating GDP Growth",
+      "item": "https://ryanjoneil.github.io/posts/2011-02-23-simulating-gdp-growth/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "📈 Simulating GDP Growth",
+  "name": "📈 Simulating GDP Growth",
+  "description": "Writing and interpreting simulations about GDP growth in R",
+  "keywords": [
+    "simulation", "r"
+  ],
+  "articleBody": "I hope you saw “China’s way to the top” on the Post’s website recently. It’s a very clear presentation of their statement and is certainly worth a look.\nSo say you’re an economist and you actually do need to produce a realistic estimate of when China’s GDP surpasses that of the USA. Can you use such an approach? Not really. There are several simplifying assumptions the Post made that are perfectly reasonable. However, if the goal is an analytical output from a highly random system such as GDP growth, one should not assume the inputs are fixed. (I’m not saying I have any gripe with their interactive. This post has a different purpose.)\nWhy is this? The short answer is that randomness in any system can change its output drastically from one run to the next. Even if the mean from a deterministic analysis is correct, it tells us nothing about the variance of our output. We really need a confidence interval of years when China is likely to overtake the USA.\nWe’ll move in the great tradition of all simulation studies. First we pepare our input. A CSV of GDP in current US dollars for both countries from 1960 to 2009 is available from the World Bank data files. We read this into a data frame and calculate their growth rates year over year. Note that the first value for growth has to be NA.\ngdp \u003c- read.csv('gdp.csv') gdp$USA.growth \u003c- rep(NA, length(gdp$USA)) gdp$China.growth \u003c- rep(NA, length(gdp$China)) for (i in 2:length(gdp$USA)) { gdp$USA.growth[i] \u003c- 100 * (gdp$USA[i] - gdp$USA[i-1]) / gdp$USA[i-1] gdp$China.growth[i] \u003c- 100 * (gdp$China[i] - gdp$China[i-1]) / gdp$China[i-1] } We now analyze our inputs and assign probability distributions to the annual growth rates. In a full study this would involve comparing a number of different distributions and choosing the one that fits the input data best, but that’s well beyond the scope of this post. Instead, we’ll use the poor man’s way out: plot histograms and visually verify what we hope to be true, that the distributions are normal.\nAnd they pretty much are. That’s good enough for our purposes. Now all we need are the distribution parameters, which are mean and standard deviation for normal distributions.\n\u003e mean(gdp$USA.growth[!is.na(gdp$USA.growth)]) [1] 7.00594 \u003e sd(gdp$USA.growth[!is.na(gdp$USA.growth)]) [1] 2.889808 \u003e mean(gdp$China.growth[!is.na(gdp$China.growth)]) [1] 9.90896 \u003e sd(gdp$China.growth[!is.na(gdp$China.growth)]) [1] 10.5712\u003c/code\u003e\u003c/pre\u003e Now our input analysis is done. These are the inputs:\n$$ \\begin{align*} \\text{USA Growth} \u0026\\sim \\mathcal{N}(7.00594, 2.889808^2)\\\\ \\text{China Growth} \u0026\\sim \\mathcal{N}(9.90896, 10.5712^2) \\end{align*} $$\nThis should make the advantage of such an approach much more obvious. Compare the standard deviations for the two countries. China is a lot more likely to have negative GDP growth in any given year. They’re also more likely to have astronomical growth.\nWe now build and run our simulation study. The more times we run the simulation the tighter we can make our confidence interval (to a point), so we’ll pick a pretty big number somewhat arbitrarily. If we want to, we can be fairly scientific about determining how many iterations are necessary after we’ve done some runs, but we have to start somewhere.\nrepetitions \u003c- 10000 This is the code for our simulation. For each iteration, it starts both countries at their 2009 GDPs. It then iterates, changing GDP randomly until China’s GDP is at least the same value as the USA’s. When that happens, it records the current year.\nresults \u003c- rep(NA, repetitions) for (i in 1:repetitions) { usa \u003c- gdp$USA[length(gdp$USA)] china \u003c- gdp$China[length(gdp$China)] year \u003c- gdp$Year[length(gdp$Year)] while (TRUE) { year \u003c- year + 1 usa.growth \u003c- rnorm(1, 7.00594, 2.889808) china.growth \u003c- rnorm(1, 9.90896, 10.5712) usa \u003c- usa * (1 + (usa.growth / 100)) china \u003c- china * (1 + (china.growth / 100)) if (china \u003e= usa) { results[i] \u003c- year break } } } From the results vector we see that, given the data and assumptions for this model, China should surpass the USA in 2058. We also see that we can be 95% confident that the mean year this will happen is between 2057 and 2059. This is not quite the same as saying we are confident this will actually happen between those years. The result of our simulation is a probability distribution and we are discovering information about it.\n\u003e mean(results) [1] 2058.494 \u003e mean(results) + (sd(results) / sqrt(length(results)) * qnorm(0.025)) [1] 2057.873 \u003e mean(results) + (sd(results) / sqrt(length(results)) * qnorm(0.975)) [1] 2059.114\u003c/code\u003e\u003c/pre\u003e So what’s wrong with this model? Well, we had to make a number of assumptions:\nWe assume we actually used the right data set. This was more of a how-to than a proper analysis, so that wasn’t too much of a concern. We assume future growth for the next 40-50 years resembles past growth from 1960-2009. This is a bit ridiculous, of course, but that’s the problem with forecasting. *We assume growth is normally distributed and that we don’t encounter heavy-tailed behaviors in our distributions. We assume each year’s growth is independent of the year before it. See the last exercise. Here are some good simulation exercises if you’re looking to do more:\nNote how the outputs are quite a bit different from the Post graphic. I expect that’s largely due to the inclusion of data back to 1960. Try running the simulation for yourself using just the past 10, 20, and 30 years and see how that changes the result.\u003c Write a simulation to determine the probability China’s GDP surpasses the USA’s in the next 25 years. Now plot the mean GDP and 95% confidence intervals for each country per year. Assume that there are actually two distributions for growth for each country: one when the previous year had positive growth and another when it was negative. How does that change the output? ",
+  "wordCount" : "952",
+  "inLanguage": "en",
+  "datePublished": "2011-02-23T00:00:00Z",
+  "dateModified": "2011-02-23T00:00:00Z",
+  "author":{
+    "@type": "Person",
+    "name": "Ryan O'Neil"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://ryanjoneil.github.io/posts/2011-02-23-simulating-gdp-growth/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "adventures in optimization",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://ryanjoneil.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://ryanjoneil.github.io/" accesskey="h" title="adventures in optimization (Alt + H)">adventures in optimization</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://ryanjoneil.github.io/about" title="about">
+                    <span>about</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://ryanjoneil.github.io/coding" title="coding">
+                    <span>coding</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://ryanjoneil.github.io/posts" title="posting">
+                    <span>posting</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://ryanjoneil.github.io/speaking" title="speaking">
+                    <span>speaking</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://ryanjoneil.github.io/writing" title="writing">
+                    <span>writing</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://ryanjoneil.github.io/search" title="🔍">
+                    <span>🔍</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title">
+      📈 Simulating GDP Growth
+    </h1>
+    <div class="post-description">
+      Writing and interpreting simulations about GDP growth in R
+    </div>
+    <div class="post-meta"><span title='2011-02-23 00:00:00 +0000 UTC'>February 23, 2011</span>&nbsp;·&nbsp;Ryan O&#39;Neil
+
+</div>
+  </header> 
+
+  <div class="post-content"><p>I hope you saw <a href="https://www.washingtonpost.com/wp-srv/special/business/china-growth/">&ldquo;China’s way to the top&rdquo;</a> on the Post&rsquo;s website recently. It&rsquo;s a very clear presentation of their statement and is certainly worth a look.<!-- raw HTML omitted --></p>
+<p>So say you&rsquo;re an economist and you actually do need to produce a realistic estimate of when China&rsquo;s GDP surpasses that of the USA. Can you use such an approach? Not really.  There are several simplifying assumptions the Post made that are perfectly reasonable.  However, if the goal is an analytical output from a highly random system such as GDP growth, one should not assume the inputs are fixed. <em>(I&rsquo;m not saying I have any gripe with their interactive. This post has a different purpose.)</em></p>
+<p>Why is this? The short answer is that randomness in any system can change its output drastically from one run to the next. Even if the mean from a deterministic analysis is correct, it tells us nothing about the variance of our output. We really need a confidence interval of years when China is likely to overtake the USA.</p>
+<p>We&rsquo;ll move in the great tradition of all simulation studies. First we pepare our input. A CSV of GDP in current US dollars for both countries from 1960 to 2009 is available from the World Bank <a href="https://data.worldbank.org/country/china">data</a> <a href="https://data.worldbank.org/country/usa">files</a>. We read this into a data frame and calculate their growth rates year over year. Note that the first value for growth has to be NA.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>gdp <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">read.csv</span>(<span style="color:#e6db74">&#39;gdp.csv&#39;</span>)
+</span></span><span style="display:flex;"><span>gdp<span style="color:#f92672">$</span>USA.growth <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">rep</span>(<span style="color:#66d9ef">NA</span>, <span style="color:#a6e22e">length</span>(gdp<span style="color:#f92672">$</span>USA))
+</span></span><span style="display:flex;"><span>gdp<span style="color:#f92672">$</span>China.growth <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">rep</span>(<span style="color:#66d9ef">NA</span>, <span style="color:#a6e22e">length</span>(gdp<span style="color:#f92672">$</span>China))
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">for </span>(i in <span style="color:#ae81ff">2</span><span style="color:#f92672">:</span><span style="color:#a6e22e">length</span>(gdp<span style="color:#f92672">$</span>USA)) {
+</span></span><span style="display:flex;"><span>  gdp<span style="color:#f92672">$</span>USA.growth[i] <span style="color:#f92672">&lt;-</span> <span style="color:#ae81ff">100</span> <span style="color:#f92672">*</span> (gdp<span style="color:#f92672">$</span>USA[i] <span style="color:#f92672">-</span> gdp<span style="color:#f92672">$</span>USA[i<span style="color:#ae81ff">-1</span>]) <span style="color:#f92672">/</span> gdp<span style="color:#f92672">$</span>USA[i<span style="color:#ae81ff">-1</span>]
+</span></span><span style="display:flex;"><span>  gdp<span style="color:#f92672">$</span>China.growth[i] <span style="color:#f92672">&lt;-</span> <span style="color:#ae81ff">100</span> <span style="color:#f92672">*</span> (gdp<span style="color:#f92672">$</span>China[i] <span style="color:#f92672">-</span> gdp<span style="color:#f92672">$</span>China[i<span style="color:#ae81ff">-1</span>]) <span style="color:#f92672">/</span> gdp<span style="color:#f92672">$</span>China[i<span style="color:#ae81ff">-1</span>]
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>We now analyze our inputs and assign probability distributions to the annual growth rates. In a full study this would involve comparing a number of different distributions and choosing the one that fits the input data best, but that&rsquo;s well beyond the scope of this post. Instead, we&rsquo;ll use the poor man&rsquo;s way out: plot histograms and visually verify what we hope to be true, that the distributions are normal.</p>
+<p><img loading="lazy" src="/files/2011-02-23-simulating-gdp-growth/us-gdp-percent-growth-histogram.png" alt="GDP growth histogram for the USA"  />
+</p>
+<p><img loading="lazy" src="/files/2011-02-23-simulating-gdp-growth/china-gdp-percent-growth-histogram.png" alt="GDP growth histogram for China"  />
+</p>
+<p>And they pretty much are. That&rsquo;s good enough for our purposes. Now all we need are the distribution parameters, which are mean and standard deviation for normal distributions.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">mean</span>(gdp<span style="color:#f92672">$</span>USA.growth[<span style="color:#f92672">!</span><span style="color:#a6e22e">is.na</span>(gdp<span style="color:#f92672">$</span>USA.growth)])
+</span></span><span style="display:flex;"><span>[1] <span style="color:#ae81ff">7.00594</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">sd</span>(gdp<span style="color:#f92672">$</span>USA.growth[<span style="color:#f92672">!</span><span style="color:#a6e22e">is.na</span>(gdp<span style="color:#f92672">$</span>USA.growth)])
+</span></span><span style="display:flex;"><span>[1] <span style="color:#ae81ff">2.889808</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">mean</span>(gdp<span style="color:#f92672">$</span>China.growth[<span style="color:#f92672">!</span><span style="color:#a6e22e">is.na</span>(gdp<span style="color:#f92672">$</span>China.growth)])
+</span></span><span style="display:flex;"><span>[1] <span style="color:#ae81ff">9.90896</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">sd</span>(gdp<span style="color:#f92672">$</span>China.growth[<span style="color:#f92672">!</span><span style="color:#a6e22e">is.na</span>(gdp<span style="color:#f92672">$</span>China.growth)])
+</span></span><span style="display:flex;"><span>[1] <span style="color:#ae81ff">10.5712</span><span style="color:#f92672">&lt;/</span>code<span style="color:#f92672">&gt;&lt;/</span>pre<span style="color:#f92672">&gt;</span>
+</span></span></code></pre></div><p>Now our input analysis is done. These are the inputs:</p>
+<p>$$
+\begin{align*}
+\text{USA Growth} &amp;\sim \mathcal{N}(7.00594, 2.889808^2)\\
+\text{China Growth} &amp;\sim \mathcal{N}(9.90896, 10.5712^2)
+\end{align*}
+$$</p>
+<p>This should make the advantage of such an approach much more obvious. Compare the standard deviations for the two countries. China is a lot more likely to have negative GDP growth in any given year. They&rsquo;re also more likely to have astronomical growth.</p>
+<p>We now build and run our simulation study. The more times we run the simulation the tighter we can make our confidence interval <em>(to a point)</em>, so we&rsquo;ll pick a pretty big number somewhat arbitrarily. If we want to, we can be fairly scientific about determining how many iterations are necessary after we&rsquo;ve done some runs, but we have to start somewhere.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>repetitions <span style="color:#f92672">&lt;-</span> <span style="color:#ae81ff">10000</span>
+</span></span></code></pre></div><p>This is the code for our simulation. For each iteration, it starts both countries at their 2009 GDPs. It then iterates, changing GDP randomly until China&rsquo;s GDP is at least the same value as the USA&rsquo;s. When that happens, it records the current year.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>results <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">rep</span>(<span style="color:#66d9ef">NA</span>, repetitions)
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">for </span>(i in <span style="color:#ae81ff">1</span><span style="color:#f92672">:</span>repetitions) {
+</span></span><span style="display:flex;"><span>  usa <span style="color:#f92672">&lt;-</span> gdp<span style="color:#f92672">$</span>USA<span style="color:#a6e22e">[length</span>(gdp<span style="color:#f92672">$</span>USA)]
+</span></span><span style="display:flex;"><span>  china <span style="color:#f92672">&lt;-</span> gdp<span style="color:#f92672">$</span>China<span style="color:#a6e22e">[length</span>(gdp<span style="color:#f92672">$</span>China)]
+</span></span><span style="display:flex;"><span>  year <span style="color:#f92672">&lt;-</span> gdp<span style="color:#f92672">$</span>Year<span style="color:#a6e22e">[length</span>(gdp<span style="color:#f92672">$</span>Year)]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">while </span>(<span style="color:#66d9ef">TRUE</span>) {
+</span></span><span style="display:flex;"><span>    year <span style="color:#f92672">&lt;-</span> year <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    usa.growth <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">rnorm</span>(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">7.00594</span>, <span style="color:#ae81ff">2.889808</span>)
+</span></span><span style="display:flex;"><span>    china.growth <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">rnorm</span>(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">9.90896</span>, <span style="color:#ae81ff">10.5712</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    usa <span style="color:#f92672">&lt;-</span> usa <span style="color:#f92672">*</span> (<span style="color:#ae81ff">1</span> <span style="color:#f92672">+</span> (usa.growth <span style="color:#f92672">/</span> <span style="color:#ae81ff">100</span>))
+</span></span><span style="display:flex;"><span>    china <span style="color:#f92672">&lt;-</span> china <span style="color:#f92672">*</span> (<span style="color:#ae81ff">1</span> <span style="color:#f92672">+</span> (china.growth <span style="color:#f92672">/</span> <span style="color:#ae81ff">100</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">if </span>(china <span style="color:#f92672">&gt;=</span> usa) {
+</span></span><span style="display:flex;"><span>      results[i] <span style="color:#f92672">&lt;-</span> year
+</span></span><span style="display:flex;"><span>      break
+</span></span><span style="display:flex;"><span>     }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>From the results vector we see that, given the data and assumptions for this model, China should surpass the USA in 2058. We also see that we can be 95% confident that the mean year this will happen is between 2057 and 2059. This is not quite the same as saying we are confident this will actually happen between those years. The result of our simulation is a probability distribution and we are discovering information about it.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">mean</span>(results)
+</span></span><span style="display:flex;"><span>[1] <span style="color:#ae81ff">2058.494</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">mean</span>(results) <span style="color:#f92672">+</span> (<span style="color:#a6e22e">sd</span>(results) <span style="color:#f92672">/</span> <span style="color:#a6e22e">sqrt</span>(<span style="color:#a6e22e">length</span>(results)) <span style="color:#f92672">*</span> <span style="color:#a6e22e">qnorm</span>(<span style="color:#ae81ff">0.025</span>))
+</span></span><span style="display:flex;"><span>[1] <span style="color:#ae81ff">2057.873</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">mean</span>(results) <span style="color:#f92672">+</span> (<span style="color:#a6e22e">sd</span>(results) <span style="color:#f92672">/</span> <span style="color:#a6e22e">sqrt</span>(<span style="color:#a6e22e">length</span>(results)) <span style="color:#f92672">*</span> <span style="color:#a6e22e">qnorm</span>(<span style="color:#ae81ff">0.975</span>))
+</span></span><span style="display:flex;"><span>[1] <span style="color:#ae81ff">2059.114</span><span style="color:#f92672">&lt;/</span>code<span style="color:#f92672">&gt;&lt;/</span>pre<span style="color:#f92672">&gt;</span>
+</span></span></code></pre></div><p>So what&rsquo;s wrong with this model? Well, we had to make a number of assumptions:</p>
+<ul>
+<li>We assume we actually used the right data set. This was more of a how-to than a proper analysis, so that wasn&rsquo;t too much of a concern.</li>
+<li>We assume future growth for the next 40-50 years resembles past growth from 1960-2009.  This is a bit ridiculous, of course, but that&rsquo;s the problem with forecasting.</li>
+<li>*We assume growth is normally distributed and that we don&rsquo;t encounter heavy-tailed behaviors in our distributions. We assume each year&rsquo;s growth is independent of the year before it. See the last exercise.</li>
+</ul>
+<p>Here are some good simulation exercises if you&rsquo;re looking to do more:</p>
+<ul>
+<li>Note how the outputs are quite a bit different from the Post graphic. I expect that&rsquo;s largely due to the inclusion of data back to 1960. Try running the simulation for yourself using just the past 10, 20, and 30 years and see how that changes the result.&lt;</li>
+<li>Write a simulation to determine the probability China&rsquo;s GDP surpasses the USA&rsquo;s in the next 25 years. Now plot the mean GDP and 95% confidence intervals for each country per year.</li>
+<li>Assume that there are actually two distributions for growth for each country: one when the previous year had positive growth and another when it was negative. How does that change the output?</li>
+</ul>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://ryanjoneil.github.io/tags/simulation/">simulation</a></li>
+      <li><a href="https://ryanjoneil.github.io/tags/r/">r</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://ryanjoneil.github.io/posts/2011-04-01-reformed-japhs-alphabetic-indexing/">
+    <span class="title">« Prev</span>
+    <br>
+    <span>🐪 Reformed JAPHs: Alphabetic Indexing</span>
+  </a>
+  <a class="next" href="https://ryanjoneil.github.io/posts/2011-02-16-data-fitting-2a-very-very-simple-linear-regression-in-r/">
+    <span class="title">Next »</span>
+    <br>
+    <span>🧐 Data Fitting 2a - Very, Very Simple Linear Regression in R</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2023 <a href="https://ryanjoneil.github.io/">adventures in optimization</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

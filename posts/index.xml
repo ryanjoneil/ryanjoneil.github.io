@@ -382,6 +382,158 @@ graph LR
     </item>
     
     <item>
+      <title>🐪 Reformed JAPHs: Ridiculous Anagram</title>
+      <link>https://ryanjoneil.github.io/posts/2011-04-03-reformed-japhs-ridiculous-anagram/</link>
+      <pubDate>Sun, 03 Apr 2011 00:00:00 +0000</pubDate>
+      
+      <guid>https://ryanjoneil.github.io/posts/2011-04-03-reformed-japhs-ridiculous-anagram/</guid>
+      <description>Python obfuscation using anagrams</description>
+      <content:encoded><![CDATA[<p>Here&rsquo;s the second in my reformed JAPH series. It takes an anagram of <code>'just another python hacker'</code> and converts it prior to printing. It sorts the anagram by the indices of another string, in order of their associated characters. This is sort of like a pre-digested <a href="https://en.wikipedia.org/wiki/Schwartzian_transform">Schwartzian transform</a>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>x <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;upjohn tehran hectors katy&#39;</span>
+</span></span><span style="display:flex;"><span>y <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;1D0HG6JFO9P5ICKAM87B24NL3E&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#39;&#39;</span><span style="color:#f92672">.</span>join(x[i] <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> sorted(range(len(x)), key<span style="color:#f92672">=</span><span style="color:#66d9ef">lambda</span> p: y[p])))
+</span></span></code></pre></div><p>Obfuscation consists mostly of using silly machinations to construct the string we use to sort the anagram.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>print(<span style="color:#e6db74">&#39;&#39;</span><span style="color:#f92672">.</span>join(<span style="color:#e6db74">&#39;&#39;&#39;upjohn tehran hectors katy&#39;&#39;&#39;</span>[_]<span style="color:#66d9ef">for</span> _ <span style="color:#f92672">in</span> sorted(range
+</span></span><span style="display:flex;"><span>(<span style="color:#ae81ff">26</span>),key<span style="color:#f92672">=</span><span style="color:#66d9ef">lambda</span> p:(hex(<span style="color:#ae81ff">29</span>)[<span style="color:#ae81ff">2</span>:]<span style="color:#f92672">.</span>upper()<span style="color:#f92672">+</span>str(<span style="color:#ae81ff">3</span><span style="color:#f92672">*</span><span style="color:#ae81ff">3</span><span style="color:#f92672">*</span><span style="color:#ae81ff">3</span><span style="color:#f92672">*</span><span style="color:#ae81ff">3</span><span style="color:#f92672">-</span><span style="color:#ae81ff">3</span><span style="color:#f92672">**</span><span style="color:#ae81ff">4</span>)<span style="color:#f92672">+</span><span style="color:#e6db74">&#39;HG&#39;</span><span style="color:#f92672">+</span>str(sum(
+</span></span><span style="display:flex;"><span>range(<span style="color:#ae81ff">4</span>)))<span style="color:#f92672">+</span><span style="color:#e6db74">&#39;JFO&#39;</span><span style="color:#f92672">+</span>str((<span style="color:#ae81ff">1</span><span style="color:#f92672">+</span><span style="color:#ae81ff">2</span>)<span style="color:#f92672">**</span>(<span style="color:#ae81ff">1</span><span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>))<span style="color:#f92672">+</span><span style="color:#e6db74">&#39;P&#39;</span><span style="color:#f92672">+</span>str(<span style="color:#ae81ff">35</span><span style="color:#f92672">/</span><span style="color:#ae81ff">7</span>)[:<span style="color:#ae81ff">1</span>]<span style="color:#f92672">+</span><span style="color:#e6db74">&#39;i.c.k.&#39;</span><span style="color:#f92672">.</span>replace(
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#39;.&#39;</span>,<span style="color:#e6db74">&#39;&#39;</span>)<span style="color:#f92672">.</span>upper()<span style="color:#f92672">+</span><span style="color:#e6db74">&#39;AM&#39;</span><span style="color:#f92672">+</span>str(<span style="color:#ae81ff">3</span><span style="color:#f92672">**</span><span style="color:#ae81ff">2</span><span style="color:#f92672">*</span>sum(range(<span style="color:#ae81ff">5</span>))<span style="color:#f92672">-</span><span style="color:#ae81ff">3</span>)<span style="color:#f92672">+</span>hex(<span style="color:#ae81ff">0o5444</span>)[<span style="color:#ae81ff">2</span>:]<span style="color:#f92672">.</span>replace
+</span></span><span style="display:flex;"><span>(<span style="color:#f92672">*</span><span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\x62</span><span style="color:#e6db74">|</span><span style="color:#ae81ff">\x42</span><span style="color:#e6db74">&#39;</span><span style="color:#f92672">.</span>split(<span style="color:#e6db74">&#39;|&#39;</span>))<span style="color:#f92672">+</span><span style="color:#e6db74">&#39;NL&#39;</span><span style="color:#f92672">+</span>hex(<span style="color:#ae81ff">0o076</span>)<span style="color:#f92672">.</span>split(<span style="color:#e6db74">&#39;x&#39;</span>)[<span style="color:#ae81ff">1</span>]<span style="color:#f92672">.</span>upper())[p])))
+</span></span></code></pre></div>]]></content:encoded>
+    </item>
+    
+    <item>
+      <title>🐪 Reformed JAPHs: Alphabetic Indexing</title>
+      <link>https://ryanjoneil.github.io/posts/2011-04-01-reformed-japhs-alphabetic-indexing/</link>
+      <pubDate>Fri, 01 Apr 2011 00:00:00 +0000</pubDate>
+      
+      <guid>https://ryanjoneil.github.io/posts/2011-04-01-reformed-japhs-alphabetic-indexing/</guid>
+      <description>Python obfuscation</description>
+      <content:encoded><![CDATA[<p><em>Note: This post was edited for clarity.</em></p>
+<p>Many years ago, I was a Perl programmer. Then one day I became disillusioned at the progress of Perl 6 and decided to <a href="https://www.python.org/dev/peps/pep-0020/">import this</a>.</p>
+<p>This seems to be a fairly common story for Perl to Python converts. While I haven&rsquo;t looked back much, there are a number of things I really miss about <code>perl</code> <em>(lower case intentional)</em>. I miss having value types in a dynamic language, magical and ill-advised use of <a href="https://www.foo.be/docs/tpj/issues/vol3_1/tpj0301-0003.html">cryptocontext</a>, and sometimes even <a href="https://web.archive.org/web/20040712204117/https://perldesignpatterns.com/?PseudoHash">pseudohashes</a> because they were inexcusably weird. A language that supports so many ideas out of the box enables an extended learning curve that lasts for <a href="https://web.archive.org/web/20020607034341/https://silver.sucs.org/~manic/humour/languages/perlhacker.htm">many years</a>. &ldquo;Perl itself is the game.&rdquo;</p>
+<p>Most of all I think I miss writing Perl <a href="https://www.perlmonks.org/?node=Perl%20Poetry">poetry</a> and <a href="https://en.wikipedia.org/wiki/Just_another_Perl_hacker">JAPHs</a>. Sadly, I didn&rsquo;t keep any of those I wrote, and I&rsquo;m not competent enough with the language anymore to write interesting ones. At the time I was intentionally distancing myself from a model that was largely implicit and based on archaic systems internals and moving to one that was (supposedly) explicit and simple.</p>
+<p>After switching to Python as my primary language, I used the following email signature in a nod to this change in orientation <em>(intended for Python 2)</em>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>print <span style="color:#e6db74">&#39;just another python hacker&#39;</span>
+</span></span></code></pre></div><p>Recently I&rsquo;ve been experimenting with writing JAPHs in Python. I think of these as &ldquo;reformed JAPHs.&rdquo; They accomplish the same purpose as programming exercises but in a more restricted context. In some ways they are more challenging. Creativity can be difficult in a narrowly defined landscape.</p>
+<p>I have written a small series of reformed JAPHs which increase monotonically in complexity. Here is the first one, written in plain understandable Python 3.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> string
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>letters <span style="color:#f92672">=</span> string<span style="color:#f92672">.</span>ascii_lowercase <span style="color:#f92672">+</span> <span style="color:#e6db74">&#39; &#39;</span>
+</span></span><span style="display:flex;"><span>indices <span style="color:#f92672">=</span> [
+</span></span><span style="display:flex;"><span>     <span style="color:#ae81ff">9</span>, <span style="color:#ae81ff">20</span>, <span style="color:#ae81ff">18</span>, <span style="color:#ae81ff">19</span>, <span style="color:#ae81ff">26</span>,  <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">13</span>, <span style="color:#ae81ff">14</span>, <span style="color:#ae81ff">19</span>, <span style="color:#ae81ff">7</span>,  <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">17</span>, <span style="color:#ae81ff">26</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#ae81ff">15</span>, <span style="color:#ae81ff">24</span>, <span style="color:#ae81ff">19</span>,  <span style="color:#ae81ff">7</span>, <span style="color:#ae81ff">14</span>, <span style="color:#ae81ff">13</span>, <span style="color:#ae81ff">26</span>,  <span style="color:#ae81ff">7</span>,  <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">10</span>,  <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">17</span>
+</span></span><span style="display:flex;"><span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#39;&#39;</span><span style="color:#f92672">.</span>join(letters[i] <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> indices))
+</span></span></code></pre></div><p>This is fairly simple. Instead of explicitly embedding the string <code>'just another python hacker'</code> in the program, we assemble it using the index of its letters in the string <code>'abcdefghijklmnopqrstuvwxyz '</code>. We then obfuscate through a series of minor measures:</p>
+<ul>
+<li>Instead of calling the print function, we <code>import sys</code> and make a call to <code>sys.stdout.write</code>.</li>
+<li>We assemble <code>string.lowercase + ' '</code> by joining together the character versions of its respective ordinal values (97 to 123 and 32).</li>
+<li>We join together the integer indices using <code>'l'</code> and split that into a list.</li>
+<li>We apply <code>'''</code> liberally and rely on the fact that <code>python</code> concatenates adjacent strings.</li>
+</ul>
+<p>Here&rsquo;s the obfuscated version:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>eval(<span style="color:#e6db74">&#34;__import__(&#39;&#39;&#39;</span><span style="color:#ae81ff">\x73</span><span style="color:#e6db74">&#39;&#39;&#39;&#39;&#39;&#39;</span><span style="color:#ae81ff">\x79</span><span style="color:#e6db74">&#39;&#39;&#39;&#39;&#39;&#39;</span><span style="color:#ae81ff">\x73</span><span style="color:#e6db74">&#39;&#39;&#39;).sTdOuT&#34;</span><span style="color:#f92672">.</span>lower()
+</span></span><span style="display:flex;"><span>)<span style="color:#f92672">.</span>write(<span style="color:#e6db74">&#39;&#39;</span><span style="color:#f92672">.</span>join(map(<span style="color:#66d9ef">lambda</span> _:(list(map(chr,range(<span style="color:#ae81ff">97</span>,<span style="color:#ae81ff">123</span>)))<span style="color:#f92672">+</span>[chr(
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">32</span>)])[int(_)],(<span style="color:#e6db74">&#39;&#39;&#39;9l20l18l19&#39;&#39;&#39;&#39;&#39;&#39;l26l0l13l14l19l7l4l17l26l15&#39;&#39;&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#39;&#39;&#39;l24l19l7l14l1&#39;&#39;&#39;&#39;&#39;&#39;3l26l7l0l2l10l4l17&#39;&#39;&#39;</span>)<span style="color:#f92672">.</span>split(<span style="color:#e6db74">&#39;l&#39;</span>)))<span style="color:#f92672">+</span><span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#39;</span>,)
+</span></span></code></pre></div><p>We could certainly do more, but that&rsquo;s where I left this one. Stay tuned for the next JAPH.</p>
+]]></content:encoded>
+    </item>
+    
+    <item>
+      <title>📈 Simulating GDP Growth</title>
+      <link>https://ryanjoneil.github.io/posts/2011-02-23-simulating-gdp-growth/</link>
+      <pubDate>Wed, 23 Feb 2011 00:00:00 +0000</pubDate>
+      
+      <guid>https://ryanjoneil.github.io/posts/2011-02-23-simulating-gdp-growth/</guid>
+      <description>Writing and interpreting simulations about GDP growth in R</description>
+      <content:encoded><![CDATA[<p>I hope you saw <a href="https://www.washingtonpost.com/wp-srv/special/business/china-growth/">&ldquo;China’s way to the top&rdquo;</a> on the Post&rsquo;s website recently. It&rsquo;s a very clear presentation of their statement and is certainly worth a look.<!-- raw HTML omitted --></p>
+<p>So say you&rsquo;re an economist and you actually do need to produce a realistic estimate of when China&rsquo;s GDP surpasses that of the USA. Can you use such an approach? Not really.  There are several simplifying assumptions the Post made that are perfectly reasonable.  However, if the goal is an analytical output from a highly random system such as GDP growth, one should not assume the inputs are fixed. <em>(I&rsquo;m not saying I have any gripe with their interactive. This post has a different purpose.)</em></p>
+<p>Why is this? The short answer is that randomness in any system can change its output drastically from one run to the next. Even if the mean from a deterministic analysis is correct, it tells us nothing about the variance of our output. We really need a confidence interval of years when China is likely to overtake the USA.</p>
+<p>We&rsquo;ll move in the great tradition of all simulation studies. First we pepare our input. A CSV of GDP in current US dollars for both countries from 1960 to 2009 is available from the World Bank <a href="https://data.worldbank.org/country/china">data</a> <a href="https://data.worldbank.org/country/usa">files</a>. We read this into a data frame and calculate their growth rates year over year. Note that the first value for growth has to be NA.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>gdp <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">read.csv</span>(<span style="color:#e6db74">&#39;gdp.csv&#39;</span>)
+</span></span><span style="display:flex;"><span>gdp<span style="color:#f92672">$</span>USA.growth <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">rep</span>(<span style="color:#66d9ef">NA</span>, <span style="color:#a6e22e">length</span>(gdp<span style="color:#f92672">$</span>USA))
+</span></span><span style="display:flex;"><span>gdp<span style="color:#f92672">$</span>China.growth <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">rep</span>(<span style="color:#66d9ef">NA</span>, <span style="color:#a6e22e">length</span>(gdp<span style="color:#f92672">$</span>China))
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">for </span>(i in <span style="color:#ae81ff">2</span><span style="color:#f92672">:</span><span style="color:#a6e22e">length</span>(gdp<span style="color:#f92672">$</span>USA)) {
+</span></span><span style="display:flex;"><span>  gdp<span style="color:#f92672">$</span>USA.growth[i] <span style="color:#f92672">&lt;-</span> <span style="color:#ae81ff">100</span> <span style="color:#f92672">*</span> (gdp<span style="color:#f92672">$</span>USA[i] <span style="color:#f92672">-</span> gdp<span style="color:#f92672">$</span>USA[i<span style="color:#ae81ff">-1</span>]) <span style="color:#f92672">/</span> gdp<span style="color:#f92672">$</span>USA[i<span style="color:#ae81ff">-1</span>]
+</span></span><span style="display:flex;"><span>  gdp<span style="color:#f92672">$</span>China.growth[i] <span style="color:#f92672">&lt;-</span> <span style="color:#ae81ff">100</span> <span style="color:#f92672">*</span> (gdp<span style="color:#f92672">$</span>China[i] <span style="color:#f92672">-</span> gdp<span style="color:#f92672">$</span>China[i<span style="color:#ae81ff">-1</span>]) <span style="color:#f92672">/</span> gdp<span style="color:#f92672">$</span>China[i<span style="color:#ae81ff">-1</span>]
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>We now analyze our inputs and assign probability distributions to the annual growth rates. In a full study this would involve comparing a number of different distributions and choosing the one that fits the input data best, but that&rsquo;s well beyond the scope of this post. Instead, we&rsquo;ll use the poor man&rsquo;s way out: plot histograms and visually verify what we hope to be true, that the distributions are normal.</p>
+<p><img loading="lazy" src="/files/2011-02-23-simulating-gdp-growth/us-gdp-percent-growth-histogram.png" alt="GDP growth histogram for the USA"  />
+</p>
+<p><img loading="lazy" src="/files/2011-02-23-simulating-gdp-growth/china-gdp-percent-growth-histogram.png" alt="GDP growth histogram for China"  />
+</p>
+<p>And they pretty much are. That&rsquo;s good enough for our purposes. Now all we need are the distribution parameters, which are mean and standard deviation for normal distributions.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">mean</span>(gdp<span style="color:#f92672">$</span>USA.growth[<span style="color:#f92672">!</span><span style="color:#a6e22e">is.na</span>(gdp<span style="color:#f92672">$</span>USA.growth)])
+</span></span><span style="display:flex;"><span>[1] <span style="color:#ae81ff">7.00594</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">sd</span>(gdp<span style="color:#f92672">$</span>USA.growth[<span style="color:#f92672">!</span><span style="color:#a6e22e">is.na</span>(gdp<span style="color:#f92672">$</span>USA.growth)])
+</span></span><span style="display:flex;"><span>[1] <span style="color:#ae81ff">2.889808</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">mean</span>(gdp<span style="color:#f92672">$</span>China.growth[<span style="color:#f92672">!</span><span style="color:#a6e22e">is.na</span>(gdp<span style="color:#f92672">$</span>China.growth)])
+</span></span><span style="display:flex;"><span>[1] <span style="color:#ae81ff">9.90896</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">sd</span>(gdp<span style="color:#f92672">$</span>China.growth[<span style="color:#f92672">!</span><span style="color:#a6e22e">is.na</span>(gdp<span style="color:#f92672">$</span>China.growth)])
+</span></span><span style="display:flex;"><span>[1] <span style="color:#ae81ff">10.5712</span><span style="color:#f92672">&lt;/</span>code<span style="color:#f92672">&gt;&lt;/</span>pre<span style="color:#f92672">&gt;</span>
+</span></span></code></pre></div><p>Now our input analysis is done. These are the inputs:</p>
+<p>$$
+\begin{align*}
+\text{USA Growth} &amp;\sim \mathcal{N}(7.00594, 2.889808^2)\\
+\text{China Growth} &amp;\sim \mathcal{N}(9.90896, 10.5712^2)
+\end{align*}
+$$</p>
+<p>This should make the advantage of such an approach much more obvious. Compare the standard deviations for the two countries. China is a lot more likely to have negative GDP growth in any given year. They&rsquo;re also more likely to have astronomical growth.</p>
+<p>We now build and run our simulation study. The more times we run the simulation the tighter we can make our confidence interval <em>(to a point)</em>, so we&rsquo;ll pick a pretty big number somewhat arbitrarily. If we want to, we can be fairly scientific about determining how many iterations are necessary after we&rsquo;ve done some runs, but we have to start somewhere.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>repetitions <span style="color:#f92672">&lt;-</span> <span style="color:#ae81ff">10000</span>
+</span></span></code></pre></div><p>This is the code for our simulation. For each iteration, it starts both countries at their 2009 GDPs. It then iterates, changing GDP randomly until China&rsquo;s GDP is at least the same value as the USA&rsquo;s. When that happens, it records the current year.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>results <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">rep</span>(<span style="color:#66d9ef">NA</span>, repetitions)
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">for </span>(i in <span style="color:#ae81ff">1</span><span style="color:#f92672">:</span>repetitions) {
+</span></span><span style="display:flex;"><span>  usa <span style="color:#f92672">&lt;-</span> gdp<span style="color:#f92672">$</span>USA<span style="color:#a6e22e">[length</span>(gdp<span style="color:#f92672">$</span>USA)]
+</span></span><span style="display:flex;"><span>  china <span style="color:#f92672">&lt;-</span> gdp<span style="color:#f92672">$</span>China<span style="color:#a6e22e">[length</span>(gdp<span style="color:#f92672">$</span>China)]
+</span></span><span style="display:flex;"><span>  year <span style="color:#f92672">&lt;-</span> gdp<span style="color:#f92672">$</span>Year<span style="color:#a6e22e">[length</span>(gdp<span style="color:#f92672">$</span>Year)]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">while </span>(<span style="color:#66d9ef">TRUE</span>) {
+</span></span><span style="display:flex;"><span>    year <span style="color:#f92672">&lt;-</span> year <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    usa.growth <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">rnorm</span>(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">7.00594</span>, <span style="color:#ae81ff">2.889808</span>)
+</span></span><span style="display:flex;"><span>    china.growth <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">rnorm</span>(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">9.90896</span>, <span style="color:#ae81ff">10.5712</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    usa <span style="color:#f92672">&lt;-</span> usa <span style="color:#f92672">*</span> (<span style="color:#ae81ff">1</span> <span style="color:#f92672">+</span> (usa.growth <span style="color:#f92672">/</span> <span style="color:#ae81ff">100</span>))
+</span></span><span style="display:flex;"><span>    china <span style="color:#f92672">&lt;-</span> china <span style="color:#f92672">*</span> (<span style="color:#ae81ff">1</span> <span style="color:#f92672">+</span> (china.growth <span style="color:#f92672">/</span> <span style="color:#ae81ff">100</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">if </span>(china <span style="color:#f92672">&gt;=</span> usa) {
+</span></span><span style="display:flex;"><span>      results[i] <span style="color:#f92672">&lt;-</span> year
+</span></span><span style="display:flex;"><span>      break
+</span></span><span style="display:flex;"><span>     }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>From the results vector we see that, given the data and assumptions for this model, China should surpass the USA in 2058. We also see that we can be 95% confident that the mean year this will happen is between 2057 and 2059. This is not quite the same as saying we are confident this will actually happen between those years. The result of our simulation is a probability distribution and we are discovering information about it.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">mean</span>(results)
+</span></span><span style="display:flex;"><span>[1] <span style="color:#ae81ff">2058.494</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">mean</span>(results) <span style="color:#f92672">+</span> (<span style="color:#a6e22e">sd</span>(results) <span style="color:#f92672">/</span> <span style="color:#a6e22e">sqrt</span>(<span style="color:#a6e22e">length</span>(results)) <span style="color:#f92672">*</span> <span style="color:#a6e22e">qnorm</span>(<span style="color:#ae81ff">0.025</span>))
+</span></span><span style="display:flex;"><span>[1] <span style="color:#ae81ff">2057.873</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">mean</span>(results) <span style="color:#f92672">+</span> (<span style="color:#a6e22e">sd</span>(results) <span style="color:#f92672">/</span> <span style="color:#a6e22e">sqrt</span>(<span style="color:#a6e22e">length</span>(results)) <span style="color:#f92672">*</span> <span style="color:#a6e22e">qnorm</span>(<span style="color:#ae81ff">0.975</span>))
+</span></span><span style="display:flex;"><span>[1] <span style="color:#ae81ff">2059.114</span><span style="color:#f92672">&lt;/</span>code<span style="color:#f92672">&gt;&lt;/</span>pre<span style="color:#f92672">&gt;</span>
+</span></span></code></pre></div><p>So what&rsquo;s wrong with this model? Well, we had to make a number of assumptions:</p>
+<ul>
+<li>We assume we actually used the right data set. This was more of a how-to than a proper analysis, so that wasn&rsquo;t too much of a concern.</li>
+<li>We assume future growth for the next 40-50 years resembles past growth from 1960-2009.  This is a bit ridiculous, of course, but that&rsquo;s the problem with forecasting.</li>
+<li>*We assume growth is normally distributed and that we don&rsquo;t encounter heavy-tailed behaviors in our distributions. We assume each year&rsquo;s growth is independent of the year before it. See the last exercise.</li>
+</ul>
+<p>Here are some good simulation exercises if you&rsquo;re looking to do more:</p>
+<ul>
+<li>Note how the outputs are quite a bit different from the Post graphic. I expect that&rsquo;s largely due to the inclusion of data back to 1960. Try running the simulation for yourself using just the past 10, 20, and 30 years and see how that changes the result.&lt;</li>
+<li>Write a simulation to determine the probability China&rsquo;s GDP surpasses the USA&rsquo;s in the next 25 years. Now plot the mean GDP and 95% confidence intervals for each country per year.</li>
+<li>Assume that there are actually two distributions for growth for each country: one when the previous year had positive growth and another when it was negative. How does that change the output?</li>
+</ul>
+]]></content:encoded>
+    </item>
+    
+    <item>
       <title>🧐 Data Fitting 2a - Very, Very Simple Linear Regression in R</title>
       <link>https://ryanjoneil.github.io/posts/2011-02-16-data-fitting-2a-very-very-simple-linear-regression-in-r/</link>
       <pubDate>Wed, 16 Feb 2011 00:00:00 +0000</pubDate>
@@ -1053,7 +1205,7 @@ $$</p>
       <guid>https://ryanjoneil.github.io/posts/2009-10-08-monte-carlo-simulation-in-python/</guid>
       <description>A quick introduction to writing and interpreting Monte Carlo simulations in Python</description>
       <content:encoded><![CDATA[<p><em>Note: This post was updated to work with Python 3.</em></p>
-<p>One of the most useful tools one learns in an Operations Research curriculum is <a href="http://en.wikipedia.org/wiki/Monte_Carlo_method">Monte Carlo Simulation</a>. Its utility lies in its simplicity: one can learn vital information about nearly any process, be it deterministic or stochastic, without wading through the grunt work of finding an analytical solution. It can be used for off-the-cuff estimates or as a proper scientific tool. All one needs to know is how to simulate a given process and its appropriate probability distributions and parameters if that process is stochastic.</p>
+<p>One of the most useful tools one learns in an Operations Research curriculum is <a href="https://en.wikipedia.org/wiki/Monte_Carlo_method">Monte Carlo Simulation</a>. Its utility lies in its simplicity: one can learn vital information about nearly any process, be it deterministic or stochastic, without wading through the grunt work of finding an analytical solution. It can be used for off-the-cuff estimates or as a proper scientific tool. All one needs to know is how to simulate a given process and its appropriate probability distributions and parameters if that process is stochastic.</p>
 <p>Here&rsquo;s how it works:</p>
 <ul>
 <li>Construct a simulation that, given input values, returns a value of interest. This could be a pure quantity, like time spent waiting for a bus, or a boolean indicating whether or not a particular event occurs.</li>

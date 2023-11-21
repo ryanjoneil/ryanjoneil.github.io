@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>🐪 Reformed JAPHs: Alphabetic Indexing | adventures in optimization</title>
+<meta name="keywords" content="obfuscation, python">
+<meta name="description" content="Python obfuscation">
+<meta name="author" content="Ryan O&#39;Neil">
+<link rel="canonical" href="https://ryanjoneil.github.io/posts/2011-04-01-reformed-japhs-alphabetic-indexing/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.7c3f0ab5ecc8326dc20e6644afa4081b33304fef3299b2c1179eaee195843a6a.css" integrity="sha256-fD8KtezIMm3CDmZEr6QIGzMwT&#43;8ymbLBF56u4ZWEOmo=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://ryanjoneil.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://ryanjoneil.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://ryanjoneil.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://ryanjoneil.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://ryanjoneil.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css"
+    integrity="sha384-GvrOXuhMATgEsSwCs4smul74iXGOixntILdUW9XmUC6+HX0sLNAK3q71HotJqlAn"
+    crossorigin="anonymous"/>
+<script
+    src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"
+    integrity="sha384-cpW21h6RZv/phavutF+AuVYrr+dA8xD9zs6FwLpaCct6O9ctzYFfFr4dgmgccOTx"
+    crossorigin="anonymous">
+</script>
+
+<script
+    src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"
+    integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05"
+    crossorigin="anonymous"
+    onload="renderMathInElement(document.body);">
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    renderMathInElement(document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "$", right: "$", display: false}
+        ]
+    });
+});
+</script>
+
+<meta property="og:title" content="🐪 Reformed JAPHs: Alphabetic Indexing" />
+<meta property="og:description" content="Python obfuscation" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://ryanjoneil.github.io/posts/2011-04-01-reformed-japhs-alphabetic-indexing/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2011-04-01T00:00:00+00:00" />
+<meta property="article:modified_time" content="2011-04-01T00:00:00+00:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="🐪 Reformed JAPHs: Alphabetic Indexing"/>
+<meta name="twitter:description" content="Python obfuscation"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://ryanjoneil.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "🐪 Reformed JAPHs: Alphabetic Indexing",
+      "item": "https://ryanjoneil.github.io/posts/2011-04-01-reformed-japhs-alphabetic-indexing/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "🐪 Reformed JAPHs: Alphabetic Indexing",
+  "name": "🐪 Reformed JAPHs: Alphabetic Indexing",
+  "description": "Python obfuscation",
+  "keywords": [
+    "obfuscation", "python"
+  ],
+  "articleBody": "Note: This post was edited for clarity.\nMany years ago, I was a Perl programmer. Then one day I became disillusioned at the progress of Perl 6 and decided to import this.\nThis seems to be a fairly common story for Perl to Python converts. While I haven’t looked back much, there are a number of things I really miss about perl (lower case intentional). I miss having value types in a dynamic language, magical and ill-advised use of cryptocontext, and sometimes even pseudohashes because they were inexcusably weird. A language that supports so many ideas out of the box enables an extended learning curve that lasts for many years. “Perl itself is the game.”\nMost of all I think I miss writing Perl poetry and JAPHs. Sadly, I didn’t keep any of those I wrote, and I’m not competent enough with the language anymore to write interesting ones. At the time I was intentionally distancing myself from a model that was largely implicit and based on archaic systems internals and moving to one that was (supposedly) explicit and simple.\nAfter switching to Python as my primary language, I used the following email signature in a nod to this change in orientation (intended for Python 2):\nprint 'just another python hacker' Recently I’ve been experimenting with writing JAPHs in Python. I think of these as “reformed JAPHs.” They accomplish the same purpose as programming exercises but in a more restricted context. In some ways they are more challenging. Creativity can be difficult in a narrowly defined landscape.\nI have written a small series of reformed JAPHs which increase monotonically in complexity. Here is the first one, written in plain understandable Python 3.\nimport string letters = string.ascii_lowercase + ' ' indices = [ 9, 20, 18, 19, 26, 0, 13, 14, 19, 7, 4, 17, 26, 15, 24, 19, 7, 14, 13, 26, 7, 0, 2, 10, 4, 17 ] print(''.join(letters[i] for i in indices)) This is fairly simple. Instead of explicitly embedding the string 'just another python hacker' in the program, we assemble it using the index of its letters in the string 'abcdefghijklmnopqrstuvwxyz '. We then obfuscate through a series of minor measures:\nInstead of calling the print function, we import sys and make a call to sys.stdout.write. We assemble string.lowercase + ' ' by joining together the character versions of its respective ordinal values (97 to 123 and 32). We join together the integer indices using 'l' and split that into a list. We apply ''' liberally and rely on the fact that python concatenates adjacent strings. Here’s the obfuscated version:\neval(\"__import__('''\\x73''''''\\x79''''''\\x73''').sTdOuT\".lower() ).write(''.join(map(lambda _:(list(map(chr,range(97,123)))+[chr( 32)])[int(_)],('''9l20l18l19''''''l26l0l13l14l19l7l4l17l26l15''' '''l24l19l7l14l1''''''3l26l7l0l2l10l4l17''').split('l')))+'\\n',) We could certainly do more, but that’s where I left this one. Stay tuned for the next JAPH.\n",
+  "wordCount" : "457",
+  "inLanguage": "en",
+  "datePublished": "2011-04-01T00:00:00Z",
+  "dateModified": "2011-04-01T00:00:00Z",
+  "author":{
+    "@type": "Person",
+    "name": "Ryan O'Neil"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://ryanjoneil.github.io/posts/2011-04-01-reformed-japhs-alphabetic-indexing/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "adventures in optimization",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://ryanjoneil.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://ryanjoneil.github.io/" accesskey="h" title="adventures in optimization (Alt + H)">adventures in optimization</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://ryanjoneil.github.io/about" title="about">
+                    <span>about</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://ryanjoneil.github.io/coding" title="coding">
+                    <span>coding</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://ryanjoneil.github.io/posts" title="posting">
+                    <span>posting</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://ryanjoneil.github.io/speaking" title="speaking">
+                    <span>speaking</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://ryanjoneil.github.io/writing" title="writing">
+                    <span>writing</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://ryanjoneil.github.io/search" title="🔍">
+                    <span>🔍</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title">
+      🐪 Reformed JAPHs: Alphabetic Indexing
+    </h1>
+    <div class="post-description">
+      Python obfuscation
+    </div>
+    <div class="post-meta"><span title='2011-04-01 00:00:00 +0000 UTC'>April 1, 2011</span>&nbsp;·&nbsp;Ryan O&#39;Neil
+
+</div>
+  </header> 
+
+  <div class="post-content"><p><em>Note: This post was edited for clarity.</em></p>
+<p>Many years ago, I was a Perl programmer. Then one day I became disillusioned at the progress of Perl 6 and decided to <a href="https://www.python.org/dev/peps/pep-0020/">import this</a>.</p>
+<p>This seems to be a fairly common story for Perl to Python converts. While I haven&rsquo;t looked back much, there are a number of things I really miss about <code>perl</code> <em>(lower case intentional)</em>. I miss having value types in a dynamic language, magical and ill-advised use of <a href="https://www.foo.be/docs/tpj/issues/vol3_1/tpj0301-0003.html">cryptocontext</a>, and sometimes even <a href="https://web.archive.org/web/20040712204117/https://perldesignpatterns.com/?PseudoHash">pseudohashes</a> because they were inexcusably weird. A language that supports so many ideas out of the box enables an extended learning curve that lasts for <a href="https://web.archive.org/web/20020607034341/https://silver.sucs.org/~manic/humour/languages/perlhacker.htm">many years</a>. &ldquo;Perl itself is the game.&rdquo;</p>
+<p>Most of all I think I miss writing Perl <a href="https://www.perlmonks.org/?node=Perl%20Poetry">poetry</a> and <a href="https://en.wikipedia.org/wiki/Just_another_Perl_hacker">JAPHs</a>. Sadly, I didn&rsquo;t keep any of those I wrote, and I&rsquo;m not competent enough with the language anymore to write interesting ones. At the time I was intentionally distancing myself from a model that was largely implicit and based on archaic systems internals and moving to one that was (supposedly) explicit and simple.</p>
+<p>After switching to Python as my primary language, I used the following email signature in a nod to this change in orientation <em>(intended for Python 2)</em>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>print <span style="color:#e6db74">&#39;just another python hacker&#39;</span>
+</span></span></code></pre></div><p>Recently I&rsquo;ve been experimenting with writing JAPHs in Python. I think of these as &ldquo;reformed JAPHs.&rdquo; They accomplish the same purpose as programming exercises but in a more restricted context. In some ways they are more challenging. Creativity can be difficult in a narrowly defined landscape.</p>
+<p>I have written a small series of reformed JAPHs which increase monotonically in complexity. Here is the first one, written in plain understandable Python 3.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> string
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>letters <span style="color:#f92672">=</span> string<span style="color:#f92672">.</span>ascii_lowercase <span style="color:#f92672">+</span> <span style="color:#e6db74">&#39; &#39;</span>
+</span></span><span style="display:flex;"><span>indices <span style="color:#f92672">=</span> [
+</span></span><span style="display:flex;"><span>     <span style="color:#ae81ff">9</span>, <span style="color:#ae81ff">20</span>, <span style="color:#ae81ff">18</span>, <span style="color:#ae81ff">19</span>, <span style="color:#ae81ff">26</span>,  <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">13</span>, <span style="color:#ae81ff">14</span>, <span style="color:#ae81ff">19</span>, <span style="color:#ae81ff">7</span>,  <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">17</span>, <span style="color:#ae81ff">26</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#ae81ff">15</span>, <span style="color:#ae81ff">24</span>, <span style="color:#ae81ff">19</span>,  <span style="color:#ae81ff">7</span>, <span style="color:#ae81ff">14</span>, <span style="color:#ae81ff">13</span>, <span style="color:#ae81ff">26</span>,  <span style="color:#ae81ff">7</span>,  <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">10</span>,  <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">17</span>
+</span></span><span style="display:flex;"><span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#39;&#39;</span><span style="color:#f92672">.</span>join(letters[i] <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> indices))
+</span></span></code></pre></div><p>This is fairly simple. Instead of explicitly embedding the string <code>'just another python hacker'</code> in the program, we assemble it using the index of its letters in the string <code>'abcdefghijklmnopqrstuvwxyz '</code>. We then obfuscate through a series of minor measures:</p>
+<ul>
+<li>Instead of calling the print function, we <code>import sys</code> and make a call to <code>sys.stdout.write</code>.</li>
+<li>We assemble <code>string.lowercase + ' '</code> by joining together the character versions of its respective ordinal values (97 to 123 and 32).</li>
+<li>We join together the integer indices using <code>'l'</code> and split that into a list.</li>
+<li>We apply <code>'''</code> liberally and rely on the fact that <code>python</code> concatenates adjacent strings.</li>
+</ul>
+<p>Here&rsquo;s the obfuscated version:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>eval(<span style="color:#e6db74">&#34;__import__(&#39;&#39;&#39;</span><span style="color:#ae81ff">\x73</span><span style="color:#e6db74">&#39;&#39;&#39;&#39;&#39;&#39;</span><span style="color:#ae81ff">\x79</span><span style="color:#e6db74">&#39;&#39;&#39;&#39;&#39;&#39;</span><span style="color:#ae81ff">\x73</span><span style="color:#e6db74">&#39;&#39;&#39;).sTdOuT&#34;</span><span style="color:#f92672">.</span>lower()
+</span></span><span style="display:flex;"><span>)<span style="color:#f92672">.</span>write(<span style="color:#e6db74">&#39;&#39;</span><span style="color:#f92672">.</span>join(map(<span style="color:#66d9ef">lambda</span> _:(list(map(chr,range(<span style="color:#ae81ff">97</span>,<span style="color:#ae81ff">123</span>)))<span style="color:#f92672">+</span>[chr(
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">32</span>)])[int(_)],(<span style="color:#e6db74">&#39;&#39;&#39;9l20l18l19&#39;&#39;&#39;&#39;&#39;&#39;l26l0l13l14l19l7l4l17l26l15&#39;&#39;&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#39;&#39;&#39;l24l19l7l14l1&#39;&#39;&#39;&#39;&#39;&#39;3l26l7l0l2l10l4l17&#39;&#39;&#39;</span>)<span style="color:#f92672">.</span>split(<span style="color:#e6db74">&#39;l&#39;</span>)))<span style="color:#f92672">+</span><span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#39;</span>,)
+</span></span></code></pre></div><p>We could certainly do more, but that&rsquo;s where I left this one. Stay tuned for the next JAPH.</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://ryanjoneil.github.io/tags/obfuscation/">obfuscation</a></li>
+      <li><a href="https://ryanjoneil.github.io/tags/python/">python</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://ryanjoneil.github.io/posts/2011-04-03-reformed-japhs-ridiculous-anagram/">
+    <span class="title">« Prev</span>
+    <br>
+    <span>🐪 Reformed JAPHs: Ridiculous Anagram</span>
+  </a>
+  <a class="next" href="https://ryanjoneil.github.io/posts/2011-02-23-simulating-gdp-growth/">
+    <span class="title">Next »</span>
+    <br>
+    <span>📈 Simulating GDP Growth</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2023 <a href="https://ryanjoneil.github.io/">adventures in optimization</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>
