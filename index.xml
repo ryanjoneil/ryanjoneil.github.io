@@ -514,6 +514,47 @@ ap.cpp is an incremental primal-dual assignment problem solver written in C++. I
     </item>
     
     <item>
+      <title>🐪 Reformed JAPHs: Rolling Effect</title>
+      <link>https://ryanjoneil.github.io/posts/2011-04-11-reformed-japhs-rolling-effect/</link>
+      <pubDate>Mon, 11 Apr 2011 00:00:00 +0000</pubDate>
+      
+      <guid>https://ryanjoneil.github.io/posts/2011-04-11-reformed-japhs-rolling-effect/</guid>
+      <description>Python obfuscation with a cute visual effect</description>
+      <content:encoded><![CDATA[<p><em>Note: This post was updated to work with Python 3.12. It may not work with different versions.</em></p>
+<p>Here&rsquo;s a JAPH composed solely for effect. For each letter in <code>'just another python hacker'</code> it loops over each the characters <code>' abcdefghijklmnopqrstuvwxyz'</code>, printing each. Between characters it pauses for 0.05 seconds, backing up and moving on to the next if it hasn&rsquo;t reached the desired one yet. This achieves a sort of rolling effect by which the final string appears on our screen over time.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> string
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> sys
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> time
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>letters <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39; &#39;</span> <span style="color:#f92672">+</span> string<span style="color:#f92672">.</span>ascii_lowercase
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> l <span style="color:#f92672">in</span> <span style="color:#e6db74">&#39;just another python hacker&#39;</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> x <span style="color:#f92672">in</span> letters:
+</span></span><span style="display:flex;"><span>        print(x, end<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;&#39;</span>)
+</span></span><span style="display:flex;"><span>        sys<span style="color:#f92672">.</span>stdout<span style="color:#f92672">.</span>flush()
+</span></span><span style="display:flex;"><span>        time<span style="color:#f92672">.</span>sleep(<span style="color:#ae81ff">0.05</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> x <span style="color:#f92672">==</span> l:
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">break</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>            print(<span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\b</span><span style="color:#e6db74">&#39;</span>, end<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print()
+</span></span></code></pre></div><p>We locate and print each letter in the string with a list comprehension.  At the end we have an extra line of code (the eval statement) that gives us our newline.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>[[(<span style="color:#66d9ef">lambda</span> x,l:str(print(x,end<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;&#39;</span>))<span style="color:#f92672">+</span>str(__import__(print<span style="color:#f92672">.</span>
+</span></span><span style="display:flex;"><span>__doc__[print<span style="color:#f92672">.</span>__doc__<span style="color:#f92672">.</span>index(<span style="color:#e6db74">&#39;stdout&#39;</span>) <span style="color:#f92672">-</span> <span style="color:#ae81ff">4</span>:print<span style="color:#f92672">.</span>__doc__<span style="color:#f92672">.</span>
+</span></span><span style="display:flex;"><span>index(<span style="color:#e6db74">&#39;stdout&#39;</span>)<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>])<span style="color:#f92672">.</span>stdout<span style="color:#f92672">.</span>flush()) <span style="color:#f92672">+</span> str(__import__(<span style="color:#e6db74">&#39;&#39;</span><span style="color:#f92672">.</span>
+</span></span><span style="display:flex;"><span>join(reversed(<span style="color:#e6db74">&#39;emit&#39;</span>)))<span style="color:#f92672">.</span>sleep(<span style="color:#ae81ff">0o5</span><span style="color:#f92672">*</span><span style="color:#ae81ff">1.01</span><span style="color:#f92672">/</span><span style="color:#ae81ff">0x64</span>))<span style="color:#f92672">+</span>str(print(
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\b</span><span style="color:#e6db74">&#39;</span>,end<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\x09</span><span style="color:#e6db74">&#39;</span><span style="color:#f92672">.</span>strip())<span style="color:#66d9ef">if</span> x<span style="color:#f92672">!=</span>l <span style="color:#66d9ef">else</span><span style="color:#e6db74">&#39;*&amp;#&#39;</span>))(x1,l1)<span style="color:#66d9ef">for</span> x1
+</span></span><span style="display:flex;"><span><span style="color:#f92672">in</span>(<span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\x20</span><span style="color:#e6db74">&#39;</span><span style="color:#f92672">+</span>getattr(__import__(type(<span style="color:#e6db74">&#39;phear&#39;</span>)<span style="color:#f92672">.</span>__name__<span style="color:#f92672">+</span><span style="color:#e6db74">&#39;in&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#39;g&#39;</span>),dir(__import__(type(<span style="color:#e6db74">&#39;snarf&#39;</span>)<span style="color:#f92672">.</span>__name__<span style="color:#f92672">+</span><span style="color:#e6db74">&#39;ing&#39;</span>))[<span style="color:#ae81ff">15</span>]))
+</span></span><span style="display:flex;"><span>[:(<span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\x20</span><span style="color:#e6db74">&#39;</span><span style="color:#f92672">+</span>getattr(__import__(type(<span style="color:#e6db74">&#39;smear&#39;</span>)<span style="color:#f92672">.</span>__name__<span style="color:#f92672">+</span><span style="color:#e6db74">&#39;in&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#39;g&#39;</span>),dir(__import__(type(<span style="color:#e6db74">&#39;slurp&#39;</span>)<span style="color:#f92672">.</span>__name__<span style="color:#f92672">+</span><span style="color:#e6db74">&#39;ing&#39;</span>))[<span style="color:#ae81ff">15</span>]))
+</span></span><span style="display:flex;"><span><span style="color:#f92672">.</span>index(l1)<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>]]<span style="color:#66d9ef">for</span> l1 <span style="color:#f92672">in</span><span style="color:#e6db74">&#39;&#39;&#39;just another python hacker&#39;&#39;&#39;</span>]
+</span></span><span style="display:flex;"><span>eval(<span style="color:#e6db74">&#39;&#39;&#39;</span><span style="color:#ae81ff">\x20\x09</span><span style="color:#e6db74">eval(&#34;</span><span style="color:#ae81ff">\x20\x09</span><span style="color:#e6db74">eval(&#39;</span><span style="color:#ae81ff">\x20</span><span style="color:#e6db74"> print()&#39;)&#34;)&#39;&#39;&#39;</span>)
+</span></span></code></pre></div>]]></content:encoded>
+    </item>
+    
+    <item>
       <title>🐪 Reformed JAPHs: ROT13</title>
       <link>https://ryanjoneil.github.io/posts/2011-04-06-reformed-japhs-rot13/</link>
       <pubDate>Wed, 06 Apr 2011 00:00:00 +0000</pubDate>
