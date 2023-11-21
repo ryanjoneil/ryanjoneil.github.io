@@ -218,6 +218,20 @@ But, ultimately, for several years it just felt like blogging was dead. Its spac
 
 <article class="post-entry"> 
   <header class="entry-header">
+    <h2>🐪 Reformed JAPHs: Transpiler
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Note: This post was edited for clarity.
+For the final JAPH in this series, I implemented a simple transpiler that converts a small subset of Scheme programs to equivalent Python programs. It starts with a Scheme program that prints &#39;just another scheme hacker&#39;.
+(define (output x) (if (null? x) &#34;&#34; (begin (display (car x)) (if (null? (cdr x)) (display &#34;\n&#34;) (begin (display &#34; &#34;) (output (cdr x))))))) (output (list &#34;just&#34; &#34;another&#34; &#34;scheme&#34; &#34;hacker&#34;)) The program then tokenizes that Scheme source, parses the token stream, and converts that into Python 3....</p>
+  </div>
+  <footer class="entry-footer"><span title='2011-04-20 00:00:00 +0000 UTC'>April 20, 2011</span>&nbsp;·&nbsp;Ryan O&#39;Neil</footer>
+  <a class="entry-link" aria-label="post link to 🐪 Reformed JAPHs: Transpiler" href="https://ryanjoneil.github.io/posts/2011-04-18-reformed-japhs-transpiler/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
     <h2>🐪 Reformed JAPHs: Turing Machine
     </h2>
   </header>
@@ -308,21 +322,6 @@ So say you’re an economist and you actually do need to produce a realistic est
   </div>
   <footer class="entry-footer"><span title='2011-02-23 00:00:00 +0000 UTC'>February 23, 2011</span>&nbsp;·&nbsp;Ryan O&#39;Neil</footer>
   <a class="entry-link" aria-label="post link to 📈 Simulating GDP Growth" href="https://ryanjoneil.github.io/posts/2011-02-23-simulating-gdp-growth/"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2>🧐 Data Fitting 2a - Very, Very Simple Linear Regression in R
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>Note: This post was updated to include an example data file.
-I thought it might be useful to follow up the last post with another one showing the same examples in R.
-R provides a function called lm, which is similar in spirit to NumPy’s linalg.lstsq. As you’ll see, lm’s interface is a bit more tuned to the concepts of modeling.
-We begin by reading in the example CSV into a data frame:...</p>
-  </div>
-  <footer class="entry-footer"><span title='2011-02-16 00:00:00 +0000 UTC'>February 16, 2011</span>&nbsp;·&nbsp;Ryan O&#39;Neil</footer>
-  <a class="entry-link" aria-label="post link to 🧐 Data Fitting 2a - Very, Very Simple Linear Regression in R" href="https://ryanjoneil.github.io/posts/2011-02-16-data-fitting-2a-very-very-simple-linear-regression-in-r/"></a>
 </article>
 <footer class="page-footer">
   <nav class="pagination">

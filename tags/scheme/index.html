@@ -5,11 +5,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="index, follow">
-<title>Tags | adventures in optimization</title>
+<title>scheme | adventures in optimization</title>
 <meta name="keywords" content="">
 <meta name="description" content="">
 <meta name="author" content="">
-<link rel="canonical" href="https://ryanjoneil.github.io/tags/">
+<link rel="canonical" href="https://ryanjoneil.github.io/tags/scheme/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.7c3f0ab5ecc8326dc20e6644afa4081b33304fef3299b2c1179eaee195843a6a.css" integrity="sha256-fD8KtezIMm3CDmZEr6QIGzMwT&#43;8ymbLBF56u4ZWEOmo=" rel="preload stylesheet" as="style">
 <link rel="icon" href="https://ryanjoneil.github.io/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="https://ryanjoneil.github.io/favicon-16x16.png">
@@ -18,7 +18,7 @@
 <link rel="mask-icon" href="https://ryanjoneil.github.io/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" type="application/rss+xml" href="https://ryanjoneil.github.io/tags/index.xml">
+<link rel="alternate" type="application/rss+xml" href="https://ryanjoneil.github.io/tags/scheme/index.xml">
 <noscript>
     <style>
         #theme-toggle,
@@ -85,13 +85,13 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 </script>
 
-<meta property="og:title" content="Tags" />
+<meta property="og:title" content="scheme" />
 <meta property="og:description" content="" />
 <meta property="og:type" content="website" />
-<meta property="og:url" content="https://ryanjoneil.github.io/tags/" />
+<meta property="og:url" content="https://ryanjoneil.github.io/tags/scheme/" />
 
 <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="Tags"/>
+<meta name="twitter:title" content="scheme"/>
 <meta name="twitter:description" content=""/>
 
 </head>
@@ -169,58 +169,26 @@ document.addEventListener("DOMContentLoaded", function() {
         </ul>
     </nav>
 </header>
-<main class="main">
+<main class="main"> 
 <header class="page-header">
-    <h1>Tags</h1>
+  <h1>
+    scheme
+  </h1>
 </header>
 
-<ul class="terms-tags">
-    <li>
-        <a href="https://ryanjoneil.github.io/tags/ampl/">ampl <sup><strong><sup>1</sup></strong></sup> </a>
-    </li>
-    <li>
-        <a href="https://ryanjoneil.github.io/tags/classification/">classification <sup><strong><sup>1</sup></strong></sup> </a>
-    </li>
-    <li>
-        <a href="https://ryanjoneil.github.io/tags/data-fitting/">data fitting <sup><strong><sup>3</sup></strong></sup> </a>
-    </li>
-    <li>
-        <a href="https://ryanjoneil.github.io/tags/decision-diagrams/">decision diagrams <sup><strong><sup>1</sup></strong></sup> </a>
-    </li>
-    <li>
-        <a href="https://ryanjoneil.github.io/tags/linear-programming/">linear programming <sup><strong><sup>1</sup></strong></sup> </a>
-    </li>
-    <li>
-        <a href="https://ryanjoneil.github.io/tags/modeling/">modeling <sup><strong><sup>6</sup></strong></sup> </a>
-    </li>
-    <li>
-        <a href="https://ryanjoneil.github.io/tags/obfuscation/">obfuscation <sup><strong><sup>7</sup></strong></sup> </a>
-    </li>
-    <li>
-        <a href="https://ryanjoneil.github.io/tags/python/">python <sup><strong><sup>11</sup></strong></sup> </a>
-    </li>
-    <li>
-        <a href="https://ryanjoneil.github.io/tags/r/">r <sup><strong><sup>2</sup></strong></sup> </a>
-    </li>
-    <li>
-        <a href="https://ryanjoneil.github.io/tags/regression/">regression <sup><strong><sup>2</sup></strong></sup> </a>
-    </li>
-    <li>
-        <a href="https://ryanjoneil.github.io/tags/scheme/">scheme <sup><strong><sup>1</sup></strong></sup> </a>
-    </li>
-    <li>
-        <a href="https://ryanjoneil.github.io/tags/scip/">scip <sup><strong><sup>1</sup></strong></sup> </a>
-    </li>
-    <li>
-        <a href="https://ryanjoneil.github.io/tags/simulation/">simulation <sup><strong><sup>2</sup></strong></sup> </a>
-    </li>
-    <li>
-        <a href="https://ryanjoneil.github.io/tags/tsp/">tsp <sup><strong><sup>1</sup></strong></sup> </a>
-    </li>
-    <li>
-        <a href="https://ryanjoneil.github.io/tags/visualization/">visualization <sup><strong><sup>1</sup></strong></sup> </a>
-    </li>
-</ul>
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>🐪 Reformed JAPHs: Transpiler
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Note: This post was edited for clarity.
+For the final JAPH in this series, I implemented a simple transpiler that converts a small subset of Scheme programs to equivalent Python programs. It starts with a Scheme program that prints &#39;just another scheme hacker&#39;.
+(define (output x) (if (null? x) &#34;&#34; (begin (display (car x)) (if (null? (cdr x)) (display &#34;\n&#34;) (begin (display &#34; &#34;) (output (cdr x))))))) (output (list &#34;just&#34; &#34;another&#34; &#34;scheme&#34; &#34;hacker&#34;)) The program then tokenizes that Scheme source, parses the token stream, and converts that into Python 3....</p>
+  </div>
+  <footer class="entry-footer"><span title='2011-04-20 00:00:00 +0000 UTC'>April 20, 2011</span>&nbsp;·&nbsp;Ryan O&#39;Neil</footer>
+  <a class="entry-link" aria-label="post link to 🐪 Reformed JAPHs: Transpiler" href="https://ryanjoneil.github.io/posts/2011-04-18-reformed-japhs-transpiler/"></a>
+</article>
     </main>
     
 <footer class="footer">

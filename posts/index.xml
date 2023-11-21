@@ -382,6 +382,186 @@ graph LR
     </item>
     
     <item>
+      <title>🐪 Reformed JAPHs: Transpiler</title>
+      <link>https://ryanjoneil.github.io/posts/2011-04-18-reformed-japhs-transpiler/</link>
+      <pubDate>Wed, 20 Apr 2011 00:00:00 +0000</pubDate>
+      
+      <guid>https://ryanjoneil.github.io/posts/2011-04-18-reformed-japhs-transpiler/</guid>
+      <description>Scheme to Python transpiler</description>
+      <content:encoded><![CDATA[<p><em>Note: This post was edited for clarity.</em></p>
+<p>For the final JAPH in this series, I implemented a simple transpiler that converts a small subset of <a href="https://www.scheme.org/">Scheme</a> programs to equivalent Python programs. It starts with a Scheme program that prints <code>'just another scheme hacker'</code>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-scheme" data-lang="scheme"><span style="display:flex;"><span>(<span style="color:#66d9ef">define </span>(<span style="color:#a6e22e">output</span> x)
+</span></span><span style="display:flex;"><span>    (<span style="color:#66d9ef">if </span>(null? x)
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>        (<span style="color:#66d9ef">begin </span>(display (car x))
+</span></span><span style="display:flex;"><span>                (<span style="color:#66d9ef">if </span>(null? (cdr x))
+</span></span><span style="display:flex;"><span>                    (display <span style="color:#e6db74">&#34;\n&#34;</span>)
+</span></span><span style="display:flex;"><span>                    (<span style="color:#66d9ef">begin </span>(display <span style="color:#e6db74">&#34; &#34;</span>)
+</span></span><span style="display:flex;"><span>                            (<span style="color:#a6e22e">output</span> (cdr x)))))))
+</span></span><span style="display:flex;"><span>(<span style="color:#a6e22e">output</span> (list <span style="color:#e6db74">&#34;just&#34;</span> <span style="color:#e6db74">&#34;another&#34;</span> <span style="color:#e6db74">&#34;scheme&#34;</span> <span style="color:#e6db74">&#34;hacker&#34;</span>))
+</span></span></code></pre></div><p>The program then tokenizes that Scheme source, parses the token stream, and converts that into Python 3.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">output</span>(x):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">not</span> x:
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>        print(x[<span style="color:#ae81ff">0</span>], end<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;&#39;</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">not</span> x[<span style="color:#ae81ff">1</span>:]:
+</span></span><span style="display:flex;"><span>            print(<span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, end<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;&#39;</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>            print(<span style="color:#e6db74">&#34; &#34;</span>, end<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;&#39;</span>)
+</span></span><span style="display:flex;"><span>            output(x[<span style="color:#ae81ff">1</span>:])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>output([<span style="color:#e6db74">&#34;just&#34;</span>, <span style="color:#e6db74">&#34;another&#34;</span>, <span style="color:#e6db74">&#34;python&#34;</span>, <span style="color:#e6db74">&#34;hacker&#34;</span>])
+</span></span></code></pre></div><p>Finally it executes the resulting Python string using <code>exec</code>. Obfuscation is left as an exercise for the reader.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> re
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">tokenize</span>(input):
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#39;&#39;&#39;Tokenizes an input stream into a list of recognizable tokens&#39;&#39;&#39;</span>
+</span></span><span style="display:flex;"><span>    token_res <span style="color:#f92672">=</span> (
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">r</span><span style="color:#e6db74">&#39;\(&#39;</span>,      <span style="color:#75715e"># open paren -&gt; starts expression</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">r</span><span style="color:#e6db74">&#39;\)&#39;</span>,      <span style="color:#75715e"># close paren -&gt; ends expression</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">r</span><span style="color:#e6db74">&#39;&#34;[^&#34;]*&#34;&#39;</span>, <span style="color:#75715e"># quoted string (don&#39;t support \&#34; yet)</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">r</span><span style="color:#e6db74">&#39;[\w?]+&#39;</span>   <span style="color:#75715e"># atom</span>
+</span></span><span style="display:flex;"><span>    )
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> re<span style="color:#f92672">.</span>findall(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#39;(&#39;</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#39;|&#39;</span><span style="color:#f92672">.</span>join(token_res) <span style="color:#f92672">+</span> <span style="color:#e6db74">&#39;)&#39;</span>, input)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">parse</span>(stream):
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#39;&#39;&#39;Parses a token stream into a syntax tree&#39;&#39;&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">not</span> stream:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> []
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># Build a list of arguments (possibly expressions) at this level</span>
+</span></span><span style="display:flex;"><span>        args <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">while</span> <span style="color:#66d9ef">True</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># Get the next token</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">try</span>:
+</span></span><span style="display:flex;"><span>                x <span style="color:#f92672">=</span> stream<span style="color:#f92672">.</span>pop(<span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">except</span> <span style="color:#a6e22e">IndexError</span>:
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">return</span> args
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># ( and ) control the level of the tree we&#39;re at</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> x <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;(&#39;</span>:
+</span></span><span style="display:flex;"><span>                args<span style="color:#f92672">.</span>append(parse(stream))
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">elif</span> x <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;)&#39;</span>:
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">return</span> args
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>                args<span style="color:#f92672">.</span>append(x)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">compile</span>(tree):
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#39;&#39;&#39;Compiles an Scheme Abstract Syntax Tree into near-Python&#39;&#39;&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">compile_expr</span>(indent, expr):
+</span></span><span style="display:flex;"><span>        indent <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        lines <span style="color:#f92672">=</span> [] <span style="color:#75715e"># these will have [(indent, statement), ...] structure</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">while</span> expr:
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># Two options: expr is a string like &#34;&#39;&#34; or it is a list</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> isinstance(expr, str):
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">return</span> [(
+</span></span><span style="display:flex;"><span>                    indent,
+</span></span><span style="display:flex;"><span>                    expr<span style="color:#f92672">.</span>replace(<span style="color:#e6db74">&#39;scheme&#39;</span>, <span style="color:#e6db74">&#39;python&#39;</span>)<span style="color:#f92672">.</span>replace(<span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">n&#39;</span>)
+</span></span><span style="display:flex;"><span>                )]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>                start <span style="color:#f92672">=</span> expr<span style="color:#f92672">.</span>pop(<span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> start <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;define&#39;</span>:
+</span></span><span style="display:flex;"><span>                    signature <span style="color:#f92672">=</span> expr<span style="color:#f92672">.</span>pop(<span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>                    lines<span style="color:#f92672">.</span>append((indent,
+</span></span><span style="display:flex;"><span>                        <span style="color:#e6db74">&#39;def </span><span style="color:#e6db74">%s</span><span style="color:#e6db74">(</span><span style="color:#e6db74">%s</span><span style="color:#e6db74">):&#39;</span> <span style="color:#f92672">%</span> (
+</span></span><span style="display:flex;"><span>                            signature[<span style="color:#ae81ff">0</span>],
+</span></span><span style="display:flex;"><span>                            <span style="color:#e6db74">&#39;, &#39;</span><span style="color:#f92672">.</span>join(signature[<span style="color:#ae81ff">1</span>:])
+</span></span><span style="display:flex;"><span>                        )
+</span></span><span style="display:flex;"><span>                    ))
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">while</span> expr:
+</span></span><span style="display:flex;"><span>                        lines<span style="color:#f92672">.</span>extend(compile_expr(indent, expr<span style="color:#f92672">.</span>pop(<span style="color:#ae81ff">0</span>)))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">elif</span> start <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;if&#39;</span>:
+</span></span><span style="display:flex;"><span>                    <span style="color:#75715e"># We don&#39;t support multi-clause conditionals yet</span>
+</span></span><span style="display:flex;"><span>                    clause <span style="color:#f92672">=</span> compile_expr(indent, expr<span style="color:#f92672">.</span>pop(<span style="color:#ae81ff">0</span>))[<span style="color:#ae81ff">0</span>][<span style="color:#ae81ff">1</span>]
+</span></span><span style="display:flex;"><span>                    lines<span style="color:#f92672">.</span>append((indent, <span style="color:#e6db74">&#39;if </span><span style="color:#e6db74">%s</span><span style="color:#e6db74">:&#39;</span> <span style="color:#f92672">%</span> clause))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                    if_true_lines <span style="color:#f92672">=</span> compile_expr(indent, expr<span style="color:#f92672">.</span>pop(<span style="color:#ae81ff">0</span>))
+</span></span><span style="display:flex;"><span>                    if_false_lines <span style="color:#f92672">=</span> compile_expr(indent, expr<span style="color:#f92672">.</span>pop(<span style="color:#ae81ff">0</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                    lines<span style="color:#f92672">.</span>extend(if_true_lines)
+</span></span><span style="display:flex;"><span>                    lines<span style="color:#f92672">.</span>append((indent, <span style="color:#e6db74">&#39;else:&#39;</span>))
+</span></span><span style="display:flex;"><span>                    lines<span style="color:#f92672">.</span>extend(if_false_lines)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">elif</span> start <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;null?&#39;</span>:
+</span></span><span style="display:flex;"><span>                    <span style="color:#75715e"># Only supports conditionals of the form (null? foo)</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">if</span> isinstance(expr[<span style="color:#ae81ff">0</span>], str):
+</span></span><span style="display:flex;"><span>                        condition <span style="color:#f92672">=</span> expr<span style="color:#f92672">.</span>pop(<span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>                        condition <span style="color:#f92672">=</span> compile_expr(indent, expr<span style="color:#f92672">.</span>pop(<span style="color:#ae81ff">0</span>))[<span style="color:#ae81ff">0</span>][<span style="color:#ae81ff">1</span>]
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">return</span> [(indent, <span style="color:#e6db74">&#39;not </span><span style="color:#e6db74">%s</span><span style="color:#e6db74">&#39;</span> <span style="color:#f92672">%</span> condition)]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">elif</span> start <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;begin&#39;</span>:
+</span></span><span style="display:flex;"><span>                    <span style="color:#75715e"># This is just a series of statements, so don&#39;t indent</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">while</span> expr:
+</span></span><span style="display:flex;"><span>                        lines<span style="color:#f92672">.</span>extend(compile_expr(indent<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>, expr<span style="color:#f92672">.</span>pop(<span style="color:#ae81ff">0</span>)))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">elif</span> start <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;display&#39;</span>:
+</span></span><span style="display:flex;"><span>                    arguments <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">while</span> expr:
+</span></span><span style="display:flex;"><span>                        arguments<span style="color:#f92672">.</span>append(
+</span></span><span style="display:flex;"><span>                            compile_expr(indent, expr<span style="color:#f92672">.</span>pop(<span style="color:#ae81ff">0</span>))[<span style="color:#ae81ff">0</span>][<span style="color:#ae81ff">1</span>]
+</span></span><span style="display:flex;"><span>                        )
+</span></span><span style="display:flex;"><span>                    lines<span style="color:#f92672">.</span>append((
+</span></span><span style="display:flex;"><span>                        indent,
+</span></span><span style="display:flex;"><span>                        <span style="color:#e6db74">&#34;print(</span><span style="color:#e6db74">%s</span><span style="color:#e6db74">, end=&#39;&#39;)&#34;</span> <span style="color:#f92672">%</span> (<span style="color:#e6db74">&#39;, &#39;</span><span style="color:#f92672">.</span>join(arguments))
+</span></span><span style="display:flex;"><span>                    ))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">elif</span> start <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;car&#39;</span>:
+</span></span><span style="display:flex;"><span>                    lines<span style="color:#f92672">.</span>append((indent, <span style="color:#e6db74">&#39;</span><span style="color:#e6db74">%s</span><span style="color:#e6db74">[0]&#39;</span> <span style="color:#f92672">%</span> expr<span style="color:#f92672">.</span>pop(<span style="color:#ae81ff">0</span>)))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">elif</span> start <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;cdr&#39;</span>:
+</span></span><span style="display:flex;"><span>                    lines<span style="color:#f92672">.</span>append((indent, <span style="color:#e6db74">&#39;</span><span style="color:#e6db74">%s</span><span style="color:#e6db74">[1:]&#39;</span> <span style="color:#f92672">%</span> expr<span style="color:#f92672">.</span>pop(<span style="color:#ae81ff">0</span>)))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">elif</span> start <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;list&#39;</span>:
+</span></span><span style="display:flex;"><span>                    arguments <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">while</span> expr:
+</span></span><span style="display:flex;"><span>                        arguments<span style="color:#f92672">.</span>append(
+</span></span><span style="display:flex;"><span>                            compile_expr(indent, expr<span style="color:#f92672">.</span>pop(<span style="color:#ae81ff">0</span>))[<span style="color:#ae81ff">0</span>][<span style="color:#ae81ff">1</span>]
+</span></span><span style="display:flex;"><span>                        )
+</span></span><span style="display:flex;"><span>                    lines<span style="color:#f92672">.</span>append((indent, <span style="color:#e6db74">&#39;[</span><span style="color:#e6db74">%s</span><span style="color:#e6db74">]&#39;</span> <span style="color:#f92672">%</span> <span style="color:#e6db74">&#39;, &#39;</span><span style="color:#f92672">.</span>join(arguments)))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>                    <span style="color:#75715e"># Assume this is a function call</span>
+</span></span><span style="display:flex;"><span>                    arguments <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">while</span> expr:
+</span></span><span style="display:flex;"><span>                        arguments<span style="color:#f92672">.</span>append(
+</span></span><span style="display:flex;"><span>                            compile_expr(indent, expr<span style="color:#f92672">.</span>pop(<span style="color:#ae81ff">0</span>))[<span style="color:#ae81ff">0</span>][<span style="color:#ae81ff">1</span>]
+</span></span><span style="display:flex;"><span>                        )
+</span></span><span style="display:flex;"><span>                    lines<span style="color:#f92672">.</span>append((
+</span></span><span style="display:flex;"><span>                        indent,
+</span></span><span style="display:flex;"><span>                        <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">%s</span><span style="color:#e6db74">(</span><span style="color:#e6db74">%s</span><span style="color:#e6db74">)&#34;</span> <span style="color:#f92672">%</span> (start, <span style="color:#e6db74">&#39;, &#39;</span><span style="color:#f92672">.</span>join(arguments))
+</span></span><span style="display:flex;"><span>                    ))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> lines
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> [compile_expr(<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>, expr) <span style="color:#66d9ef">for</span> expr <span style="color:#f92672">in</span> tree]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;__main__&#39;</span>:
+</span></span><span style="display:flex;"><span>    scheme <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;&#39;&#39;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        (define (output x)
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            (if (null? x)
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                &#34;&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                (begin (display (car x))
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                       (if (null? (cdr x))
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                           (display &#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;)
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                           (begin (display &#34; &#34;)
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                                  (output (cdr x)))))))
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        (output (list &#34;just&#34; &#34;another&#34; &#34;scheme&#34; &#34;hacker&#34;))
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    &#39;&#39;&#39;</span>
+</span></span><span style="display:flex;"><span>    python <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> expr <span style="color:#f92672">in</span> compile(parse(tokenize(scheme))):
+</span></span><span style="display:flex;"><span>        python <span style="color:#f92672">+=</span> <span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#39;</span><span style="color:#f92672">.</span>join([(<span style="color:#e6db74">&#39; &#39;</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">4</span> <span style="color:#f92672">*</span> x[<span style="color:#ae81ff">0</span>]) <span style="color:#f92672">+</span> x[<span style="color:#ae81ff">1</span>] <span style="color:#66d9ef">for</span> x <span style="color:#f92672">in</span> expr]) <span style="color:#f92672">+</span> <span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\n\n</span><span style="color:#e6db74">&#39;</span>
+</span></span><span style="display:flex;"><span>    exec(python)
+</span></span></code></pre></div>]]></content:encoded>
+    </item>
+    
+    <item>
       <title>🐪 Reformed JAPHs: Turing Machine</title>
       <link>https://ryanjoneil.github.io/posts/2011-04-18-reformed-japhs-turing-machine/</link>
       <pubDate>Mon, 18 Apr 2011 00:00:00 +0000</pubDate>
