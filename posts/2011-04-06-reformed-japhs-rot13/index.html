@@ -5,11 +5,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="index, follow">
-<title>🐪 Reformed JAPHs: Ridiculous Anagram | adventures in optimization</title>
+<title>🐪 Reformed JAPHs: ROT13 | adventures in optimization</title>
 <meta name="keywords" content="obfuscation, python">
-<meta name="description" content="Python obfuscation using anagrams">
+<meta name="description" content="Python obfuscation using ROT13 encoding">
 <meta name="author" content="Ryan O&#39;Neil">
-<link rel="canonical" href="https://ryanjoneil.github.io/posts/2011-04-03-reformed-japhs-ridiculous-anagram/">
+<link rel="canonical" href="https://ryanjoneil.github.io/posts/2011-04-06-reformed-japhs-rot13/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.7c3f0ab5ecc8326dc20e6644afa4081b33304fef3299b2c1179eaee195843a6a.css" integrity="sha256-fD8KtezIMm3CDmZEr6QIGzMwT&#43;8ymbLBF56u4ZWEOmo=" rel="preload stylesheet" as="style">
 <script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
     onload="hljs.initHighlightingOnLoad();"></script>
@@ -86,16 +86,16 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 </script>
 
-<meta property="og:title" content="🐪 Reformed JAPHs: Ridiculous Anagram" />
-<meta property="og:description" content="Python obfuscation using anagrams" />
+<meta property="og:title" content="🐪 Reformed JAPHs: ROT13" />
+<meta property="og:description" content="Python obfuscation using ROT13 encoding" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://ryanjoneil.github.io/posts/2011-04-03-reformed-japhs-ridiculous-anagram/" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2011-04-03T00:00:00+00:00" />
-<meta property="article:modified_time" content="2011-04-03T00:00:00+00:00" />
+<meta property="og:url" content="https://ryanjoneil.github.io/posts/2011-04-06-reformed-japhs-rot13/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2011-04-06T00:00:00+00:00" />
+<meta property="article:modified_time" content="2011-04-06T00:00:00+00:00" />
 
 <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="🐪 Reformed JAPHs: Ridiculous Anagram"/>
-<meta name="twitter:description" content="Python obfuscation using anagrams"/>
+<meta name="twitter:title" content="🐪 Reformed JAPHs: ROT13"/>
+<meta name="twitter:description" content="Python obfuscation using ROT13 encoding"/>
 
 
 <script type="application/ld+json">
@@ -112,8 +112,8 @@ document.addEventListener("DOMContentLoaded", function() {
     {
       "@type": "ListItem",
       "position":  2 ,
-      "name": "🐪 Reformed JAPHs: Ridiculous Anagram",
-      "item": "https://ryanjoneil.github.io/posts/2011-04-03-reformed-japhs-ridiculous-anagram/"
+      "name": "🐪 Reformed JAPHs: ROT13",
+      "item": "https://ryanjoneil.github.io/posts/2011-04-06-reformed-japhs-rot13/"
     }
   ]
 }
@@ -122,24 +122,24 @@ document.addEventListener("DOMContentLoaded", function() {
 {
   "@context": "https://schema.org",
   "@type": "BlogPosting",
-  "headline": "🐪 Reformed JAPHs: Ridiculous Anagram",
-  "name": "🐪 Reformed JAPHs: Ridiculous Anagram",
-  "description": "Python obfuscation using anagrams",
+  "headline": "🐪 Reformed JAPHs: ROT13",
+  "name": "🐪 Reformed JAPHs: ROT13",
+  "description": "Python obfuscation using ROT13 encoding",
   "keywords": [
     "obfuscation", "python"
   ],
-  "articleBody": "Here’s the second in my reformed JAPH series. It takes an anagram of 'just another python hacker' and converts it prior to printing. It sorts the anagram by the indices of another string, in order of their associated characters. This is sort of like a pre-digested Schwartzian transform.\nx = 'upjohn tehran hectors katy' y = '1D0HG6JFO9P5ICKAM87B24NL3E' print(''.join(x[i] for i in sorted(range(len(x)), key=lambda p: y[p]))) Obfuscation consists mostly of using silly machinations to construct the string we use to sort the anagram.\nprint(''.join('''upjohn tehran hectors katy'''[_]for _ in sorted(range (26),key=lambda p:(hex(29)[2:].upper()+str(3*3*3*3-3**4)+'HG'+str(sum( range(4)))+'JFO'+str((1+2)**(1+1))+'P'+str(35/7)[:1]+'i.c.k.'.replace( '.','').upper()+'AM'+str(3**2*sum(range(5))-3)+hex(0o5444)[2:].replace (*'\\x62|\\x42'.split('|'))+'NL'+hex(0o076).split('x')[1].upper())[p]))) ",
-  "wordCount" : "94",
+  "articleBody": "Note: This post was updated to work with Python 3.12. It may not work with different versions.\nNo series of JAPHs would be complete without ROT13. This is the example through which aspiring Perl programmers learn to use tr and its synonym y. In Perl the basic ROT13 JAPH starts as:\n$foo = 'whfg nabgure crey unpxre'; $foo =~ y/a-z/n-za-m/; print $foo; Python has nothing quite so elegant in its default namespace. However, this does give us the opportunity to explore a little used aspect of strings: the translate method. If we construct a dictionary of ordinals we can accomplish the same thing with a touch more effort.\nimport string table = { ord(x): ord(y) for x, y in zip( string.ascii_lowercase, string.ascii_lowercase[13:] + string.ascii_lowercase ) } print('whfg nabgure clguba unpxre'.translate(table)) We obfuscate the construction of this translation dictionary and, for added measure, use getattr to find the print function off of __builtins__. This will likely only work in Python 3.2, since the order of attributes on __builtins__ matters.\ngetattr(vars()[list(filter(lambda _:'\\x5f\\x62'in _,dir ()))[0]], dir(vars()[list(filter(lambda _:'\\x5f\\x62'in _, dir()))[0]])[list(filter(lambda _:_ [1].startswith( '\\x70\\x72'),enumerate(dir(vars()[list(filter(lambda _: '\\x5f\\x62'in _,dir()))[0]]))))[0][0]])(getattr('whfg ' +'''nabgure clguba unpxre''', dir('0o52')[0o116])({ _: (_-0o124) %0o32 +0o141 for _ in range(0o141, 0o173)})) ",
+  "wordCount" : "196",
   "inLanguage": "en",
-  "datePublished": "2011-04-03T00:00:00Z",
-  "dateModified": "2011-04-03T00:00:00Z",
+  "datePublished": "2011-04-06T00:00:00Z",
+  "dateModified": "2011-04-06T00:00:00Z",
   "author":{
     "@type": "Person",
     "name": "Ryan O'Neil"
   },
   "mainEntityOfPage": {
     "@type": "WebPage",
-    "@id": "https://ryanjoneil.github.io/posts/2011-04-03-reformed-japhs-ridiculous-anagram/"
+    "@id": "https://ryanjoneil.github.io/posts/2011-04-06-reformed-japhs-rot13/"
   },
   "publisher": {
     "@type": "Organization",
@@ -232,27 +232,40 @@ document.addEventListener("DOMContentLoaded", function() {
   <header class="post-header">
     
     <h1 class="post-title">
-      🐪 Reformed JAPHs: Ridiculous Anagram
+      🐪 Reformed JAPHs: ROT13
     </h1>
     <div class="post-description">
-      Python obfuscation using anagrams
+      Python obfuscation using ROT13 encoding
     </div>
-    <div class="post-meta"><span title='2011-04-03 00:00:00 +0000 UTC'>April 3, 2011</span>&nbsp;·&nbsp;Ryan O&#39;Neil
+    <div class="post-meta"><span title='2011-04-06 00:00:00 +0000 UTC'>April 6, 2011</span>&nbsp;·&nbsp;Ryan O&#39;Neil
 
 </div>
   </header> 
 
-  <div class="post-content"><p>Here&rsquo;s the second in my reformed JAPH series. It takes an anagram of <code>'just another python hacker'</code> and converts it prior to printing. It sorts the anagram by the indices of another string, in order of their associated characters. This is sort of like a pre-digested <a href="https://en.wikipedia.org/wiki/Schwartzian_transform">Schwartzian transform</a>.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>x <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;upjohn tehran hectors katy&#39;</span>
-</span></span><span style="display:flex;"><span>y <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;1D0HG6JFO9P5ICKAM87B24NL3E&#39;</span>
+  <div class="post-content"><p><em>Note: This post was updated to work with Python 3.12. It may not work with different versions.</em></p>
+<p>No series of JAPHs would be complete without <a href="https://en.wikipedia.org/wiki/ROT13">ROT13</a>. This is the example through which aspiring Perl programmers learn to use <code>tr</code> and its synonym <code>y</code>. In Perl the basic ROT13 JAPH starts as:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-perl" data-lang="perl"><span style="display:flex;"><span>$foo <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;whfg nabgure crey unpxre&#39;</span>;
+</span></span><span style="display:flex;"><span>$foo <span style="color:#f92672">=~</span> y<span style="color:#e6db74">/a-z/</span>n<span style="color:#f92672">-</span>za<span style="color:#f92672">-</span><span style="color:#e6db74">m</span><span style="color:#960050;background-color:#1e0010">/;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">print</span> $foo;
+</span></span></code></pre></div><p>Python has nothing quite so elegant in its default namespace. However, this does give us the opportunity to explore a little used aspect of strings: the translate method. If we construct a dictionary of ordinals we can accomplish the same thing with a touch more effort.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> string
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#39;&#39;</span><span style="color:#f92672">.</span>join(x[i] <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> sorted(range(len(x)), key<span style="color:#f92672">=</span><span style="color:#66d9ef">lambda</span> p: y[p])))
-</span></span></code></pre></div><p>Obfuscation consists mostly of using silly machinations to construct the string we use to sort the anagram.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>print(<span style="color:#e6db74">&#39;&#39;</span><span style="color:#f92672">.</span>join(<span style="color:#e6db74">&#39;&#39;&#39;upjohn tehran hectors katy&#39;&#39;&#39;</span>[_]<span style="color:#66d9ef">for</span> _ <span style="color:#f92672">in</span> sorted(range
-</span></span><span style="display:flex;"><span>(<span style="color:#ae81ff">26</span>),key<span style="color:#f92672">=</span><span style="color:#66d9ef">lambda</span> p:(hex(<span style="color:#ae81ff">29</span>)[<span style="color:#ae81ff">2</span>:]<span style="color:#f92672">.</span>upper()<span style="color:#f92672">+</span>str(<span style="color:#ae81ff">3</span><span style="color:#f92672">*</span><span style="color:#ae81ff">3</span><span style="color:#f92672">*</span><span style="color:#ae81ff">3</span><span style="color:#f92672">*</span><span style="color:#ae81ff">3</span><span style="color:#f92672">-</span><span style="color:#ae81ff">3</span><span style="color:#f92672">**</span><span style="color:#ae81ff">4</span>)<span style="color:#f92672">+</span><span style="color:#e6db74">&#39;HG&#39;</span><span style="color:#f92672">+</span>str(sum(
-</span></span><span style="display:flex;"><span>range(<span style="color:#ae81ff">4</span>)))<span style="color:#f92672">+</span><span style="color:#e6db74">&#39;JFO&#39;</span><span style="color:#f92672">+</span>str((<span style="color:#ae81ff">1</span><span style="color:#f92672">+</span><span style="color:#ae81ff">2</span>)<span style="color:#f92672">**</span>(<span style="color:#ae81ff">1</span><span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>))<span style="color:#f92672">+</span><span style="color:#e6db74">&#39;P&#39;</span><span style="color:#f92672">+</span>str(<span style="color:#ae81ff">35</span><span style="color:#f92672">/</span><span style="color:#ae81ff">7</span>)[:<span style="color:#ae81ff">1</span>]<span style="color:#f92672">+</span><span style="color:#e6db74">&#39;i.c.k.&#39;</span><span style="color:#f92672">.</span>replace(
-</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#39;.&#39;</span>,<span style="color:#e6db74">&#39;&#39;</span>)<span style="color:#f92672">.</span>upper()<span style="color:#f92672">+</span><span style="color:#e6db74">&#39;AM&#39;</span><span style="color:#f92672">+</span>str(<span style="color:#ae81ff">3</span><span style="color:#f92672">**</span><span style="color:#ae81ff">2</span><span style="color:#f92672">*</span>sum(range(<span style="color:#ae81ff">5</span>))<span style="color:#f92672">-</span><span style="color:#ae81ff">3</span>)<span style="color:#f92672">+</span>hex(<span style="color:#ae81ff">0o5444</span>)[<span style="color:#ae81ff">2</span>:]<span style="color:#f92672">.</span>replace
-</span></span><span style="display:flex;"><span>(<span style="color:#f92672">*</span><span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\x62</span><span style="color:#e6db74">|</span><span style="color:#ae81ff">\x42</span><span style="color:#e6db74">&#39;</span><span style="color:#f92672">.</span>split(<span style="color:#e6db74">&#39;|&#39;</span>))<span style="color:#f92672">+</span><span style="color:#e6db74">&#39;NL&#39;</span><span style="color:#f92672">+</span>hex(<span style="color:#ae81ff">0o076</span>)<span style="color:#f92672">.</span>split(<span style="color:#e6db74">&#39;x&#39;</span>)[<span style="color:#ae81ff">1</span>]<span style="color:#f92672">.</span>upper())[p])))
+</span></span><span style="display:flex;"><span>table <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>    ord(x): ord(y) <span style="color:#66d9ef">for</span> x, y <span style="color:#f92672">in</span> zip(
+</span></span><span style="display:flex;"><span>        string<span style="color:#f92672">.</span>ascii_lowercase,
+</span></span><span style="display:flex;"><span>        string<span style="color:#f92672">.</span>ascii_lowercase[<span style="color:#ae81ff">13</span>:] <span style="color:#f92672">+</span> string<span style="color:#f92672">.</span>ascii_lowercase
+</span></span><span style="display:flex;"><span>    )
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#39;whfg nabgure clguba unpxre&#39;</span><span style="color:#f92672">.</span>translate(table))
+</span></span></code></pre></div><p>We obfuscate the construction of this translation dictionary and, for added measure, use <code>getattr</code> to find the <code>print</code> function off of <code>__builtins__</code>.  This will likely only work in Python 3.2, since the order of attributes on <code>__builtins__</code> matters.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>getattr(vars()[list(filter(<span style="color:#66d9ef">lambda</span> _:<span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\x5f\x62</span><span style="color:#e6db74">&#39;</span><span style="color:#f92672">in</span> _,dir
+</span></span><span style="display:flex;"><span>()))[<span style="color:#ae81ff">0</span>]], dir(vars()[list(filter(<span style="color:#66d9ef">lambda</span> _:<span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\x5f\x62</span><span style="color:#e6db74">&#39;</span><span style="color:#f92672">in</span>
+</span></span><span style="display:flex;"><span>_, dir()))[<span style="color:#ae81ff">0</span>]])[list(filter(<span style="color:#66d9ef">lambda</span> _:_ [<span style="color:#ae81ff">1</span>]<span style="color:#f92672">.</span>startswith(
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\x70\x72</span><span style="color:#e6db74">&#39;</span>),enumerate(dir(vars()[list(filter(<span style="color:#66d9ef">lambda</span> _:
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\x5f\x62</span><span style="color:#e6db74">&#39;</span><span style="color:#f92672">in</span> _,dir()))[<span style="color:#ae81ff">0</span>]]))))[<span style="color:#ae81ff">0</span>][<span style="color:#ae81ff">0</span>]])(getattr(<span style="color:#e6db74">&#39;whfg &#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">+</span><span style="color:#e6db74">&#39;&#39;&#39;nabgure clguba unpxre&#39;&#39;&#39;</span>, dir(<span style="color:#e6db74">&#39;0o52&#39;</span>)[<span style="color:#ae81ff">0o116</span>])({ _:
+</span></span><span style="display:flex;"><span>(_<span style="color:#f92672">-</span><span style="color:#ae81ff">0o124</span>) <span style="color:#f92672">%</span><span style="color:#ae81ff">0o32</span> <span style="color:#f92672">+</span><span style="color:#ae81ff">0o141</span> <span style="color:#66d9ef">for</span> _ <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">0o141</span>, <span style="color:#ae81ff">0o173</span>)}))
 </span></span></code></pre></div>
 
   </div>
@@ -263,15 +276,15 @@ document.addEventListener("DOMContentLoaded", function() {
       <li><a href="https://ryanjoneil.github.io/tags/python/">python</a></li>
     </ul>
 <nav class="paginav">
-  <a class="prev" href="https://ryanjoneil.github.io/posts/2011-04-06-reformed-japhs-rot13/">
+  <a class="prev" href="https://ryanjoneil.github.io/posts/2023-09-07-blogging-is-back/">
     <span class="title">« Prev</span>
     <br>
-    <span>🐪 Reformed JAPHs: ROT13</span>
+    <span>🚀 Blogging is back, baby!</span>
   </a>
-  <a class="next" href="https://ryanjoneil.github.io/posts/2011-04-01-reformed-japhs-alphabetic-indexing/">
+  <a class="next" href="https://ryanjoneil.github.io/posts/2011-04-03-reformed-japhs-ridiculous-anagram/">
     <span class="title">Next »</span>
     <br>
-    <span>🐪 Reformed JAPHs: Alphabetic Indexing</span>
+    <span>🐪 Reformed JAPHs: Ridiculous Anagram</span>
   </a>
 </nav>
 

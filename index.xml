@@ -514,6 +514,40 @@ ap.cpp is an incremental primal-dual assignment problem solver written in C++. I
     </item>
     
     <item>
+      <title>🐪 Reformed JAPHs: ROT13</title>
+      <link>https://ryanjoneil.github.io/posts/2011-04-06-reformed-japhs-rot13/</link>
+      <pubDate>Wed, 06 Apr 2011 00:00:00 +0000</pubDate>
+      
+      <guid>https://ryanjoneil.github.io/posts/2011-04-06-reformed-japhs-rot13/</guid>
+      <description>Python obfuscation using ROT13 encoding</description>
+      <content:encoded><![CDATA[<p><em>Note: This post was updated to work with Python 3.12. It may not work with different versions.</em></p>
+<p>No series of JAPHs would be complete without <a href="https://en.wikipedia.org/wiki/ROT13">ROT13</a>. This is the example through which aspiring Perl programmers learn to use <code>tr</code> and its synonym <code>y</code>. In Perl the basic ROT13 JAPH starts as:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-perl" data-lang="perl"><span style="display:flex;"><span>$foo <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;whfg nabgure crey unpxre&#39;</span>;
+</span></span><span style="display:flex;"><span>$foo <span style="color:#f92672">=~</span> y<span style="color:#e6db74">/a-z/</span>n<span style="color:#f92672">-</span>za<span style="color:#f92672">-</span><span style="color:#e6db74">m</span><span style="color:#960050;background-color:#1e0010">/;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">print</span> $foo;
+</span></span></code></pre></div><p>Python has nothing quite so elegant in its default namespace. However, this does give us the opportunity to explore a little used aspect of strings: the translate method. If we construct a dictionary of ordinals we can accomplish the same thing with a touch more effort.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> string
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>table <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>    ord(x): ord(y) <span style="color:#66d9ef">for</span> x, y <span style="color:#f92672">in</span> zip(
+</span></span><span style="display:flex;"><span>        string<span style="color:#f92672">.</span>ascii_lowercase,
+</span></span><span style="display:flex;"><span>        string<span style="color:#f92672">.</span>ascii_lowercase[<span style="color:#ae81ff">13</span>:] <span style="color:#f92672">+</span> string<span style="color:#f92672">.</span>ascii_lowercase
+</span></span><span style="display:flex;"><span>    )
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#39;whfg nabgure clguba unpxre&#39;</span><span style="color:#f92672">.</span>translate(table))
+</span></span></code></pre></div><p>We obfuscate the construction of this translation dictionary and, for added measure, use <code>getattr</code> to find the <code>print</code> function off of <code>__builtins__</code>.  This will likely only work in Python 3.2, since the order of attributes on <code>__builtins__</code> matters.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>getattr(vars()[list(filter(<span style="color:#66d9ef">lambda</span> _:<span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\x5f\x62</span><span style="color:#e6db74">&#39;</span><span style="color:#f92672">in</span> _,dir
+</span></span><span style="display:flex;"><span>()))[<span style="color:#ae81ff">0</span>]], dir(vars()[list(filter(<span style="color:#66d9ef">lambda</span> _:<span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\x5f\x62</span><span style="color:#e6db74">&#39;</span><span style="color:#f92672">in</span>
+</span></span><span style="display:flex;"><span>_, dir()))[<span style="color:#ae81ff">0</span>]])[list(filter(<span style="color:#66d9ef">lambda</span> _:_ [<span style="color:#ae81ff">1</span>]<span style="color:#f92672">.</span>startswith(
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\x70\x72</span><span style="color:#e6db74">&#39;</span>),enumerate(dir(vars()[list(filter(<span style="color:#66d9ef">lambda</span> _:
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\x5f\x62</span><span style="color:#e6db74">&#39;</span><span style="color:#f92672">in</span> _,dir()))[<span style="color:#ae81ff">0</span>]]))))[<span style="color:#ae81ff">0</span>][<span style="color:#ae81ff">0</span>]])(getattr(<span style="color:#e6db74">&#39;whfg &#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">+</span><span style="color:#e6db74">&#39;&#39;&#39;nabgure clguba unpxre&#39;&#39;&#39;</span>, dir(<span style="color:#e6db74">&#39;0o52&#39;</span>)[<span style="color:#ae81ff">0o116</span>])({ _:
+</span></span><span style="display:flex;"><span>(_<span style="color:#f92672">-</span><span style="color:#ae81ff">0o124</span>) <span style="color:#f92672">%</span><span style="color:#ae81ff">0o32</span> <span style="color:#f92672">+</span><span style="color:#ae81ff">0o141</span> <span style="color:#66d9ef">for</span> _ <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">0o141</span>, <span style="color:#ae81ff">0o173</span>)}))
+</span></span></code></pre></div>]]></content:encoded>
+    </item>
+    
+    <item>
       <title>🐪 Reformed JAPHs: Ridiculous Anagram</title>
       <link>https://ryanjoneil.github.io/posts/2011-04-03-reformed-japhs-ridiculous-anagram/</link>
       <pubDate>Sun, 03 Apr 2011 00:00:00 +0000</pubDate>
