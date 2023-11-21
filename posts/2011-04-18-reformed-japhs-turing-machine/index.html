@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>🐪 Reformed JAPHs: Turing Machine | adventures in optimization</title>
+<meta name="keywords" content="obfuscation, python">
+<meta name="description" content="Python obfuscation with a Turing machine">
+<meta name="author" content="Ryan O&#39;Neil">
+<link rel="canonical" href="https://ryanjoneil.github.io/posts/2011-04-18-reformed-japhs-turing-machine/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.7c3f0ab5ecc8326dc20e6644afa4081b33304fef3299b2c1179eaee195843a6a.css" integrity="sha256-fD8KtezIMm3CDmZEr6QIGzMwT&#43;8ymbLBF56u4ZWEOmo=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://ryanjoneil.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://ryanjoneil.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://ryanjoneil.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://ryanjoneil.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://ryanjoneil.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css"
+    integrity="sha384-GvrOXuhMATgEsSwCs4smul74iXGOixntILdUW9XmUC6+HX0sLNAK3q71HotJqlAn"
+    crossorigin="anonymous"/>
+<script
+    src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"
+    integrity="sha384-cpW21h6RZv/phavutF+AuVYrr+dA8xD9zs6FwLpaCct6O9ctzYFfFr4dgmgccOTx"
+    crossorigin="anonymous">
+</script>
+
+<script
+    src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"
+    integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05"
+    crossorigin="anonymous"
+    onload="renderMathInElement(document.body);">
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    renderMathInElement(document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "$", right: "$", display: false}
+        ]
+    });
+});
+</script>
+
+<meta property="og:title" content="🐪 Reformed JAPHs: Turing Machine" />
+<meta property="og:description" content="Python obfuscation with a Turing machine" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://ryanjoneil.github.io/posts/2011-04-18-reformed-japhs-turing-machine/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2011-04-18T00:00:00+00:00" />
+<meta property="article:modified_time" content="2011-04-18T00:00:00+00:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="🐪 Reformed JAPHs: Turing Machine"/>
+<meta name="twitter:description" content="Python obfuscation with a Turing machine"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://ryanjoneil.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "🐪 Reformed JAPHs: Turing Machine",
+      "item": "https://ryanjoneil.github.io/posts/2011-04-18-reformed-japhs-turing-machine/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "🐪 Reformed JAPHs: Turing Machine",
+  "name": "🐪 Reformed JAPHs: Turing Machine",
+  "description": "Python obfuscation with a Turing machine",
+  "keywords": [
+    "obfuscation", "python"
+  ],
+  "articleBody": "Note: This post was edited for clarity.\nThis JAPH uses a Turing machine. The machine accepts any string that ends in '\\n' and allows side effects. This lets us print the value of the tape as it encounters each character. While the idea of using lambda functions as side effects in a Turing machine is a little bizarre on many levels, we work with what we have. And Python is multi-paradigmatic, so what the heck.\nimport re def turing(tape, transitions): # The tape input comes in as a string. We approximate an infinite # length tape via a hash, so we need to convert this to {index: value} tape_hash = {i: x for i, x in enumerate(tape)} # Start at 0 using our transition matrix index = 0 state = 0 while True: value = tape_hash.get(index, '') # This is a modified Turing machine: it uses regexen # and has side effects. Oh well, I needed IO. for rule in transitions[state]: regex, next, direction, new_value, side_effect = rule if re.match(regex, value): # Terminal states if new_value in ('YES', 'NO'): return new_value tape_hash[index] = new_value side_effect(value) index += direction state = next break assert 'YES' == turing('just another python hacker\\n', [ # This Turing machine recognizes the language of strings that end in \\n. # Regex rule, next state, left/right = -1/+1, new value, side effect. [ # State 0: [r'^[a-z ]$', 0, +1, '', lambda x: print(x, end='')], [r'^\\n$', 1, +1, '', lambda x: print(x, end='')], [r'^.*$', 0, +1, 'NO', None], ], [ # State 1: [r'^$', 1, -1, 'YES', None] ] ]) Obfuscation again consists of converting the above code into lambda functions using Y combinators. This is a nice programming exercise, so I’ve left it out of this post in case anyone wants to try. The Turing machine has to return 'YES' to indicate that it accepts the string, thus the assertion. Our final obfuscated JAPH is a single expression.\nassert'''YES'''==(lambda g:(lambda f:g(lambda arg:f(f)(arg)))(lambda f:g( lambda arg: f(f)(arg))))(lambda f: lambda q:[(lambda g:(lambda f:g(lambda arg:f(f)(arg)))(lambda f: g(lambda arg:f(f)(arg))))(lambda f: lambda x:(x [0][0]if x[0] and __import__('re').match(x[0][0][0],x[1])else f([x[0][1:] ,x[1]]))) ([q[3][q[1]],q[2].get(q[0],'')])[4](q[2].get(q[0],'')), (lambda g:(lambda f:g(lambda arg:f(f)(arg))) (lambda f:g(lambda arg:f(f)(arg))))( lambda f:lambda x:(x[0][0]if x[0] and __import__('re').match(x[0][0][0],x [1])else f([x[0][1:],x[1]])))([q[3][q[1]],q[2].get(q[0],'')])[3]if(lambda g:(lambda f:g(lambda arg:f(f)(arg))) (lambda f:g(lambda arg:f(f)(arg))))( lambda f:lambda x:(x[0][0]if x[0]and __import__('re').match(x[0][0][0],x[ 1]) else f([x[0][1:],x[1]])))([q[3][q[1]],q[2].get(q[0],'')])[3]in('YES', 'NO')else f([q[0]+(lambda g:(lambda f:g(lambda arg:f(f)(arg)))(lambda f:g (lambda arg:f(f)(arg))))(lambda f:lambda x:(x[0][0]if x[0]and __import__( 're').match(x[0][0][0],x[1])else f([x[0][1:], x[1]])))([q[3][q[1]], q[2]. get(q[0],'')])[2],(lambda g:(lambda f:g(lambda arg: f(f)(arg)))(lambda f: g(lambda arg:f(f)(arg))))(lambda f:lambda x:(x[0][0]if x[0]and __import__ ('re').match(x[0][0][0],x[1])else f([x[0][1:], x[1]])))([q[3][q[1]],q[2]. get(q[0],'')])[1],q[2],q[3]])][1])([0,0,{i:x for i,x in enumerate('just ' 'another python hacker\\n')}, [[[r'^[a-z ]$',0,+1,'',lambda x:print(x,end= '')], [r'^\\n$',1,+1,'',lambda x:print(x, end='')],[r'^.*$',0,+1,'''NO''', lambda x:None]], [[r'''^$''',+1,-1,'''YES''', lambda x: None or None]]]]) ",
+  "wordCount" : "433",
+  "inLanguage": "en",
+  "datePublished": "2011-04-18T00:00:00Z",
+  "dateModified": "2011-04-18T00:00:00Z",
+  "author":{
+    "@type": "Person",
+    "name": "Ryan O'Neil"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://ryanjoneil.github.io/posts/2011-04-18-reformed-japhs-turing-machine/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "adventures in optimization",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://ryanjoneil.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://ryanjoneil.github.io/" accesskey="h" title="adventures in optimization (Alt + H)">adventures in optimization</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://ryanjoneil.github.io/about" title="about">
+                    <span>about</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://ryanjoneil.github.io/coding" title="coding">
+                    <span>coding</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://ryanjoneil.github.io/posts" title="posting">
+                    <span>posting</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://ryanjoneil.github.io/speaking" title="speaking">
+                    <span>speaking</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://ryanjoneil.github.io/writing" title="writing">
+                    <span>writing</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://ryanjoneil.github.io/search" title="🔍">
+                    <span>🔍</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title">
+      🐪 Reformed JAPHs: Turing Machine
+    </h1>
+    <div class="post-description">
+      Python obfuscation with a Turing machine
+    </div>
+    <div class="post-meta"><span title='2011-04-18 00:00:00 +0000 UTC'>April 18, 2011</span>&nbsp;·&nbsp;Ryan O&#39;Neil
+
+</div>
+  </header> 
+
+  <div class="post-content"><p><em>Note: This post was edited for clarity.</em></p>
+<p>This JAPH uses a <a href="https://en.wikipedia.org/wiki/Turing_machine">Turing machine</a>. The machine accepts any string that ends in <code>'\n'</code> and allows side effects. This lets us print the value of the tape as it encounters each character. While the idea of using lambda functions as side effects in a Turing machine is a little bizarre on many levels, we work with what we have. And Python is multi-paradigmatic, so what the heck.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> re
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">turing</span>(tape, transitions):
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># The tape input comes in as a string.  We approximate an infinite</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># length tape via a hash, so we need to convert this to {index: value}</span>
+</span></span><span style="display:flex;"><span>    tape_hash <span style="color:#f92672">=</span> {i: x <span style="color:#66d9ef">for</span> i, x <span style="color:#f92672">in</span> enumerate(tape)}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Start at 0 using our transition matrix</span>
+</span></span><span style="display:flex;"><span>    index <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    state <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">while</span> <span style="color:#66d9ef">True</span>:
+</span></span><span style="display:flex;"><span>        value <span style="color:#f92672">=</span> tape_hash<span style="color:#f92672">.</span>get(index, <span style="color:#e6db74">&#39;&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># This is a modified Turing machine: it uses regexen</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># and has side effects.  Oh well, I needed IO.</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> rule <span style="color:#f92672">in</span> transitions[state]:
+</span></span><span style="display:flex;"><span>            regex, next, direction, new_value, side_effect <span style="color:#f92672">=</span> rule
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> re<span style="color:#f92672">.</span><span style="color:#66d9ef">match</span>(regex, value):
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e"># Terminal states</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> new_value <span style="color:#f92672">in</span> (<span style="color:#e6db74">&#39;YES&#39;</span>, <span style="color:#e6db74">&#39;NO&#39;</span>):
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">return</span> new_value
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                tape_hash[index] <span style="color:#f92672">=</span> new_value
+</span></span><span style="display:flex;"><span>                side_effect(value)
+</span></span><span style="display:flex;"><span>                index <span style="color:#f92672">+=</span> direction
+</span></span><span style="display:flex;"><span>                state <span style="color:#f92672">=</span> next
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">break</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">assert</span> <span style="color:#e6db74">&#39;YES&#39;</span> <span style="color:#f92672">==</span> turing(<span style="color:#e6db74">&#39;just another python hacker</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#39;</span>, [
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># This Turing machine recognizes the language of strings that end in \n.</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Regex rule, next state, left/right = -1/+1, new value, side effect.</span>
+</span></span><span style="display:flex;"><span>    [ <span style="color:#75715e"># State 0:</span>
+</span></span><span style="display:flex;"><span>        [<span style="color:#e6db74">r</span><span style="color:#e6db74">&#39;^[a-z ]$&#39;</span>, <span style="color:#ae81ff">0</span>, <span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>, <span style="color:#e6db74">&#39;&#39;</span>, <span style="color:#66d9ef">lambda</span> x: print(x, end<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;&#39;</span>)],
+</span></span><span style="display:flex;"><span>        [<span style="color:#e6db74">r</span><span style="color:#e6db74">&#39;^\n$&#39;</span>, <span style="color:#ae81ff">1</span>, <span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>, <span style="color:#e6db74">&#39;&#39;</span>, <span style="color:#66d9ef">lambda</span> x: print(x, end<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;&#39;</span>)],
+</span></span><span style="display:flex;"><span>        [<span style="color:#e6db74">r</span><span style="color:#e6db74">&#39;^.*$&#39;</span>, <span style="color:#ae81ff">0</span>, <span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>, <span style="color:#e6db74">&#39;NO&#39;</span>, <span style="color:#66d9ef">None</span>],
+</span></span><span style="display:flex;"><span>    ],
+</span></span><span style="display:flex;"><span>    [ <span style="color:#75715e"># State 1:</span>
+</span></span><span style="display:flex;"><span>        [<span style="color:#e6db74">r</span><span style="color:#e6db74">&#39;^$&#39;</span>, <span style="color:#ae81ff">1</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>, <span style="color:#e6db74">&#39;YES&#39;</span>, <span style="color:#66d9ef">None</span>]
+</span></span><span style="display:flex;"><span>    ]
+</span></span><span style="display:flex;"><span>])
+</span></span></code></pre></div><p>Obfuscation again consists of converting the above code into lambda functions using Y combinators. This is a nice programming exercise, so I&rsquo;ve left it out of this post in case anyone wants to try. The Turing machine has to return <code>'YES'</code> to indicate that it accepts the string, thus the assertion. Our final obfuscated JAPH is a single expression.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">assert</span><span style="color:#e6db74">&#39;&#39;&#39;YES&#39;&#39;&#39;</span><span style="color:#f92672">==</span>(<span style="color:#66d9ef">lambda</span> g:(<span style="color:#66d9ef">lambda</span> f:g(<span style="color:#66d9ef">lambda</span> arg:f(f)(arg)))(<span style="color:#66d9ef">lambda</span> f:g(
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">lambda</span> arg: f(f)(arg))))(<span style="color:#66d9ef">lambda</span> f: <span style="color:#66d9ef">lambda</span> q:[(<span style="color:#66d9ef">lambda</span> g:(<span style="color:#66d9ef">lambda</span> f:g(<span style="color:#66d9ef">lambda</span>
+</span></span><span style="display:flex;"><span>arg:f(f)(arg)))(<span style="color:#66d9ef">lambda</span> f: g(<span style="color:#66d9ef">lambda</span> arg:f(f)(arg))))(<span style="color:#66d9ef">lambda</span> f: <span style="color:#66d9ef">lambda</span> x:(x
+</span></span><span style="display:flex;"><span>[<span style="color:#ae81ff">0</span>][<span style="color:#ae81ff">0</span>]<span style="color:#66d9ef">if</span> x[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">and</span> __import__(<span style="color:#e6db74">&#39;re&#39;</span>)<span style="color:#f92672">.</span><span style="color:#66d9ef">match</span>(x[<span style="color:#ae81ff">0</span>][<span style="color:#ae81ff">0</span>][<span style="color:#ae81ff">0</span>],x[<span style="color:#ae81ff">1</span>])<span style="color:#66d9ef">else</span> f([x[<span style="color:#ae81ff">0</span>][<span style="color:#ae81ff">1</span>:]
+</span></span><span style="display:flex;"><span>,x[<span style="color:#ae81ff">1</span>]]))) ([q[<span style="color:#ae81ff">3</span>][q[<span style="color:#ae81ff">1</span>]],q[<span style="color:#ae81ff">2</span>]<span style="color:#f92672">.</span>get(q[<span style="color:#ae81ff">0</span>],<span style="color:#e6db74">&#39;&#39;</span>)])[<span style="color:#ae81ff">4</span>](q[<span style="color:#ae81ff">2</span>]<span style="color:#f92672">.</span>get(q[<span style="color:#ae81ff">0</span>],<span style="color:#e6db74">&#39;&#39;</span>)), (<span style="color:#66d9ef">lambda</span>
+</span></span><span style="display:flex;"><span>g:(<span style="color:#66d9ef">lambda</span> f:g(<span style="color:#66d9ef">lambda</span> arg:f(f)(arg))) (<span style="color:#66d9ef">lambda</span> f:g(<span style="color:#66d9ef">lambda</span> arg:f(f)(arg))))(
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">lambda</span> f:<span style="color:#66d9ef">lambda</span> x:(x[<span style="color:#ae81ff">0</span>][<span style="color:#ae81ff">0</span>]<span style="color:#66d9ef">if</span> x[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">and</span> __import__(<span style="color:#e6db74">&#39;re&#39;</span>)<span style="color:#f92672">.</span><span style="color:#66d9ef">match</span>(x[<span style="color:#ae81ff">0</span>][<span style="color:#ae81ff">0</span>][<span style="color:#ae81ff">0</span>],x
+</span></span><span style="display:flex;"><span>[<span style="color:#ae81ff">1</span>])<span style="color:#66d9ef">else</span> f([x[<span style="color:#ae81ff">0</span>][<span style="color:#ae81ff">1</span>:],x[<span style="color:#ae81ff">1</span>]])))([q[<span style="color:#ae81ff">3</span>][q[<span style="color:#ae81ff">1</span>]],q[<span style="color:#ae81ff">2</span>]<span style="color:#f92672">.</span>get(q[<span style="color:#ae81ff">0</span>],<span style="color:#e6db74">&#39;&#39;</span>)])[<span style="color:#ae81ff">3</span>]<span style="color:#66d9ef">if</span>(<span style="color:#66d9ef">lambda</span>
+</span></span><span style="display:flex;"><span>g:(<span style="color:#66d9ef">lambda</span> f:g(<span style="color:#66d9ef">lambda</span> arg:f(f)(arg))) (<span style="color:#66d9ef">lambda</span> f:g(<span style="color:#66d9ef">lambda</span> arg:f(f)(arg))))(
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">lambda</span> f:<span style="color:#66d9ef">lambda</span> x:(x[<span style="color:#ae81ff">0</span>][<span style="color:#ae81ff">0</span>]<span style="color:#66d9ef">if</span> x[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">and</span> __import__(<span style="color:#e6db74">&#39;re&#39;</span>)<span style="color:#f92672">.</span><span style="color:#66d9ef">match</span>(x[<span style="color:#ae81ff">0</span>][<span style="color:#ae81ff">0</span>][<span style="color:#ae81ff">0</span>],x[
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">1</span>]) <span style="color:#66d9ef">else</span> f([x[<span style="color:#ae81ff">0</span>][<span style="color:#ae81ff">1</span>:],x[<span style="color:#ae81ff">1</span>]])))([q[<span style="color:#ae81ff">3</span>][q[<span style="color:#ae81ff">1</span>]],q[<span style="color:#ae81ff">2</span>]<span style="color:#f92672">.</span>get(q[<span style="color:#ae81ff">0</span>],<span style="color:#e6db74">&#39;&#39;</span>)])[<span style="color:#ae81ff">3</span>]<span style="color:#f92672">in</span>(<span style="color:#e6db74">&#39;YES&#39;</span>,
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#39;NO&#39;</span>)<span style="color:#66d9ef">else</span> f([q[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">+</span>(<span style="color:#66d9ef">lambda</span> g:(<span style="color:#66d9ef">lambda</span> f:g(<span style="color:#66d9ef">lambda</span> arg:f(f)(arg)))(<span style="color:#66d9ef">lambda</span> f:g
+</span></span><span style="display:flex;"><span>(<span style="color:#66d9ef">lambda</span> arg:f(f)(arg))))(<span style="color:#66d9ef">lambda</span> f:<span style="color:#66d9ef">lambda</span> x:(x[<span style="color:#ae81ff">0</span>][<span style="color:#ae81ff">0</span>]<span style="color:#66d9ef">if</span> x[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">and</span> __import__(
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#39;re&#39;</span>)<span style="color:#f92672">.</span><span style="color:#66d9ef">match</span>(x[<span style="color:#ae81ff">0</span>][<span style="color:#ae81ff">0</span>][<span style="color:#ae81ff">0</span>],x[<span style="color:#ae81ff">1</span>])<span style="color:#66d9ef">else</span> f([x[<span style="color:#ae81ff">0</span>][<span style="color:#ae81ff">1</span>:], x[<span style="color:#ae81ff">1</span>]])))([q[<span style="color:#ae81ff">3</span>][q[<span style="color:#ae81ff">1</span>]], q[<span style="color:#ae81ff">2</span>]<span style="color:#f92672">.</span>
+</span></span><span style="display:flex;"><span>get(q[<span style="color:#ae81ff">0</span>],<span style="color:#e6db74">&#39;&#39;</span>)])[<span style="color:#ae81ff">2</span>],(<span style="color:#66d9ef">lambda</span> g:(<span style="color:#66d9ef">lambda</span> f:g(<span style="color:#66d9ef">lambda</span> arg: f(f)(arg)))(<span style="color:#66d9ef">lambda</span> f:
+</span></span><span style="display:flex;"><span>g(<span style="color:#66d9ef">lambda</span> arg:f(f)(arg))))(<span style="color:#66d9ef">lambda</span> f:<span style="color:#66d9ef">lambda</span> x:(x[<span style="color:#ae81ff">0</span>][<span style="color:#ae81ff">0</span>]<span style="color:#66d9ef">if</span> x[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">and</span> __import__
+</span></span><span style="display:flex;"><span>(<span style="color:#e6db74">&#39;re&#39;</span>)<span style="color:#f92672">.</span><span style="color:#66d9ef">match</span>(x[<span style="color:#ae81ff">0</span>][<span style="color:#ae81ff">0</span>][<span style="color:#ae81ff">0</span>],x[<span style="color:#ae81ff">1</span>])<span style="color:#66d9ef">else</span> f([x[<span style="color:#ae81ff">0</span>][<span style="color:#ae81ff">1</span>:], x[<span style="color:#ae81ff">1</span>]])))([q[<span style="color:#ae81ff">3</span>][q[<span style="color:#ae81ff">1</span>]],q[<span style="color:#ae81ff">2</span>]<span style="color:#f92672">.</span>
+</span></span><span style="display:flex;"><span>get(q[<span style="color:#ae81ff">0</span>],<span style="color:#e6db74">&#39;&#39;</span>)])[<span style="color:#ae81ff">1</span>],q[<span style="color:#ae81ff">2</span>],q[<span style="color:#ae81ff">3</span>]])][<span style="color:#ae81ff">1</span>])([<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">0</span>,{i:x <span style="color:#66d9ef">for</span> i,x <span style="color:#f92672">in</span> enumerate(<span style="color:#e6db74">&#39;just &#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#39;another python hacker</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#39;</span>)}, [[[<span style="color:#e6db74">r</span><span style="color:#e6db74">&#39;^[a-z ]$&#39;</span>,<span style="color:#ae81ff">0</span>,<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>,<span style="color:#e6db74">&#39;&#39;</span>,<span style="color:#66d9ef">lambda</span> x:print(x,end<span style="color:#f92672">=</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#39;&#39;</span>)], [<span style="color:#e6db74">r</span><span style="color:#e6db74">&#39;^\n$&#39;</span>,<span style="color:#ae81ff">1</span>,<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>,<span style="color:#e6db74">&#39;&#39;</span>,<span style="color:#66d9ef">lambda</span> x:print(x, end<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;&#39;</span>)],[<span style="color:#e6db74">r</span><span style="color:#e6db74">&#39;^.*$&#39;</span>,<span style="color:#ae81ff">0</span>,<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>,<span style="color:#e6db74">&#39;&#39;&#39;NO&#39;&#39;&#39;</span>,
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">lambda</span> x:<span style="color:#66d9ef">None</span>]], [[<span style="color:#e6db74">r</span><span style="color:#e6db74">&#39;&#39;&#39;^$&#39;&#39;&#39;</span>,<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>,<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>,<span style="color:#e6db74">&#39;&#39;&#39;YES&#39;&#39;&#39;</span>, <span style="color:#66d9ef">lambda</span> x: <span style="color:#66d9ef">None</span> <span style="color:#f92672">or</span> <span style="color:#66d9ef">None</span>]]]])
+</span></span></code></pre></div>
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://ryanjoneil.github.io/tags/obfuscation/">obfuscation</a></li>
+      <li><a href="https://ryanjoneil.github.io/tags/python/">python</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://ryanjoneil.github.io/posts/2023-09-07-blogging-is-back/">
+    <span class="title">« Prev</span>
+    <br>
+    <span>🚀 Blogging is back, baby!</span>
+  </a>
+  <a class="next" href="https://ryanjoneil.github.io/posts/2011-04-14-reformed-japhs-huffman-coding/">
+    <span class="title">Next »</span>
+    <br>
+    <span>🐪 Reformed JAPHs: Huffman Coding</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2023 <a href="https://ryanjoneil.github.io/">adventures in optimization</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>
