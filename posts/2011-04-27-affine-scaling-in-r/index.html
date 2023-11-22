@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>👉 Affine Scaling in R | adventures in optimization</title>
+<meta name="keywords" content="algorithms, r">
+<meta name="description" content="Affine scaling for interior point optimization in R">
+<meta name="author" content="Ryan O&#39;Neil">
+<link rel="canonical" href="https://ryanjoneil.github.io/posts/2011-04-27-affine-scaling-in-r/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.7c3f0ab5ecc8326dc20e6644afa4081b33304fef3299b2c1179eaee195843a6a.css" integrity="sha256-fD8KtezIMm3CDmZEr6QIGzMwT&#43;8ymbLBF56u4ZWEOmo=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://ryanjoneil.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://ryanjoneil.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://ryanjoneil.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://ryanjoneil.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://ryanjoneil.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css"
+    integrity="sha384-GvrOXuhMATgEsSwCs4smul74iXGOixntILdUW9XmUC6+HX0sLNAK3q71HotJqlAn"
+    crossorigin="anonymous"/>
+<script
+    src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"
+    integrity="sha384-cpW21h6RZv/phavutF+AuVYrr+dA8xD9zs6FwLpaCct6O9ctzYFfFr4dgmgccOTx"
+    crossorigin="anonymous">
+</script>
+
+<script
+    src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"
+    integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05"
+    crossorigin="anonymous"
+    onload="renderMathInElement(document.body);">
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    renderMathInElement(document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "$", right: "$", display: false}
+        ]
+    });
+});
+</script>
+
+<meta property="og:title" content="👉 Affine Scaling in R" />
+<meta property="og:description" content="Affine scaling for interior point optimization in R" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://ryanjoneil.github.io/posts/2011-04-27-affine-scaling-in-r/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2011-04-27T00:00:00+00:00" />
+<meta property="article:modified_time" content="2011-04-27T00:00:00+00:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="👉 Affine Scaling in R"/>
+<meta name="twitter:description" content="Affine scaling for interior point optimization in R"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://ryanjoneil.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "👉 Affine Scaling in R",
+      "item": "https://ryanjoneil.github.io/posts/2011-04-27-affine-scaling-in-r/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "👉 Affine Scaling in R",
+  "name": "👉 Affine Scaling in R",
+  "description": "Affine scaling for interior point optimization in R",
+  "keywords": [
+    "algorithms", "r"
+  ],
+  "articleBody": "I recently stumbled across an implementation of the affine scaling interior point method for solving linear programs that I’d coded up in R once upon a time. I’m posting it here in case anyone else finds it useful. There’s not a whole lot of thought given to efficiency or numerical stability, just a demonstration of the basic algorithm. Still, sometimes that’s exactly what one wants.\nsolve.affine \u003c- function(A, rc, x, tolerance=10^-7, R=0.999) { # Affine scaling method while (T) { X_diag \u003c- diag(x) # Compute (A * X_diag^2 * A^t)-1 using Cholesky factorization. # This is responsible for scaling the original problem matrix. q \u003c- A %*% X_diag**2 %*% t(A) q_inv \u003c- chol2inv(chol(q)) # lambda = q * A * X_diag^2 * c lambda \u003c- q_inv %*% A %*% X_diag^2 %*% rc # c - A^t * lambda is used repeatedly foo \u003c- rc - t(A) %*% lambda # We converge as s goes to zero s \u003c- sqrt(sum((X_diag %*% foo)^2)) # Compute new x x \u003c- (x + R * X_diag^2 %*% foo / s)[,] # If s is within our tolerance, stop. if (abs(s) \u003c tolerance) break } x } This function accepts a matrix A which contains all technological coefficients for an LP, a vector rc containing its reduced costs, and an initial point x interior to the LP’s feasible region. Optional arguments to the function include a tolerance, for detecting when the method is within an acceptable distance from the optimal point, and a value for R, which must be strictly between 0 and 1 and controls scaling.\nThe method works by rescaling the matrix A around the current solution x. It then computes a new x such that it remains feasible and interior, which is why R cannot be 0 or 1. It requires a feasible interior point to start and only projects to other feasible interior points, so the right hand side of the LP is not required (it is implicit from the starting point). The shadow prices for each iteration are captured in the vector lambda, so the gap between primal and dual solutions is easy to compute.\nWe run this function against a 3x3 LP with a known solution:\nmax z = 5x1 + 4x2 + 3x3 st 2x1 + 3x2 + x3 \u003c= 5 4x1 + x2 + 2x3 \u003c= 11 3x1 + 4x2 + 2x3 \u003c= 8 x1, x2, x3 \u003e= 0 The optimal solution to this LP is:\nz = 13 x1 = 2 x2 = 0 x3 = 1 This problem can be run against the affine scaling function by defining A with all necessary slack variables, and using an arbitrary feasible interior point:\nA \u003c- matrix(c( 2,3,1,1,0,0, 4,1,2,0,1,0, 3,4,2,0,0,1 ), nrow=3, byrow=T) rc \u003c- c(5, 4, 3, 0, 0, 0) x \u003c- c(0.5, 0.5, 0.5, 2, 7.5, 3.5) solution \u003c- solve.affine(A, rc, x) print(solution) print(sum(solution * rc)) This provides an output vector that is very close to the optimal primal solution shown above. Since interior point methods converge asymptotically to optimal solutions, it is important to note that we can only ever get (extremely) close to our final optimal objective and decision variable values.\n\u003e print(solution) [1] 1.999998e+00 4.268595e-07 1.000002e+00 1.280579e-06 1.000005e+00 [6] 1.280579e-06 \u003e print(sum(solution * rc)) [1] 13.00000 ",
+  "wordCount" : "543",
+  "inLanguage": "en",
+  "datePublished": "2011-04-27T00:00:00Z",
+  "dateModified": "2011-04-27T00:00:00Z",
+  "author":{
+    "@type": "Person",
+    "name": "Ryan O'Neil"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://ryanjoneil.github.io/posts/2011-04-27-affine-scaling-in-r/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "adventures in optimization",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://ryanjoneil.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://ryanjoneil.github.io/" accesskey="h" title="adventures in optimization (Alt + H)">adventures in optimization</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://ryanjoneil.github.io/about" title="about">
+                    <span>about</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://ryanjoneil.github.io/coding" title="coding">
+                    <span>coding</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://ryanjoneil.github.io/posts" title="posting">
+                    <span>posting</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://ryanjoneil.github.io/speaking" title="speaking">
+                    <span>speaking</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://ryanjoneil.github.io/writing" title="writing">
+                    <span>writing</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://ryanjoneil.github.io/search" title="🔍">
+                    <span>🔍</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title">
+      👉 Affine Scaling in R
+    </h1>
+    <div class="post-description">
+      Affine scaling for interior point optimization in R
+    </div>
+    <div class="post-meta"><span title='2011-04-27 00:00:00 +0000 UTC'>April 27, 2011</span>&nbsp;·&nbsp;Ryan O&#39;Neil
+
+</div>
+  </header> 
+
+  <div class="post-content"><p>I recently stumbled across an implementation of the <a href="https://demonstrations.wolfram.com/AffineScalingInteriorPointMethod/">affine scaling</a> <a href="https://en.wikipedia.org/wiki/Interior_point_method">interior point method</a> for solving linear programs that I&rsquo;d coded up in R once upon a time. I&rsquo;m posting it here in case anyone else finds it useful. There&rsquo;s not a whole lot of thought given to efficiency or numerical stability, just a demonstration of the basic algorithm. Still, sometimes that&rsquo;s exactly what one wants.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>solve.affine <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">function</span>(A, rc, x, tolerance<span style="color:#f92672">=</span><span style="color:#ae81ff">10</span>^<span style="color:#ae81ff">-7</span>, R<span style="color:#f92672">=</span><span style="color:#ae81ff">0.999</span>) {
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># Affine scaling method</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">while </span>(T) {
+</span></span><span style="display:flex;"><span>    X_diag <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">diag</span>(x)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Compute (A * X_diag^2 * A^t)-1 using Cholesky factorization.</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># This is responsible for scaling the original problem matrix.</span>
+</span></span><span style="display:flex;"><span>    q <span style="color:#f92672">&lt;-</span> A <span style="color:#f92672">%*%</span> X_diag<span style="color:#f92672">**</span><span style="color:#ae81ff">2</span> <span style="color:#f92672">%*%</span> <span style="color:#a6e22e">t</span>(A)
+</span></span><span style="display:flex;"><span>    q_inv <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">chol2inv</span>(<span style="color:#a6e22e">chol</span>(q))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># lambda = q * A * X_diag^2 * c</span>
+</span></span><span style="display:flex;"><span>    lambda <span style="color:#f92672">&lt;-</span> q_inv <span style="color:#f92672">%*%</span> A <span style="color:#f92672">%*%</span> X_diag^2 <span style="color:#f92672">%*%</span> rc
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># c - A^t * lambda is used repeatedly</span>
+</span></span><span style="display:flex;"><span>    foo <span style="color:#f92672">&lt;-</span> rc <span style="color:#f92672">-</span> <span style="color:#a6e22e">t</span>(A) <span style="color:#f92672">%*%</span> lambda
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># We converge as s goes to zero</span>
+</span></span><span style="display:flex;"><span>    s <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">sqrt</span>(<span style="color:#a6e22e">sum</span>((X_diag <span style="color:#f92672">%*%</span> foo)^2))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Compute new x</span>
+</span></span><span style="display:flex;"><span>    x <span style="color:#f92672">&lt;-</span> (x <span style="color:#f92672">+</span> R <span style="color:#f92672">*</span> X_diag^2 <span style="color:#f92672">%*%</span> foo <span style="color:#f92672">/</span> s)[,]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># If s is within our tolerance, stop.</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">if </span>(<span style="color:#a6e22e">abs</span>(s) <span style="color:#f92672">&lt;</span> tolerance) break
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  x
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>This function accepts a matrix <code>A</code> which contains all technological coefficients for an LP, a vector <code>rc</code> containing its reduced costs, and an initial point <code>x</code> interior to the LP&rsquo;s feasible region. Optional arguments to the function include a tolerance, for detecting when the method is within an acceptable distance from the optimal point, and a value for <code>R</code>, which must be strictly between 0 and 1 and controls scaling.</p>
+<p>The method works by rescaling the matrix <code>A</code> around the current solution <code>x</code>. It then computes a new <code>x</code> such that it remains feasible and interior, which is why <code>R</code> cannot be 0 or 1. It requires a feasible interior point to start and only projects to other feasible interior points, so the right hand side of the LP is not required (it is implicit from the starting point). The shadow prices for each iteration are captured in the vector lambda, so the gap between primal and dual solutions is easy to compute.</p>
+<p>We run this function against a 3x3 LP with a known solution:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>max z = 5x1 + 4x2 + 3x3
+</span></span><span style="display:flex;"><span>st      2x1 + 3x2 +  x3 &lt;=  5
+</span></span><span style="display:flex;"><span>        4x1 +  x2 + 2x3 &lt;= 11
+</span></span><span style="display:flex;"><span>        3x1 + 4x2 + 2x3 &lt;=  8
+</span></span><span style="display:flex;"><span>        x1, x2, x3 &gt;= 0
+</span></span></code></pre></div><p>The optimal solution to this LP is:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>z  = 13
+</span></span><span style="display:flex;"><span>x1 =  2
+</span></span><span style="display:flex;"><span>x2 =  0
+</span></span><span style="display:flex;"><span>x3 =  1
+</span></span></code></pre></div><p>This problem can be run against the affine scaling function by defining A with all necessary slack variables, and using an arbitrary feasible interior point:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>A <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">matrix</span>(<span style="color:#a6e22e">c</span>(
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">3</span>,<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">0</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">4</span>,<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">0</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">3</span>,<span style="color:#ae81ff">4</span>,<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>), nrow<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>, byrow<span style="color:#f92672">=</span>T)
+</span></span><span style="display:flex;"><span>rc <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>x  <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">0.5</span>, <span style="color:#ae81ff">0.5</span>, <span style="color:#ae81ff">0.5</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">7.5</span>, <span style="color:#ae81ff">3.5</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>solution <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">solve.affine</span>(A, rc, x)
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">print</span>(solution)
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">print</span>(<span style="color:#a6e22e">sum</span>(solution <span style="color:#f92672">*</span> rc))
+</span></span></code></pre></div><p>This provides an output vector that is very close to the optimal primal solution shown above. Since interior point methods converge asymptotically to optimal solutions, it is important to note that we can only ever get (extremely) close to our final optimal objective and decision variable values.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">print</span>(solution)
+</span></span><span style="display:flex;"><span>[1] <span style="color:#ae81ff">1.999998e+00</span> <span style="color:#ae81ff">4.268595e-07</span> <span style="color:#ae81ff">1.000002e+00</span> <span style="color:#ae81ff">1.280579e-06</span> <span style="color:#ae81ff">1.000005e+00</span>
+</span></span><span style="display:flex;"><span>[6] <span style="color:#ae81ff">1.280579e-06</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">print</span>(<span style="color:#a6e22e">sum</span>(solution <span style="color:#f92672">*</span> rc))
+</span></span><span style="display:flex;"><span>[1] <span style="color:#ae81ff">13.00000</span>
+</span></span></code></pre></div>
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://ryanjoneil.github.io/tags/algorithms/">algorithms</a></li>
+      <li><a href="https://ryanjoneil.github.io/tags/r/">r</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://ryanjoneil.github.io/posts/2023-09-07-blogging-is-back/">
+    <span class="title">« Prev</span>
+    <br>
+    <span>🚀 Blogging is back, baby!</span>
+  </a>
+  <a class="next" href="https://ryanjoneil.github.io/posts/2011-04-18-reformed-japhs-transpiler/">
+    <span class="title">Next »</span>
+    <br>
+    <span>🐪 Reformed JAPHs: Transpiler</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2023 <a href="https://ryanjoneil.github.io/">adventures in optimization</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>
