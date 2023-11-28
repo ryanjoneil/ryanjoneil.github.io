@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>integer programming on adventures in optimization</title>
+    <link>https://ryanjoneil.github.io/tags/integer-programming/</link>
+    <description>Recent content in integer programming on adventures in optimization</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Sun, 26 Nov 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://ryanjoneil.github.io/tags/integer-programming/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>📅 Reducing Overscheduling</title>
+      <link>https://ryanjoneil.github.io/posts/2023-11-26-reducing-overscheduling/</link>
+      <pubDate>Sun, 26 Nov 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://ryanjoneil.github.io/posts/2023-11-26-reducing-overscheduling/</guid>
+      <description>Minimize overbooking while scheduling team meetings</description>
+      <content:encoded><![CDATA[<p>At a <a href="https://nextmv.io">Nextmv</a> <a href="https://www.youtube.com/watch?v=XTeit7TAWj4">tech talk</a> a couple weeks ago, I showed a <a href="https://en.wikipedia.org/wiki/Least_absolute_deviations">least absolute deviations</a> (LAD) regression model using OR-Tools. This isn&rsquo;t new &ndash; I pulled the formulation from Rob Vanderbei&rsquo;s &ldquo;<a href="https://vanderbei.princeton.edu/tex/LocalWarming/LocalWarmingSIREVrev.pdf">Local Warming</a>&rdquo; paper, and I&rsquo;ve shown similar models at conference talks in the past using other modeling APIs and solvers.</p>
+<p>There are a couple reasons I keep coming back to this problem. One is that it&rsquo;s a great example of how to build a machine learning model using an optimization solver. Unless you have an optimization background, it&rsquo;s probably not obvious you can do this. Building a regression or classification model with a solver directly is a great way to understand the model better. And you can customize it in interesting ways, like adding <a href="https://www.robots.ox.ac.uk/~az/lectures/ml/2011/lect6.pdf">epsilon insensitivity</a>.</p>
+<p>Another is that <a href="https://en.wikipedia.org/wiki/Least_squares">least squares</a>, while most commonly used regression form, has a fatal flaw: it isn&rsquo;t robust to outliers in the input data. This is because least squares minimize the <em>sum of squared residuals</em>, as shown in the formulation below. Here, $A$ is an $m \times n$ matrix of feature data, $b$ is a vector of observations to fit, and $x$ is a vector of coefficients the optimizer must find.</p>
+<p>$$
+\min f(x) = \Vert Ax-b \Vert_2^2
+$$</p>
+<p>Since the objective function minimizes squared residuals, outliers have a much bigger impact than other data. LAD regression solves this by simply summing the values of the residuals as they are.</p>
+<p>$$
+\min f(x) = \vert Ax-b \vert
+$$</p>
+<p>So why isn&rsquo;t this used more? Simple &ndash; least squares has a convenient analytical solution, while LAD requires an algorithm to solve. For instance, you can formulate LAD regression as a linear program, but now you need a solver.</p>
+<p>$$
+\begin{align*}
+\min         \quad &amp; 1&rsquo;z \\
+\text{s.t.}\ \quad &amp; z \ge Ax - b \\
+&amp; z \ge b - Ax
+\end{align*}
+$$</p>
+<p>While I like using this example, it paints a rather negative picture of squaring. If it does funny things to solvers, is there any good reason to square? Thus I&rsquo;ve been on the lookout for a practical example where squaring a variable or expression makes a model more useful.</p>
+<p>Luckily for me, Erwin Kalvelagen recently <a href="https://yetanothermathprogrammingconsultant.blogspot.com/2023/10/scheduling-team-meetings.html">posted</a> about using optimization to schedule team meetings. This is an application where minimizing squared values of <em>overbooking</em> can be beneficial &ndash; it may be worse to be triple booked than double booked.</p>
+<p>I won&rsquo;t recreate the reasoning behind Erwin&rsquo;s post here. You can read his blog for that. What we&rsquo;ll do is look at both the formulations in his post, along with a couple extras using <a href="https://julialang.org/">Julia</a> for code, <a href="https://jump.dev/">JuMP</a> for modeling, <a href="https://www.scipopt.org/">SCIP</a> for optimization, and <a href="https://gadflyjl.org/stable/">Gadfly</a> for visualization. All model code and data are linked in the resources section at the end.</p>
+<h2 id="maximize-attendance">Maximize attendance</h2>
+<p>To start off, I built a new data set, which you can find in the resources section. This differentiates team membership between two types of employees: individual contributors (starting with <code>ic</code> in the data), who attend meetings for 1 or 2 teams, and managers (prefixed with <code>mgr</code>), who attend meetings to coordinate across multiple teams. We schedule meetings for 10 teams (prefix <code>t</code>) into 3 time slots (<code>s</code>).</p>
+<p>The first model in Erwin&rsquo;s post maximizes attendance. This means it tries to schedule team members for as many unique time slots as possible. It doesn&rsquo;t consider overbooking.</p>
+<p>$$
+\begin{align*}
+\max\quad       &amp; \sum_{i,s} y_{i,s} \\
+\text{s.t.}\quad&amp; \sum_{s} x_{t,s} = 1                  &amp;\quad\forall&amp;\ t   &amp; \text{schedule each team meeting once}\\
+&amp; y_{i,s} \le \sum_{t} m_{i,t}\ x_{t,s} &amp;\quad\forall&amp;\ i,s &amp; \text{individuals attend team meetings}\\
+&amp; x_{t,s} \in \{0,1\}                 &amp;\quad\forall&amp;\ t,s\\
+&amp; y_{i,s} \in \{0,1\}                 &amp;\quad\forall&amp;\ i,s
+\end{align*}
+$$</p>
+<p>This yields the following team schedule, with red representing a scheduled team meeting.</p>
+<p><img loading="lazy" src="/files/2023-11-26-reducing-overscheduling/maximize-attendance-teams.svg" alt="Maximize attendance - team schedules"  />
+</p>
+<p>If we look at the manager schedules, we&rsquo;ll see that every manager is completely booked. This makes sense. That&rsquo;s what managers do, right? Go to meetings?</p>
+<p><img loading="lazy" src="/files/2023-11-26-reducing-overscheduling/maximize-attendance-managers.svg" alt="Maximize attendance - manager attendance"  />
+</p>
+<h2 id="minimize-overbooking">Minimize overbooking</h2>
+<p>The model gets more interesting once we account for overbooking. Erwin&rsquo;s post has a model that minimizes overbooking, where overbooking is the number of additional meetings in a time slot. If a team member is double booked, that&rsquo;s 1 overbooking. If they are triple booked, that&rsquo;s 2 overbookings.</p>
+<h3 id="sum-of-overbooking">Sum of overbooking</h3>
+<p>The second model in Erwin&rsquo;s post minimizes the sum of all overbookings. He does this by adding a continuous <code>c</code> vector that only incurs value once a team member goes over a single meeting in a given time slot.</p>
+<p>$$
+\begin{align*}
+\min\quad       &amp; \sum_{i,s} c_{i,s} \\
+\text{s.t.}\quad&amp; \sum_{s} x_{t,s} = 1                      &amp;\quad\forall&amp;\ t   &amp; \text{schedule each team meeting once}\\
+&amp; c_{i,s} \ge \sum_{t} m_{i,t}\ x_{t,s} - 1 &amp;\quad\forall&amp;\ i,s &amp; \text{measure overbooking}\\
+&amp; x_{t,s} \in \{0,1\}                     &amp;\quad\forall&amp;\ t,s\\
+&amp; c_{i,s} \ge 0                             &amp;\quad\forall&amp;\ i,s
+\end{align*}
+$$</p>
+<p>Given our data this results in the following team schedule, which is probably not all that interesting. I&rsquo;ll leave this visualization out from now on.</p>
+<p><img loading="lazy" src="/files/2023-11-26-reducing-overscheduling/minimize-overbooking-teams.svg" alt="Minimize overbooking - team schedules"  />
+</p>
+<p>Where it gets interesting is plotting overbookings for the managers. Here we see that 3 manager time slots are triple booked <em>(red)</em>, while 8 are double booked <em>(gray)</em>.</p>
+<p><img loading="lazy" src="/files/2023-11-26-reducing-overscheduling/minimize-overbooking-managers.svg" alt="Minimize overbooking - manager overbooking"  />
+</p>
+<h3 id="sum-of-squared-overbooking">Sum of squared overbooking</h3>
+<p>Let&rsquo;s say it&rsquo;s worse to triple book (or, gasp, <em>quadruple</em> book) than to double book. How can the model account for this? One answer, if you have a MIQP-enabled solver, is to simply square the <code>c</code> values.</p>
+<p>$$
+\begin{align*}
+\min\quad       &amp; \sum_{i,s} c_{i,s}^2 \\
+\text{s.t.}\quad&amp; \sum_{s} x_{t,s} = 1                      &amp;\quad\forall&amp;\ t   &amp; \text{schedule each team meeting once}\\
+&amp; c_{i,s} \ge \sum_{t} m_{i,t}\ x_{t,s} - 1 &amp;\quad\forall&amp;\ i,s &amp; \text{measure overbooking}\\
+&amp; x_{t,s} \in \{0,1\}                     &amp;\quad\forall&amp;\ t,s\\
+&amp; c_{i,s} \ge 0                             &amp;\quad\forall&amp;\ i,s
+\end{align*}
+$$</p>
+<p>This completely eliminates triple booking, as shown below. No manager is worse off than being double booked, which seems normal given my experiences.</p>
+<p><img loading="lazy" src="/files/2023-11-26-reducing-overscheduling/minimize-overbooking-squared-managers.svg" alt="Minimize squared overbooking - manager overbooking"  />
+</p>
+<p>The problem with this is that the solver now takes a lot longer. It&rsquo;s not bad for the data in this example, but if you try it with something larger you&rsquo;ll see what I mean. You can find the data generator code in the resources section.</p>
+<h3 id="constrained-bottleneck">Constrained bottleneck</h3>
+<p>So how can we do something similar without the computational cost? One option is to continue using MILP formulations, but in the context of hierarchical optimization. This means splitting the model into two. First, we try to minimize the maximum overbookings for any team member (the <em>bottleneck</em>, if you will). This involves adding a variable $b$ representing that maximum.</p>
+<p>$$ b = \max\Bigl\{\sum_{t} m_{i,t}\ x_{t,s} - 1 : i \in I, s \in S \Bigr\} $$</p>
+<p>Now we can simply minimize $b$ using a MILP instead of a MIQP.</p>
+<p>$$
+\begin{align*}
+\min\quad       &amp; b \\
+\text{s.t.}\quad&amp; \sum_{s} x_{t,s} = 1                &amp;\quad\forall&amp;\ t   &amp; \text{schedule each team meeting once}\\
+&amp; b \ge \sum_{t} m_{i,t}\ x_{t,s} - 1 &amp;\quad\forall&amp;\ i,s &amp; \text{maximum overbooking}\\
+&amp; x_{t,s} \in \{0,1\}               &amp;\quad\forall&amp;\ t,s
+\end{align*}
+$$</p>
+<p>Once we solve the first model, we get the minimal value of $b$, which we call $b^*$. We can simply use $b^*$ as an upper bound for overbookings in the second original model.</p>
+<p>$$
+\begin{align*}
+\min\quad       &amp; \sum_{i,s} c_{i,s} \\
+\text{s.t.}\quad&amp; \sum_{s} x_{t,s} = 1                      &amp;\quad\forall&amp;\ t   &amp; \text{schedule each team meeting once}\\
+&amp; c_{i,s} \ge \sum_{t} m_{i,t}\ x_{t,s} - 1 &amp;\quad\forall&amp;\ i,s &amp; \text{measure overbooking}\\
+&amp; x_{t,s} \in \{0,1\}                     &amp;\quad\forall&amp;\ t,s\\
+&amp; 0 \le c_{i,s} \le b^*                     &amp;\quad\forall&amp;\ i,s
+\end{align*}
+$$</p>
+<p>As we see below, this model also eliminates triple bookings, and it&rsquo;s quite a bit faster to solve than the MIQP.</p>
+<p><img loading="lazy" src="/files/2023-11-26-reducing-overscheduling/minimize-bottleneck-managers.svg" alt="Minimize bottleneck - manager overbooking"  />
+</p>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="/files/2023-11-26-reducing-overscheduling/main.go"><code>main.go</code></a> generates input data</li>
+<li><a href="/files/2023-11-26-reducing-overscheduling/membership.csv"><code>membership.csv</code></a> contains input data</li>
+<li><a href="/files/2023-11-26-reducing-overscheduling/maximize-attendance.jl"><code>maximize-attendance.jl</code></a> MILP model</li>
+<li><a href="/files/2023-11-26-reducing-overscheduling/minimize-overbooking.jl"><code>minimize-overbooking.jl</code></a> MILP model</li>
+<li><a href="/files/2023-11-26-reducing-overscheduling/minimize-overbooking-squared.jl"><code>minimize-overbooking-squared.jl</code></a> MIQP model</li>
+<li><a href="/files/2023-11-26-reducing-overscheduling/minimize-bottleneck.jl"><code>minimize-bottleneck.jl</code></a> hierarchical MILP models</li>
+</ul>
+]]></content:encoded>
+    </item>
+    
+  </channel>
+</rss>

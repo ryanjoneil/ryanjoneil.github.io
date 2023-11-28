@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>📅 Reducing Overscheduling | adventures in optimization</title>
+<meta name="keywords" content="scheduling, integer programming, modeling, julia, jump, scip, gadfly">
+<meta name="description" content="Minimize overbooking while scheduling team meetings">
+<meta name="author" content="Ryan O&#39;Neil">
+<link rel="canonical" href="https://ryanjoneil.github.io/posts/2023-11-26-reducing-overscheduling/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.7c3f0ab5ecc8326dc20e6644afa4081b33304fef3299b2c1179eaee195843a6a.css" integrity="sha256-fD8KtezIMm3CDmZEr6QIGzMwT&#43;8ymbLBF56u4ZWEOmo=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://ryanjoneil.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://ryanjoneil.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://ryanjoneil.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://ryanjoneil.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://ryanjoneil.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css"
+    integrity="sha384-GvrOXuhMATgEsSwCs4smul74iXGOixntILdUW9XmUC6+HX0sLNAK3q71HotJqlAn"
+    crossorigin="anonymous"/>
+<script
+    src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"
+    integrity="sha384-cpW21h6RZv/phavutF+AuVYrr+dA8xD9zs6FwLpaCct6O9ctzYFfFr4dgmgccOTx"
+    crossorigin="anonymous">
+</script>
+
+<script
+    src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"
+    integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05"
+    crossorigin="anonymous"
+    onload="renderMathInElement(document.body);">
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    renderMathInElement(document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "$", right: "$", display: false}
+        ]
+    });
+});
+</script>
+
+<meta property="og:title" content="📅 Reducing Overscheduling" />
+<meta property="og:description" content="Minimize overbooking while scheduling team meetings" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://ryanjoneil.github.io/posts/2023-11-26-reducing-overscheduling/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-11-26T00:00:00+00:00" />
+<meta property="article:modified_time" content="2023-11-26T00:00:00+00:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="📅 Reducing Overscheduling"/>
+<meta name="twitter:description" content="Minimize overbooking while scheduling team meetings"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://ryanjoneil.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "📅 Reducing Overscheduling",
+      "item": "https://ryanjoneil.github.io/posts/2023-11-26-reducing-overscheduling/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "📅 Reducing Overscheduling",
+  "name": "📅 Reducing Overscheduling",
+  "description": "Minimize overbooking while scheduling team meetings",
+  "keywords": [
+    "scheduling", "integer programming", "modeling", "julia", "jump", "scip", "gadfly"
+  ],
+  "articleBody": "At a Nextmv tech talk a couple weeks ago, I showed a least absolute deviations (LAD) regression model using OR-Tools. This isn’t new – I pulled the formulation from Rob Vanderbei’s “Local Warming” paper, and I’ve shown similar models at conference talks in the past using other modeling APIs and solvers.\nThere are a couple reasons I keep coming back to this problem. One is that it’s a great example of how to build a machine learning model using an optimization solver. Unless you have an optimization background, it’s probably not obvious you can do this. Building a regression or classification model with a solver directly is a great way to understand the model better. And you can customize it in interesting ways, like adding epsilon insensitivity.\nAnother is that least squares, while most commonly used regression form, has a fatal flaw: it isn’t robust to outliers in the input data. This is because least squares minimize the sum of squared residuals, as shown in the formulation below. Here, $A$ is an $m \\times n$ matrix of feature data, $b$ is a vector of observations to fit, and $x$ is a vector of coefficients the optimizer must find.\n$$ \\min f(x) = \\Vert Ax-b \\Vert_2^2 $$\nSince the objective function minimizes squared residuals, outliers have a much bigger impact than other data. LAD regression solves this by simply summing the values of the residuals as they are.\n$$ \\min f(x) = \\vert Ax-b \\vert $$\nSo why isn’t this used more? Simple – least squares has a convenient analytical solution, while LAD requires an algorithm to solve. For instance, you can formulate LAD regression as a linear program, but now you need a solver.\n$$ \\begin{align*} \\min \\quad \u0026 1’z \\\\ \\text{s.t.}\\ \\quad \u0026 z \\ge Ax - b \\\\ \u0026 z \\ge b - Ax \\end{align*} $$\nWhile I like using this example, it paints a rather negative picture of squaring. If it does funny things to solvers, is there any good reason to square? Thus I’ve been on the lookout for a practical example where squaring a variable or expression makes a model more useful.\nLuckily for me, Erwin Kalvelagen recently posted about using optimization to schedule team meetings. This is an application where minimizing squared values of overbooking can be beneficial – it may be worse to be triple booked than double booked.\nI won’t recreate the reasoning behind Erwin’s post here. You can read his blog for that. What we’ll do is look at both the formulations in his post, along with a couple extras using Julia for code, JuMP for modeling, SCIP for optimization, and Gadfly for visualization. All model code and data are linked in the resources section at the end.\nMaximize attendance To start off, I built a new data set, which you can find in the resources section. This differentiates team membership between two types of employees: individual contributors (starting with ic in the data), who attend meetings for 1 or 2 teams, and managers (prefixed with mgr), who attend meetings to coordinate across multiple teams. We schedule meetings for 10 teams (prefix t) into 3 time slots (s).\nThe first model in Erwin’s post maximizes attendance. This means it tries to schedule team members for as many unique time slots as possible. It doesn’t consider overbooking.\n$$ \\begin{align*} \\max\\quad \u0026 \\sum_{i,s} y_{i,s} \\\\ \\text{s.t.}\\quad\u0026 \\sum_{s} x_{t,s} = 1 \u0026\\quad\\forall\u0026\\ t \u0026 \\text{schedule each team meeting once}\\\\ \u0026 y_{i,s} \\le \\sum_{t} m_{i,t}\\ x_{t,s} \u0026\\quad\\forall\u0026\\ i,s \u0026 \\text{individuals attend team meetings}\\\\ \u0026 x_{t,s} \\in \\{0,1\\} \u0026\\quad\\forall\u0026\\ t,s\\\\ \u0026 y_{i,s} \\in \\{0,1\\} \u0026\\quad\\forall\u0026\\ i,s \\end{align*} $$\nThis yields the following team schedule, with red representing a scheduled team meeting.\nIf we look at the manager schedules, we’ll see that every manager is completely booked. This makes sense. That’s what managers do, right? Go to meetings?\nMinimize overbooking The model gets more interesting once we account for overbooking. Erwin’s post has a model that minimizes overbooking, where overbooking is the number of additional meetings in a time slot. If a team member is double booked, that’s 1 overbooking. If they are triple booked, that’s 2 overbookings.\nSum of overbooking The second model in Erwin’s post minimizes the sum of all overbookings. He does this by adding a continuous c vector that only incurs value once a team member goes over a single meeting in a given time slot.\n$$ \\begin{align*} \\min\\quad \u0026 \\sum_{i,s} c_{i,s} \\\\ \\text{s.t.}\\quad\u0026 \\sum_{s} x_{t,s} = 1 \u0026\\quad\\forall\u0026\\ t \u0026 \\text{schedule each team meeting once}\\\\ \u0026 c_{i,s} \\ge \\sum_{t} m_{i,t}\\ x_{t,s} - 1 \u0026\\quad\\forall\u0026\\ i,s \u0026 \\text{measure overbooking}\\\\ \u0026 x_{t,s} \\in \\{0,1\\} \u0026\\quad\\forall\u0026\\ t,s\\\\ \u0026 c_{i,s} \\ge 0 \u0026\\quad\\forall\u0026\\ i,s \\end{align*} $$\nGiven our data this results in the following team schedule, which is probably not all that interesting. I’ll leave this visualization out from now on.\nWhere it gets interesting is plotting overbookings for the managers. Here we see that 3 manager time slots are triple booked (red), while 8 are double booked (gray).\nSum of squared overbooking Let’s say it’s worse to triple book (or, gasp, quadruple book) than to double book. How can the model account for this? One answer, if you have a MIQP-enabled solver, is to simply square the c values.\n$$ \\begin{align*} \\min\\quad \u0026 \\sum_{i,s} c_{i,s}^2 \\\\ \\text{s.t.}\\quad\u0026 \\sum_{s} x_{t,s} = 1 \u0026\\quad\\forall\u0026\\ t \u0026 \\text{schedule each team meeting once}\\\\ \u0026 c_{i,s} \\ge \\sum_{t} m_{i,t}\\ x_{t,s} - 1 \u0026\\quad\\forall\u0026\\ i,s \u0026 \\text{measure overbooking}\\\\ \u0026 x_{t,s} \\in \\{0,1\\} \u0026\\quad\\forall\u0026\\ t,s\\\\ \u0026 c_{i,s} \\ge 0 \u0026\\quad\\forall\u0026\\ i,s \\end{align*} $$\nThis completely eliminates triple booking, as shown below. No manager is worse off than being double booked, which seems normal given my experiences.\nThe problem with this is that the solver now takes a lot longer. It’s not bad for the data in this example, but if you try it with something larger you’ll see what I mean. You can find the data generator code in the resources section.\nConstrained bottleneck So how can we do something similar without the computational cost? One option is to continue using MILP formulations, but in the context of hierarchical optimization. This means splitting the model into two. First, we try to minimize the maximum overbookings for any team member (the bottleneck, if you will). This involves adding a variable $b$ representing that maximum.\n$$ b = \\max\\Bigl\\{\\sum_{t} m_{i,t}\\ x_{t,s} - 1 : i \\in I, s \\in S \\Bigr\\} $$\nNow we can simply minimize $b$ using a MILP instead of a MIQP.\n$$ \\begin{align*} \\min\\quad \u0026 b \\\\ \\text{s.t.}\\quad\u0026 \\sum_{s} x_{t,s} = 1 \u0026\\quad\\forall\u0026\\ t \u0026 \\text{schedule each team meeting once}\\\\ \u0026 b \\ge \\sum_{t} m_{i,t}\\ x_{t,s} - 1 \u0026\\quad\\forall\u0026\\ i,s \u0026 \\text{maximum overbooking}\\\\ \u0026 x_{t,s} \\in \\{0,1\\} \u0026\\quad\\forall\u0026\\ t,s \\end{align*} $$\nOnce we solve the first model, we get the minimal value of $b$, which we call $b^*$. We can simply use $b^*$ as an upper bound for overbookings in the second original model.\n$$ \\begin{align*} \\min\\quad \u0026 \\sum_{i,s} c_{i,s} \\\\ \\text{s.t.}\\quad\u0026 \\sum_{s} x_{t,s} = 1 \u0026\\quad\\forall\u0026\\ t \u0026 \\text{schedule each team meeting once}\\\\ \u0026 c_{i,s} \\ge \\sum_{t} m_{i,t}\\ x_{t,s} - 1 \u0026\\quad\\forall\u0026\\ i,s \u0026 \\text{measure overbooking}\\\\ \u0026 x_{t,s} \\in \\{0,1\\} \u0026\\quad\\forall\u0026\\ t,s\\\\ \u0026 0 \\le c_{i,s} \\le b^* \u0026\\quad\\forall\u0026\\ i,s \\end{align*} $$\nAs we see below, this model also eliminates triple bookings, and it’s quite a bit faster to solve than the MIQP.\nResources main.go generates input data membership.csv contains input data maximize-attendance.jl MILP model minimize-overbooking.jl MILP model minimize-overbooking-squared.jl MIQP model minimize-bottleneck.jl hierarchical MILP models ",
+  "wordCount" : "1246",
+  "inLanguage": "en",
+  "datePublished": "2023-11-26T00:00:00Z",
+  "dateModified": "2023-11-26T00:00:00Z",
+  "author":{
+    "@type": "Person",
+    "name": "Ryan O'Neil"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://ryanjoneil.github.io/posts/2023-11-26-reducing-overscheduling/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "adventures in optimization",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://ryanjoneil.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://ryanjoneil.github.io/" accesskey="h" title="adventures in optimization (Alt + H)">adventures in optimization</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://ryanjoneil.github.io/about" title="about">
+                    <span>about</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://ryanjoneil.github.io/coding" title="coding">
+                    <span>coding</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://ryanjoneil.github.io/posts" title="posting">
+                    <span>posting</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://ryanjoneil.github.io/speaking" title="speaking">
+                    <span>speaking</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://ryanjoneil.github.io/writing" title="writing">
+                    <span>writing</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://ryanjoneil.github.io/search" title="🔍">
+                    <span>🔍</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title">
+      📅 Reducing Overscheduling
+    </h1>
+    <div class="post-description">
+      Minimize overbooking while scheduling team meetings
+    </div>
+    <div class="post-meta"><span title='2023-11-26 00:00:00 +0000 UTC'>November 26, 2023</span>&nbsp;·&nbsp;Ryan O&#39;Neil
+
+</div>
+  </header> <div class="toc">
+    <details  open>
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#maximize-attendance" aria-label="Maximize attendance">Maximize attendance</a></li>
+                <li>
+                    <a href="#minimize-overbooking" aria-label="Minimize overbooking">Minimize overbooking</a><ul>
+                        
+                <li>
+                    <a href="#sum-of-overbooking" aria-label="Sum of overbooking">Sum of overbooking</a></li>
+                <li>
+                    <a href="#sum-of-squared-overbooking" aria-label="Sum of squared overbooking">Sum of squared overbooking</a></li>
+                <li>
+                    <a href="#constrained-bottleneck" aria-label="Constrained bottleneck">Constrained bottleneck</a></li></ul>
+                </li>
+                <li>
+                    <a href="#resources" aria-label="Resources">Resources</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><p>At a <a href="https://nextmv.io">Nextmv</a> <a href="https://www.youtube.com/watch?v=XTeit7TAWj4">tech talk</a> a couple weeks ago, I showed a <a href="https://en.wikipedia.org/wiki/Least_absolute_deviations">least absolute deviations</a> (LAD) regression model using OR-Tools. This isn&rsquo;t new &ndash; I pulled the formulation from Rob Vanderbei&rsquo;s &ldquo;<a href="https://vanderbei.princeton.edu/tex/LocalWarming/LocalWarmingSIREVrev.pdf">Local Warming</a>&rdquo; paper, and I&rsquo;ve shown similar models at conference talks in the past using other modeling APIs and solvers.</p>
+<p>There are a couple reasons I keep coming back to this problem. One is that it&rsquo;s a great example of how to build a machine learning model using an optimization solver. Unless you have an optimization background, it&rsquo;s probably not obvious you can do this. Building a regression or classification model with a solver directly is a great way to understand the model better. And you can customize it in interesting ways, like adding <a href="https://www.robots.ox.ac.uk/~az/lectures/ml/2011/lect6.pdf">epsilon insensitivity</a>.</p>
+<p>Another is that <a href="https://en.wikipedia.org/wiki/Least_squares">least squares</a>, while most commonly used regression form, has a fatal flaw: it isn&rsquo;t robust to outliers in the input data. This is because least squares minimize the <em>sum of squared residuals</em>, as shown in the formulation below. Here, $A$ is an $m \times n$ matrix of feature data, $b$ is a vector of observations to fit, and $x$ is a vector of coefficients the optimizer must find.</p>
+<p>$$
+\min f(x) = \Vert Ax-b \Vert_2^2
+$$</p>
+<p>Since the objective function minimizes squared residuals, outliers have a much bigger impact than other data. LAD regression solves this by simply summing the values of the residuals as they are.</p>
+<p>$$
+\min f(x) = \vert Ax-b \vert
+$$</p>
+<p>So why isn&rsquo;t this used more? Simple &ndash; least squares has a convenient analytical solution, while LAD requires an algorithm to solve. For instance, you can formulate LAD regression as a linear program, but now you need a solver.</p>
+<p>$$
+\begin{align*}
+\min         \quad &amp; 1&rsquo;z \\
+\text{s.t.}\ \quad &amp; z \ge Ax - b \\
+&amp; z \ge b - Ax
+\end{align*}
+$$</p>
+<p>While I like using this example, it paints a rather negative picture of squaring. If it does funny things to solvers, is there any good reason to square? Thus I&rsquo;ve been on the lookout for a practical example where squaring a variable or expression makes a model more useful.</p>
+<p>Luckily for me, Erwin Kalvelagen recently <a href="https://yetanothermathprogrammingconsultant.blogspot.com/2023/10/scheduling-team-meetings.html">posted</a> about using optimization to schedule team meetings. This is an application where minimizing squared values of <em>overbooking</em> can be beneficial &ndash; it may be worse to be triple booked than double booked.</p>
+<p>I won&rsquo;t recreate the reasoning behind Erwin&rsquo;s post here. You can read his blog for that. What we&rsquo;ll do is look at both the formulations in his post, along with a couple extras using <a href="https://julialang.org/">Julia</a> for code, <a href="https://jump.dev/">JuMP</a> for modeling, <a href="https://www.scipopt.org/">SCIP</a> for optimization, and <a href="https://gadflyjl.org/stable/">Gadfly</a> for visualization. All model code and data are linked in the resources section at the end.</p>
+<h2 id="maximize-attendance">Maximize attendance<a hidden class="anchor" aria-hidden="true" href="#maximize-attendance">#</a></h2>
+<p>To start off, I built a new data set, which you can find in the resources section. This differentiates team membership between two types of employees: individual contributors (starting with <code>ic</code> in the data), who attend meetings for 1 or 2 teams, and managers (prefixed with <code>mgr</code>), who attend meetings to coordinate across multiple teams. We schedule meetings for 10 teams (prefix <code>t</code>) into 3 time slots (<code>s</code>).</p>
+<p>The first model in Erwin&rsquo;s post maximizes attendance. This means it tries to schedule team members for as many unique time slots as possible. It doesn&rsquo;t consider overbooking.</p>
+<p>$$
+\begin{align*}
+\max\quad       &amp; \sum_{i,s} y_{i,s} \\
+\text{s.t.}\quad&amp; \sum_{s} x_{t,s} = 1                  &amp;\quad\forall&amp;\ t   &amp; \text{schedule each team meeting once}\\
+&amp; y_{i,s} \le \sum_{t} m_{i,t}\ x_{t,s} &amp;\quad\forall&amp;\ i,s &amp; \text{individuals attend team meetings}\\
+&amp; x_{t,s} \in \{0,1\}                 &amp;\quad\forall&amp;\ t,s\\
+&amp; y_{i,s} \in \{0,1\}                 &amp;\quad\forall&amp;\ i,s
+\end{align*}
+$$</p>
+<p>This yields the following team schedule, with red representing a scheduled team meeting.</p>
+<p><img loading="lazy" src="/files/2023-11-26-reducing-overscheduling/maximize-attendance-teams.svg" alt="Maximize attendance - team schedules"  />
+</p>
+<p>If we look at the manager schedules, we&rsquo;ll see that every manager is completely booked. This makes sense. That&rsquo;s what managers do, right? Go to meetings?</p>
+<p><img loading="lazy" src="/files/2023-11-26-reducing-overscheduling/maximize-attendance-managers.svg" alt="Maximize attendance - manager attendance"  />
+</p>
+<h2 id="minimize-overbooking">Minimize overbooking<a hidden class="anchor" aria-hidden="true" href="#minimize-overbooking">#</a></h2>
+<p>The model gets more interesting once we account for overbooking. Erwin&rsquo;s post has a model that minimizes overbooking, where overbooking is the number of additional meetings in a time slot. If a team member is double booked, that&rsquo;s 1 overbooking. If they are triple booked, that&rsquo;s 2 overbookings.</p>
+<h3 id="sum-of-overbooking">Sum of overbooking<a hidden class="anchor" aria-hidden="true" href="#sum-of-overbooking">#</a></h3>
+<p>The second model in Erwin&rsquo;s post minimizes the sum of all overbookings. He does this by adding a continuous <code>c</code> vector that only incurs value once a team member goes over a single meeting in a given time slot.</p>
+<p>$$
+\begin{align*}
+\min\quad       &amp; \sum_{i,s} c_{i,s} \\
+\text{s.t.}\quad&amp; \sum_{s} x_{t,s} = 1                      &amp;\quad\forall&amp;\ t   &amp; \text{schedule each team meeting once}\\
+&amp; c_{i,s} \ge \sum_{t} m_{i,t}\ x_{t,s} - 1 &amp;\quad\forall&amp;\ i,s &amp; \text{measure overbooking}\\
+&amp; x_{t,s} \in \{0,1\}                     &amp;\quad\forall&amp;\ t,s\\
+&amp; c_{i,s} \ge 0                             &amp;\quad\forall&amp;\ i,s
+\end{align*}
+$$</p>
+<p>Given our data this results in the following team schedule, which is probably not all that interesting. I&rsquo;ll leave this visualization out from now on.</p>
+<p><img loading="lazy" src="/files/2023-11-26-reducing-overscheduling/minimize-overbooking-teams.svg" alt="Minimize overbooking - team schedules"  />
+</p>
+<p>Where it gets interesting is plotting overbookings for the managers. Here we see that 3 manager time slots are triple booked <em>(red)</em>, while 8 are double booked <em>(gray)</em>.</p>
+<p><img loading="lazy" src="/files/2023-11-26-reducing-overscheduling/minimize-overbooking-managers.svg" alt="Minimize overbooking - manager overbooking"  />
+</p>
+<h3 id="sum-of-squared-overbooking">Sum of squared overbooking<a hidden class="anchor" aria-hidden="true" href="#sum-of-squared-overbooking">#</a></h3>
+<p>Let&rsquo;s say it&rsquo;s worse to triple book (or, gasp, <em>quadruple</em> book) than to double book. How can the model account for this? One answer, if you have a MIQP-enabled solver, is to simply square the <code>c</code> values.</p>
+<p>$$
+\begin{align*}
+\min\quad       &amp; \sum_{i,s} c_{i,s}^2 \\
+\text{s.t.}\quad&amp; \sum_{s} x_{t,s} = 1                      &amp;\quad\forall&amp;\ t   &amp; \text{schedule each team meeting once}\\
+&amp; c_{i,s} \ge \sum_{t} m_{i,t}\ x_{t,s} - 1 &amp;\quad\forall&amp;\ i,s &amp; \text{measure overbooking}\\
+&amp; x_{t,s} \in \{0,1\}                     &amp;\quad\forall&amp;\ t,s\\
+&amp; c_{i,s} \ge 0                             &amp;\quad\forall&amp;\ i,s
+\end{align*}
+$$</p>
+<p>This completely eliminates triple booking, as shown below. No manager is worse off than being double booked, which seems normal given my experiences.</p>
+<p><img loading="lazy" src="/files/2023-11-26-reducing-overscheduling/minimize-overbooking-squared-managers.svg" alt="Minimize squared overbooking - manager overbooking"  />
+</p>
+<p>The problem with this is that the solver now takes a lot longer. It&rsquo;s not bad for the data in this example, but if you try it with something larger you&rsquo;ll see what I mean. You can find the data generator code in the resources section.</p>
+<h3 id="constrained-bottleneck">Constrained bottleneck<a hidden class="anchor" aria-hidden="true" href="#constrained-bottleneck">#</a></h3>
+<p>So how can we do something similar without the computational cost? One option is to continue using MILP formulations, but in the context of hierarchical optimization. This means splitting the model into two. First, we try to minimize the maximum overbookings for any team member (the <em>bottleneck</em>, if you will). This involves adding a variable $b$ representing that maximum.</p>
+<p>$$ b = \max\Bigl\{\sum_{t} m_{i,t}\ x_{t,s} - 1 : i \in I, s \in S \Bigr\} $$</p>
+<p>Now we can simply minimize $b$ using a MILP instead of a MIQP.</p>
+<p>$$
+\begin{align*}
+\min\quad       &amp; b \\
+\text{s.t.}\quad&amp; \sum_{s} x_{t,s} = 1                &amp;\quad\forall&amp;\ t   &amp; \text{schedule each team meeting once}\\
+&amp; b \ge \sum_{t} m_{i,t}\ x_{t,s} - 1 &amp;\quad\forall&amp;\ i,s &amp; \text{maximum overbooking}\\
+&amp; x_{t,s} \in \{0,1\}               &amp;\quad\forall&amp;\ t,s
+\end{align*}
+$$</p>
+<p>Once we solve the first model, we get the minimal value of $b$, which we call $b^*$. We can simply use $b^*$ as an upper bound for overbookings in the second original model.</p>
+<p>$$
+\begin{align*}
+\min\quad       &amp; \sum_{i,s} c_{i,s} \\
+\text{s.t.}\quad&amp; \sum_{s} x_{t,s} = 1                      &amp;\quad\forall&amp;\ t   &amp; \text{schedule each team meeting once}\\
+&amp; c_{i,s} \ge \sum_{t} m_{i,t}\ x_{t,s} - 1 &amp;\quad\forall&amp;\ i,s &amp; \text{measure overbooking}\\
+&amp; x_{t,s} \in \{0,1\}                     &amp;\quad\forall&amp;\ t,s\\
+&amp; 0 \le c_{i,s} \le b^*                     &amp;\quad\forall&amp;\ i,s
+\end{align*}
+$$</p>
+<p>As we see below, this model also eliminates triple bookings, and it&rsquo;s quite a bit faster to solve than the MIQP.</p>
+<p><img loading="lazy" src="/files/2023-11-26-reducing-overscheduling/minimize-bottleneck-managers.svg" alt="Minimize bottleneck - manager overbooking"  />
+</p>
+<h2 id="resources">Resources<a hidden class="anchor" aria-hidden="true" href="#resources">#</a></h2>
+<ul>
+<li><a href="/files/2023-11-26-reducing-overscheduling/main.go"><code>main.go</code></a> generates input data</li>
+<li><a href="/files/2023-11-26-reducing-overscheduling/membership.csv"><code>membership.csv</code></a> contains input data</li>
+<li><a href="/files/2023-11-26-reducing-overscheduling/maximize-attendance.jl"><code>maximize-attendance.jl</code></a> MILP model</li>
+<li><a href="/files/2023-11-26-reducing-overscheduling/minimize-overbooking.jl"><code>minimize-overbooking.jl</code></a> MILP model</li>
+<li><a href="/files/2023-11-26-reducing-overscheduling/minimize-overbooking-squared.jl"><code>minimize-overbooking-squared.jl</code></a> MIQP model</li>
+<li><a href="/files/2023-11-26-reducing-overscheduling/minimize-bottleneck.jl"><code>minimize-bottleneck.jl</code></a> hierarchical MILP models</li>
+</ul>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://ryanjoneil.github.io/tags/scheduling/">scheduling</a></li>
+      <li><a href="https://ryanjoneil.github.io/tags/integer-programming/">integer programming</a></li>
+      <li><a href="https://ryanjoneil.github.io/tags/modeling/">modeling</a></li>
+      <li><a href="https://ryanjoneil.github.io/tags/julia/">julia</a></li>
+      <li><a href="https://ryanjoneil.github.io/tags/jump/">jump</a></li>
+      <li><a href="https://ryanjoneil.github.io/tags/scip/">scip</a></li>
+      <li><a href="https://ryanjoneil.github.io/tags/gadfly/">gadfly</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="next" href="https://ryanjoneil.github.io/posts/2023-09-13-visualizing-decision-diagrams/">
+    <span class="title">Next »</span>
+    <br>
+    <span>🖍 Visualizing Decision Diagrams</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2023 <a href="https://ryanjoneil.github.io/">adventures in optimization</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

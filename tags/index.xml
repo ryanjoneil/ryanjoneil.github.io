@@ -6,7 +6,77 @@
     <description>Recent content in Tags on adventures in optimization</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Wed, 13 Sep 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://ryanjoneil.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 26 Nov 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://ryanjoneil.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>gadfly</title>
+      <link>https://ryanjoneil.github.io/tags/gadfly/</link>
+      <pubDate>Sun, 26 Nov 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://ryanjoneil.github.io/tags/gadfly/</guid>
+      <description></description>
+      <content:encoded><![CDATA[]]></content:encoded>
+    </item>
+    
+    <item>
+      <title>integer programming</title>
+      <link>https://ryanjoneil.github.io/tags/integer-programming/</link>
+      <pubDate>Sun, 26 Nov 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://ryanjoneil.github.io/tags/integer-programming/</guid>
+      <description></description>
+      <content:encoded><![CDATA[]]></content:encoded>
+    </item>
+    
+    <item>
+      <title>julia</title>
+      <link>https://ryanjoneil.github.io/tags/julia/</link>
+      <pubDate>Sun, 26 Nov 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://ryanjoneil.github.io/tags/julia/</guid>
+      <description></description>
+      <content:encoded><![CDATA[]]></content:encoded>
+    </item>
+    
+    <item>
+      <title>jump</title>
+      <link>https://ryanjoneil.github.io/tags/jump/</link>
+      <pubDate>Sun, 26 Nov 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://ryanjoneil.github.io/tags/jump/</guid>
+      <description></description>
+      <content:encoded><![CDATA[]]></content:encoded>
+    </item>
+    
+    <item>
+      <title>modeling</title>
+      <link>https://ryanjoneil.github.io/tags/modeling/</link>
+      <pubDate>Sun, 26 Nov 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://ryanjoneil.github.io/tags/modeling/</guid>
+      <description></description>
+      <content:encoded><![CDATA[]]></content:encoded>
+    </item>
+    
+    <item>
+      <title>scheduling</title>
+      <link>https://ryanjoneil.github.io/tags/scheduling/</link>
+      <pubDate>Sun, 26 Nov 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://ryanjoneil.github.io/tags/scheduling/</guid>
+      <description></description>
+      <content:encoded><![CDATA[]]></content:encoded>
+    </item>
+    
+    <item>
+      <title>scip</title>
+      <link>https://ryanjoneil.github.io/tags/scip/</link>
+      <pubDate>Sun, 26 Nov 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://ryanjoneil.github.io/tags/scip/</guid>
+      <description></description>
+      <content:encoded><![CDATA[]]></content:encoded>
+    </item>
+    
     <item>
       <title>decision diagrams</title>
       <link>https://ryanjoneil.github.io/tags/decision-diagrams/</link>
@@ -98,16 +168,6 @@
     </item>
     
     <item>
-      <title>modeling</title>
-      <link>https://ryanjoneil.github.io/tags/modeling/</link>
-      <pubDate>Wed, 16 Feb 2011 00:00:00 +0000</pubDate>
-      
-      <guid>https://ryanjoneil.github.io/tags/modeling/</guid>
-      <description></description>
-      <content:encoded><![CDATA[]]></content:encoded>
-    </item>
-    
-    <item>
       <title>regression</title>
       <link>https://ryanjoneil.github.io/tags/regression/</link>
       <pubDate>Wed, 16 Feb 2011 00:00:00 +0000</pubDate>
@@ -133,16 +193,6 @@
       <pubDate>Tue, 23 Nov 2010 00:00:00 +0000</pubDate>
       
       <guid>https://ryanjoneil.github.io/tags/linear-programming/</guid>
-      <description></description>
-      <content:encoded><![CDATA[]]></content:encoded>
-    </item>
-    
-    <item>
-      <title>scip</title>
-      <link>https://ryanjoneil.github.io/tags/scip/</link>
-      <pubDate>Tue, 23 Nov 2010 00:00:00 +0000</pubDate>
-      
-      <guid>https://ryanjoneil.github.io/tags/scip/</guid>
       <description></description>
       <content:encoded><![CDATA[]]></content:encoded>
     </item>
