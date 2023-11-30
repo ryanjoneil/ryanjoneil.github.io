@@ -20,6 +20,7 @@
 <p>But it doesn&rsquo;t feel like that.</p>
 <p>As I come to terms more with switching to Python 3.2, the <a href="https://docs.python.org/py3k/library/concurrent.futures.html">futures</a> module seems similarly exciting. I wish I&rsquo;d had it years ago, and it&rsquo;s almost reason in itself to upgrade from Python 2.7. <em>Who cares if none of your libraries have been ported yet?</em></p>
 <p>This library lets you take any function and distribute it over a process pool. To test that out, we&rsquo;ll generate a bunch of random graphs and iterate over all their <a href="https://en.wikipedia.org/wiki/Clique_(graph_theory)">cliques</a>.</p>
+<h2 id="code">Code</h2>
 <p>First, let&rsquo;s generate some test data using the <a href="https://networkx.org/documentation/stable/reference/generated/networkx.generators.random_graphs.gnm_random_graph.html"><code>dense_gnm_random_graph</code></a> function. Our data includes 1000 random graphs, each with 100 nodes and 100 * 100 edges.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> networkx <span style="color:#66d9ef">as</span> nx
 </span></span><span style="display:flex;"><span>

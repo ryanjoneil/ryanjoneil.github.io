@@ -18,7 +18,7 @@
 <p>There are a couple reasons I keep coming back to this problem. One is that it&rsquo;s a great example of how to build a machine learning model using an optimization solver. Unless you have an optimization background, it&rsquo;s probably not obvious you can do this. Building a regression or classification model with a solver directly is a great way to understand the model better. And you can customize it in interesting ways, like adding <a href="https://www.robots.ox.ac.uk/~az/lectures/ml/2011/lect6.pdf">epsilon insensitivity</a>.</p>
 <p>Another is that <a href="https://en.wikipedia.org/wiki/Least_squares">least squares</a>, while most commonly used regression form, has a fatal flaw: it isn&rsquo;t robust to outliers in the input data. This is because least squares minimize the <em>sum of squared residuals</em>, as shown in the formulation below. Here, $A$ is an $m \times n$ matrix of feature data, $b$ is a vector of observations to fit, and $x$ is a vector of coefficients the optimizer must find.</p>
 <p>$$
-\min f(x) = \Vert Ax-b \Vert_2^2
+\min f(x) = \Vert Ax-b \Vert^2
 $$</p>
 <p>Since the objective function minimizes squared residuals, outliers have a much bigger impact than other data. LAD regression solves this by simply summing the values of the residuals as they are.</p>
 <p>$$
