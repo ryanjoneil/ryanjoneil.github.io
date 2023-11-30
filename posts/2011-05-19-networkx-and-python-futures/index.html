@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="index, follow">
 <title>🔮 NetworkX and Python Futures | adventures in optimization</title>
-<meta name="keywords" content="python">
+<meta name="keywords" content="python, graphs">
 <meta name="description" content="Solve graph problems on multiple cores NetworkX and Python futures">
 <meta name="author" content="Ryan O&#39;Neil">
 <link rel="canonical" href="https://ryanjoneil.github.io/posts/2011-05-19-networkx-and-python-futures/">
@@ -126,7 +126,7 @@ document.addEventListener("DOMContentLoaded", function() {
   "name": "🔮 NetworkX and Python Futures",
   "description": "Solve graph problems on multiple cores NetworkX and Python futures",
   "keywords": [
-    "python"
+    "python", "graphs"
   ],
   "articleBody": "Note: This post was updated to work with NetworkX and for clarity.\nIt’s possible this will turn out like the day when Python 2.5 introduced [coroutines][coroutines]. At the time I was very excited. I spent several hours trying to convince my coworkers we should immediately abandon all our existing Java infrastructure and port it to finite state machines implemented using Python coroutines. After a day of hand waving over a proof of concept, we put that idea aside and went about our lives.\nSoon after, I left for a Python shop, but in the next half decade I still never found a good place to use this interesting feature.\nBut it doesn’t feel like that.\nAs I come to terms more with switching to Python 3.2, the futures module seems similarly exciting. I wish I’d had it years ago, and it’s almost reason in itself to upgrade from Python 2.7. Who cares if none of your libraries have been ported yet?\nThis library lets you take any function and distribute it over a process pool. To test that out, we’ll generate a bunch of random graphs and iterate over all their cliques.\nCode First, let’s generate some test data using the dense_gnm_random_graph function. Our data includes 1000 random graphs, each with 100 nodes and 100 * 100 edges.\nimport networkx as nx n = 100 graphs = [nx.dense_gnm_random_graph(n, n*n) for _ in range(1000)] Now we write a function iterate over all cliques in a given graph. NetworkX provides a find_cliques function which returns a generator. Iterating over them ensures we will run through the entire process of finding all cliques for a graph.\ndef iterate_cliques(g): for _ in nx.find_cliques(g): pass Now we just define two functions, one for running in serial and one for running in parallel using futures.\nfrom concurrent import futures def serial_test(graphs): for g in graphs: iterate_cliques(g) def parallel_test(graphs, max_workers): with futures.ProcessPoolExecutor(max_workers=max_workers) as executor: executor.map(iterate_cliques, graphs) Our __main__ simply generates the random graphs, samples from them, times both functions, and write CSV data to standard output.\nfrom csv import writer import random import sys import time if __name__ == '__main__': out = writer(sys.stdout) out.writerow(['num graphs', 'serial time', 'parallel time']) n = 100 graphs = [nx.dense_gnm_random_graph(n, n*n) for _ in range(1000)] # Run with a number of different randomly generated graphs for num_graphs in range(50, 1001, 50): sample = random.choices(graphs, k = num_graphs) start = time.time() serial_test(sample) serial_time = time.time() - start start = time.time() parallel_test(sample, 16) parallel_time = time.time() - start out.writerow([num_graphs, serial_time, parallel_time]) The output of this script shows that we get a fairly linear speedup to this code with little effort.\nI ran this on a machine with 8 cores and hyperthreading. Eyeballing the chart, it looks like the speedup is roughly 5x. My system monitor shows spikes on CPU usage across cores whenever the parallel test runs.\nResources Output data Full source listing ",
   "wordCount" : "479",
@@ -327,6 +327,7 @@ document.addEventListener("DOMContentLoaded", function() {
   <footer class="post-footer">
     <ul class="post-tags">
       <li><a href="https://ryanjoneil.github.io/tags/python/">python</a></li>
+      <li><a href="https://ryanjoneil.github.io/tags/graphs/">graphs</a></li>
     </ul>
 <nav class="paginav">
   <a class="prev" href="https://ryanjoneil.github.io/posts/2023-09-07-blogging-is-back/">
