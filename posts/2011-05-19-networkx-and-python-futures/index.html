@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>🔮 NetworkX and Python Futures | adventures in optimization</title>
+<meta name="keywords" content="python">
+<meta name="description" content="Solve graph problems on multiple cores NetworkX and Python futures">
+<meta name="author" content="Ryan O&#39;Neil">
+<link rel="canonical" href="https://ryanjoneil.github.io/posts/2011-05-19-networkx-and-python-futures/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.7c3f0ab5ecc8326dc20e6644afa4081b33304fef3299b2c1179eaee195843a6a.css" integrity="sha256-fD8KtezIMm3CDmZEr6QIGzMwT&#43;8ymbLBF56u4ZWEOmo=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://ryanjoneil.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://ryanjoneil.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://ryanjoneil.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://ryanjoneil.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://ryanjoneil.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css"
+    integrity="sha384-GvrOXuhMATgEsSwCs4smul74iXGOixntILdUW9XmUC6+HX0sLNAK3q71HotJqlAn"
+    crossorigin="anonymous"/>
+<script
+    src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"
+    integrity="sha384-cpW21h6RZv/phavutF+AuVYrr+dA8xD9zs6FwLpaCct6O9ctzYFfFr4dgmgccOTx"
+    crossorigin="anonymous">
+</script>
+
+<script
+    src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"
+    integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05"
+    crossorigin="anonymous"
+    onload="renderMathInElement(document.body);">
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    renderMathInElement(document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "$", right: "$", display: false}
+        ]
+    });
+});
+</script>
+
+<meta property="og:title" content="🔮 NetworkX and Python Futures" />
+<meta property="og:description" content="Solve graph problems on multiple cores NetworkX and Python futures" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://ryanjoneil.github.io/posts/2011-05-19-networkx-and-python-futures/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2011-05-19T00:00:00+00:00" />
+<meta property="article:modified_time" content="2011-05-19T00:00:00+00:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="🔮 NetworkX and Python Futures"/>
+<meta name="twitter:description" content="Solve graph problems on multiple cores NetworkX and Python futures"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://ryanjoneil.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "🔮 NetworkX and Python Futures",
+      "item": "https://ryanjoneil.github.io/posts/2011-05-19-networkx-and-python-futures/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "🔮 NetworkX and Python Futures",
+  "name": "🔮 NetworkX and Python Futures",
+  "description": "Solve graph problems on multiple cores NetworkX and Python futures",
+  "keywords": [
+    "python"
+  ],
+  "articleBody": "Note: This post was updated to work with NetworkX and for clarity.\nIt’s possible this will turn out like the day when Python 2.5 introduced [coroutines][coroutines]. At the time I was very excited. I spent several hours trying to convince my coworkers we should immediately abandon all our existing Java infrastructure and port it to finite state machines implemented using Python coroutines. After a day of hand waving over a proof of concept, we put that idea aside and went about our lives.\nSoon after, I left for a Python shop, but in the next half decade I still never found a good place to use this interesting feature.\nBut it doesn’t feel like that.\nAs I come to terms more with switching to Python 3.2, the futures module seems similarly exciting. I wish I’d had it years ago, and it’s almost reason in itself to upgrade from Python 2.7. Who cares if none of your libraries have been ported yet?\nThis library lets you take any function and distribute it over a process pool. To test that out, we’ll generate a bunch of random graphs and iterate over all their cliques.\nFirst, let’s generate some test data using the dense_gnm_random_graph function. Our data includes 1000 random graphs, each with 100 nodes and 100 * 100 edges.\nimport networkx as nx n = 100 graphs = [nx.dense_gnm_random_graph(n, n*n) for _ in range(1000)] Now we write a function iterate over all cliques in a given graph. NetworkX provides a find_cliques function which returns a generator. Iterating over them ensures we will run through the entire process of finding all cliques for a graph.\ndef iterate_cliques(g): for _ in nx.find_cliques(g): pass Now we just define two functions, one for running in serial and one for running in parallel using futures.\nfrom concurrent import futures def serial_test(graphs): for g in graphs: iterate_cliques(g) def parallel_test(graphs, max_workers): with futures.ProcessPoolExecutor(max_workers=max_workers) as executor: executor.map(iterate_cliques, graphs) Our __main__ simply generates the random graphs, samples from them, times both functions, and write CSV data to standard output.\nfrom csv import writer import random import sys import time if __name__ == '__main__': out = writer(sys.stdout) out.writerow(['num graphs', 'serial time', 'parallel time']) n = 100 graphs = [nx.dense_gnm_random_graph(n, n*n) for _ in range(1000)] # Run with a number of different randomly generated graphs for num_graphs in range(50, 1001, 50): sample = random.choices(graphs, k = num_graphs) start = time.time() serial_test(sample) serial_time = time.time() - start start = time.time() parallel_test(sample, 16) parallel_time = time.time() - start out.writerow([num_graphs, serial_time, parallel_time]) The output of this script shows that we get a fairly linear speedup to this code with little effort.\nI ran this on a machine with 8 cores and hyperthreading. Eyeballing the chart, it looks like the speedup is roughly 5x. My system monitor shows spikes on CPU usage across cores whenever the parallel test runs.\nResources Output data Full source listing ",
+  "wordCount" : "478",
+  "inLanguage": "en",
+  "datePublished": "2011-05-19T00:00:00Z",
+  "dateModified": "2011-05-19T00:00:00Z",
+  "author":{
+    "@type": "Person",
+    "name": "Ryan O'Neil"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://ryanjoneil.github.io/posts/2011-05-19-networkx-and-python-futures/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "adventures in optimization",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://ryanjoneil.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://ryanjoneil.github.io/" accesskey="h" title="adventures in optimization (Alt + H)">adventures in optimization</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://ryanjoneil.github.io/about" title="about">
+                    <span>about</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://ryanjoneil.github.io/coding" title="coding">
+                    <span>coding</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://ryanjoneil.github.io/posts" title="posting">
+                    <span>posting</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://ryanjoneil.github.io/speaking" title="speaking">
+                    <span>speaking</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://ryanjoneil.github.io/writing" title="writing">
+                    <span>writing</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://ryanjoneil.github.io/search" title="🔍">
+                    <span>🔍</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title">
+      🔮 NetworkX and Python Futures
+    </h1>
+    <div class="post-description">
+      Solve graph problems on multiple cores NetworkX and Python futures
+    </div>
+    <div class="post-meta"><span title='2011-05-19 00:00:00 +0000 UTC'>May 19, 2011</span>&nbsp;·&nbsp;Ryan O&#39;Neil
+
+</div>
+  </header> <div class="toc">
+    <details  open>
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#resources" aria-label="Resources">Resources</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><p><em>Note: This post was updated to work with <a href="https://networkx.org/">NetworkX</a> and for clarity.</em></p>
+<p>It&rsquo;s possible this will turn out like the day when Python 2.5 introduced [coroutines][coroutines]. At the time I was very excited. I spent several hours trying to convince my coworkers we should immediately abandon all our existing Java infrastructure and port it to finite state machines implemented using Python coroutines. After a day of hand waving over a proof of concept, we put that idea aside and went about our lives.</p>
+<p>Soon after, I left for a Python shop, but in the next half decade I still never found a good place to use this interesting feature.</p>
+<p>But it doesn&rsquo;t feel like that.</p>
+<p>As I come to terms more with switching to Python 3.2, the <a href="https://docs.python.org/py3k/library/concurrent.futures.html">futures</a> module seems similarly exciting. I wish I&rsquo;d had it years ago, and it&rsquo;s almost reason in itself to upgrade from Python 2.7. <em>Who cares if none of your libraries have been ported yet?</em></p>
+<p>This library lets you take any function and distribute it over a process pool. To test that out, we&rsquo;ll generate a bunch of random graphs and iterate over all their <a href="https://en.wikipedia.org/wiki/Clique_(graph_theory)">cliques</a>.</p>
+<p>First, let&rsquo;s generate some test data using the <a href="https://networkx.org/documentation/stable/reference/generated/networkx.generators.random_graphs.gnm_random_graph.html"><code>dense_gnm_random_graph</code></a> function. Our data includes 1000 random graphs, each with 100 nodes and 100 * 100 edges.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> networkx <span style="color:#66d9ef">as</span> nx
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>n <span style="color:#f92672">=</span> <span style="color:#ae81ff">100</span>
+</span></span><span style="display:flex;"><span>graphs <span style="color:#f92672">=</span> [nx<span style="color:#f92672">.</span>dense_gnm_random_graph(n, n<span style="color:#f92672">*</span>n) <span style="color:#66d9ef">for</span> _ <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">1000</span>)]
+</span></span></code></pre></div><p>Now we write a function iterate over all cliques in a given graph. NetworkX provides a <code>find_cliques</code> function which returns a generator. Iterating over them ensures we will run through the entire process of finding all cliques for a graph.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">iterate_cliques</span>(g):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> _ <span style="color:#f92672">in</span> nx<span style="color:#f92672">.</span>find_cliques(g):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">pass</span>
+</span></span></code></pre></div><p>Now we just define two functions, one for running in serial and one for running in parallel using <code>futures</code>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> concurrent <span style="color:#f92672">import</span> futures
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">serial_test</span>(graphs):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> g <span style="color:#f92672">in</span> graphs:
+</span></span><span style="display:flex;"><span>        iterate_cliques(g)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">parallel_test</span>(graphs, max_workers):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">with</span> futures<span style="color:#f92672">.</span>ProcessPoolExecutor(max_workers<span style="color:#f92672">=</span>max_workers) <span style="color:#66d9ef">as</span> executor:
+</span></span><span style="display:flex;"><span>        executor<span style="color:#f92672">.</span>map(iterate_cliques, graphs)
+</span></span></code></pre></div><p>Our <code>__main__</code> simply generates the random graphs, samples from them, times both functions, and write CSV data to standard output.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> csv <span style="color:#f92672">import</span> writer
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> random
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> sys
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> time
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;__main__&#39;</span>:
+</span></span><span style="display:flex;"><span>    out <span style="color:#f92672">=</span> writer(sys<span style="color:#f92672">.</span>stdout)
+</span></span><span style="display:flex;"><span>    out<span style="color:#f92672">.</span>writerow([<span style="color:#e6db74">&#39;num graphs&#39;</span>, <span style="color:#e6db74">&#39;serial time&#39;</span>, <span style="color:#e6db74">&#39;parallel time&#39;</span>])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    n <span style="color:#f92672">=</span> <span style="color:#ae81ff">100</span>
+</span></span><span style="display:flex;"><span>    graphs <span style="color:#f92672">=</span> [nx<span style="color:#f92672">.</span>dense_gnm_random_graph(n, n<span style="color:#f92672">*</span>n) <span style="color:#66d9ef">for</span> _ <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">1000</span>)]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Run with a number of different randomly generated graphs</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> num_graphs <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">50</span>, <span style="color:#ae81ff">1001</span>, <span style="color:#ae81ff">50</span>):
+</span></span><span style="display:flex;"><span>        sample <span style="color:#f92672">=</span> random<span style="color:#f92672">.</span>choices(graphs, k <span style="color:#f92672">=</span> num_graphs)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        start <span style="color:#f92672">=</span> time<span style="color:#f92672">.</span>time()
+</span></span><span style="display:flex;"><span>        serial_test(sample)
+</span></span><span style="display:flex;"><span>        serial_time <span style="color:#f92672">=</span> time<span style="color:#f92672">.</span>time() <span style="color:#f92672">-</span> start
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        start <span style="color:#f92672">=</span> time<span style="color:#f92672">.</span>time()
+</span></span><span style="display:flex;"><span>        parallel_test(sample, <span style="color:#ae81ff">16</span>)
+</span></span><span style="display:flex;"><span>        parallel_time <span style="color:#f92672">=</span> time<span style="color:#f92672">.</span>time() <span style="color:#f92672">-</span> start
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        out<span style="color:#f92672">.</span>writerow([num_graphs, serial_time, parallel_time])
+</span></span></code></pre></div><p>The output of this script shows that we get a fairly linear speedup to this code with little effort.</p>
+<p><img loading="lazy" src="/files/2011-05-19-networkx-and-python-futures/speedup.png" alt="Speedup"  />
+</p>
+<p>I ran this on a machine with 8 cores and hyperthreading. Eyeballing the chart, it looks like the speedup is roughly 5x. My system monitor shows spikes on CPU usage across cores whenever the parallel test runs.</p>
+<p><img loading="lazy" src="/files/2011-05-19-networkx-and-python-futures/cpu.png" alt="CPU usage"  />
+</p>
+<h2 id="resources">Resources<a hidden class="anchor" aria-hidden="true" href="#resources">#</a></h2>
+<ul>
+<li>Output <a href="/files/2011-05-19-networkx-and-python-futures/data.csv">data</a></li>
+<li>Full <a href="/files/2011-05-19-networkx-and-python-futures/iterate-cliques.py">source listing</a></li>
+</ul>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://ryanjoneil.github.io/tags/python/">python</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://ryanjoneil.github.io/posts/2023-09-07-blogging-is-back/">
+    <span class="title">« Prev</span>
+    <br>
+    <span>🚀 Blogging is back, baby!</span>
+  </a>
+  <a class="next" href="https://ryanjoneil.github.io/posts/2011-04-27-affine-scaling-in-r/">
+    <span class="title">Next »</span>
+    <br>
+    <span>👉 Affine Scaling in R</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2023 <a href="https://ryanjoneil.github.io/">adventures in optimization</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

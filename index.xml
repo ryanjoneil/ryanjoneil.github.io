@@ -631,6 +631,78 @@ ap.cpp is an incremental primal-dual assignment problem solver written in C++. I
     </item>
     
     <item>
+      <title>🔮 NetworkX and Python Futures</title>
+      <link>https://ryanjoneil.github.io/posts/2011-05-19-networkx-and-python-futures/</link>
+      <pubDate>Thu, 19 May 2011 00:00:00 +0000</pubDate>
+      
+      <guid>https://ryanjoneil.github.io/posts/2011-05-19-networkx-and-python-futures/</guid>
+      <description>Solve graph problems on multiple cores NetworkX and Python futures</description>
+      <content:encoded><![CDATA[<p><em>Note: This post was updated to work with <a href="https://networkx.org/">NetworkX</a> and for clarity.</em></p>
+<p>It&rsquo;s possible this will turn out like the day when Python 2.5 introduced [coroutines][coroutines]. At the time I was very excited. I spent several hours trying to convince my coworkers we should immediately abandon all our existing Java infrastructure and port it to finite state machines implemented using Python coroutines. After a day of hand waving over a proof of concept, we put that idea aside and went about our lives.</p>
+<p>Soon after, I left for a Python shop, but in the next half decade I still never found a good place to use this interesting feature.</p>
+<p>But it doesn&rsquo;t feel like that.</p>
+<p>As I come to terms more with switching to Python 3.2, the <a href="https://docs.python.org/py3k/library/concurrent.futures.html">futures</a> module seems similarly exciting. I wish I&rsquo;d had it years ago, and it&rsquo;s almost reason in itself to upgrade from Python 2.7. <em>Who cares if none of your libraries have been ported yet?</em></p>
+<p>This library lets you take any function and distribute it over a process pool. To test that out, we&rsquo;ll generate a bunch of random graphs and iterate over all their <a href="https://en.wikipedia.org/wiki/Clique_(graph_theory)">cliques</a>.</p>
+<p>First, let&rsquo;s generate some test data using the <a href="https://networkx.org/documentation/stable/reference/generated/networkx.generators.random_graphs.gnm_random_graph.html"><code>dense_gnm_random_graph</code></a> function. Our data includes 1000 random graphs, each with 100 nodes and 100 * 100 edges.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> networkx <span style="color:#66d9ef">as</span> nx
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>n <span style="color:#f92672">=</span> <span style="color:#ae81ff">100</span>
+</span></span><span style="display:flex;"><span>graphs <span style="color:#f92672">=</span> [nx<span style="color:#f92672">.</span>dense_gnm_random_graph(n, n<span style="color:#f92672">*</span>n) <span style="color:#66d9ef">for</span> _ <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">1000</span>)]
+</span></span></code></pre></div><p>Now we write a function iterate over all cliques in a given graph. NetworkX provides a <code>find_cliques</code> function which returns a generator. Iterating over them ensures we will run through the entire process of finding all cliques for a graph.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">iterate_cliques</span>(g):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> _ <span style="color:#f92672">in</span> nx<span style="color:#f92672">.</span>find_cliques(g):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">pass</span>
+</span></span></code></pre></div><p>Now we just define two functions, one for running in serial and one for running in parallel using <code>futures</code>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> concurrent <span style="color:#f92672">import</span> futures
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">serial_test</span>(graphs):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> g <span style="color:#f92672">in</span> graphs:
+</span></span><span style="display:flex;"><span>        iterate_cliques(g)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">parallel_test</span>(graphs, max_workers):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">with</span> futures<span style="color:#f92672">.</span>ProcessPoolExecutor(max_workers<span style="color:#f92672">=</span>max_workers) <span style="color:#66d9ef">as</span> executor:
+</span></span><span style="display:flex;"><span>        executor<span style="color:#f92672">.</span>map(iterate_cliques, graphs)
+</span></span></code></pre></div><p>Our <code>__main__</code> simply generates the random graphs, samples from them, times both functions, and write CSV data to standard output.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> csv <span style="color:#f92672">import</span> writer
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> random
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> sys
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> time
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;__main__&#39;</span>:
+</span></span><span style="display:flex;"><span>    out <span style="color:#f92672">=</span> writer(sys<span style="color:#f92672">.</span>stdout)
+</span></span><span style="display:flex;"><span>    out<span style="color:#f92672">.</span>writerow([<span style="color:#e6db74">&#39;num graphs&#39;</span>, <span style="color:#e6db74">&#39;serial time&#39;</span>, <span style="color:#e6db74">&#39;parallel time&#39;</span>])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    n <span style="color:#f92672">=</span> <span style="color:#ae81ff">100</span>
+</span></span><span style="display:flex;"><span>    graphs <span style="color:#f92672">=</span> [nx<span style="color:#f92672">.</span>dense_gnm_random_graph(n, n<span style="color:#f92672">*</span>n) <span style="color:#66d9ef">for</span> _ <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">1000</span>)]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Run with a number of different randomly generated graphs</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> num_graphs <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">50</span>, <span style="color:#ae81ff">1001</span>, <span style="color:#ae81ff">50</span>):
+</span></span><span style="display:flex;"><span>        sample <span style="color:#f92672">=</span> random<span style="color:#f92672">.</span>choices(graphs, k <span style="color:#f92672">=</span> num_graphs)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        start <span style="color:#f92672">=</span> time<span style="color:#f92672">.</span>time()
+</span></span><span style="display:flex;"><span>        serial_test(sample)
+</span></span><span style="display:flex;"><span>        serial_time <span style="color:#f92672">=</span> time<span style="color:#f92672">.</span>time() <span style="color:#f92672">-</span> start
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        start <span style="color:#f92672">=</span> time<span style="color:#f92672">.</span>time()
+</span></span><span style="display:flex;"><span>        parallel_test(sample, <span style="color:#ae81ff">16</span>)
+</span></span><span style="display:flex;"><span>        parallel_time <span style="color:#f92672">=</span> time<span style="color:#f92672">.</span>time() <span style="color:#f92672">-</span> start
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        out<span style="color:#f92672">.</span>writerow([num_graphs, serial_time, parallel_time])
+</span></span></code></pre></div><p>The output of this script shows that we get a fairly linear speedup to this code with little effort.</p>
+<p><img loading="lazy" src="/files/2011-05-19-networkx-and-python-futures/speedup.png" alt="Speedup"  />
+</p>
+<p>I ran this on a machine with 8 cores and hyperthreading. Eyeballing the chart, it looks like the speedup is roughly 5x. My system monitor shows spikes on CPU usage across cores whenever the parallel test runs.</p>
+<p><img loading="lazy" src="/files/2011-05-19-networkx-and-python-futures/cpu.png" alt="CPU usage"  />
+</p>
+<h2 id="resources">Resources</h2>
+<ul>
+<li>Output <a href="/files/2011-05-19-networkx-and-python-futures/data.csv">data</a></li>
+<li>Full <a href="/files/2011-05-19-networkx-and-python-futures/iterate-cliques.py">source listing</a></li>
+</ul>
+]]></content:encoded>
+    </item>
+    
+    <item>
       <title>👉 Affine Scaling in R</title>
       <link>https://ryanjoneil.github.io/posts/2011-04-27-affine-scaling-in-r/</link>
       <pubDate>Wed, 27 Apr 2011 00:00:00 +0000</pubDate>
