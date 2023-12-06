@@ -505,16 +505,16 @@ graph LR
       
       <guid>https://ryanjoneil.github.io/speaking/</guid>
       <description>This is a running list of talks I&amp;rsquo;ve given and am scheduled to give. It probably isn&amp;rsquo;t exhaustive. Some of them have slides or videos available.
-Upcoming talks December 6-8, 2023 - PyData Global 2023 - 📄 abstract, 🎟 registration
-Order up! How do I deliver it? Build on-demand logistics apps with Python, OR-Tools, and DecisionOps
-Past talks 2023 November 16, 2023 - Nextmv Videos - 🎥 video
-Forecast, schedule, route: 3 starter models for on-demand logistics</description>
+Upcoming talks I don&amp;rsquo;t have any talks scheduled right now. Reach out to me on LinkedIn if you&amp;rsquo;re interested in scheduling one.
+Past talks 2023 December 6, 2023 - PyData Global 2023 - 📄 abstract, 🧑‍💻️ code, 💻 slides
+Order up! How do I deliver it?</description>
       <content:encoded><![CDATA[<p>This is a running list of talks I&rsquo;ve given and am scheduled to give. It probably isn&rsquo;t exhaustive. Some of them have slides or videos available.</p>
 <h2 id="upcoming-talks">Upcoming talks</h2>
-<p>December 6-8, 2023 - <a href="https://pydata.org/global2023/">PyData Global 2023</a> - <a href="https://global2023.pydata.org/cfp/talk/review/QWNCD3B7EP8MR9BZMN7VVG8PG97ZG3L3">📄 abstract</a>, <a href="https://pydata.org/global2023/tickets">🎟 registration</a><br>
-Order up! How do I deliver it? Build on-demand logistics apps with Python, OR-Tools, and DecisionOps</p>
+<p>I don&rsquo;t have any talks scheduled right now. Reach out to me on LinkedIn if you&rsquo;re interested in scheduling one.</p>
 <h2 id="past-talks">Past talks</h2>
 <h3 id="2023">2023</h3>
+<p>December 6, 2023 - <a href="https://pydata.org/global2023/">PyData Global 2023</a> - <a href="https://global2023.pydata.org/cfp/talk/review/QWNCD3B7EP8MR9BZMN7VVG8PG97ZG3L3">📄 abstract</a>, <a href="https://github.com/ryanjoneil/2023-pydata-global-order-up">🧑‍💻️ code</a>, <a href="/slides/2023-pydata-global.pdf">💻 slides</a><br>
+Order up! How do I deliver it? Build on-demand logistics apps with Python, OR-Tools, and DecisionOps</p>
 <p>November 16, 2023 - <a href="https://www.nextmv.io/videos">Nextmv Videos</a> - <a href="https://www.youtube.com/watch?v=XTeit7TAWj4">🎥 video</a><br>
 Forecast, schedule, route: 3 starter models for on-demand logistics</p>
 <p>October 17, 2023 - <a href="https://meetings.informs.org/wordpress/phoenix2023/">INFORMS Annual Meeting</a> - <a href="https://www.abstractsonline.com/pp8/?__hstc=194041586.cc5f446034c6d268dfea27d9b7ceb6dc.1681140481721.1691273766763.1691449438596.35&amp;__hssc=194041586.3.1691449438596&amp;__hsfp=1912911101&amp;hsCtaTracking=8f511889-324a-41b3-a438-37ad295392e9%7C0c80c5d7-cc8d-4989-9b70-52de4c44b90b#!/10856/presentation/7867">📄 abstract</a><br>
