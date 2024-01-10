@@ -499,6 +499,41 @@ graph LR
     </item>
     
     <item>
+      <title>⏳️ Know Your Time Complexities</title>
+      <link>https://ryanjoneil.github.io/posts/2011-10-25-know-your-time-complexities/</link>
+      <pubDate>Fri, 25 Nov 2011 00:00:00 +0000</pubDate>
+      
+      <guid>https://ryanjoneil.github.io/posts/2011-10-25-know-your-time-complexities/</guid>
+      <description>The importance of time complexity in basic programming</description>
+      <content:encoded><![CDATA[<p>This is based on a lightning talk I gave at the LA PyLadies October Hackathon.</p>
+<p>I&rsquo;m actually not going to go into anything much resembling algorithmic complexity here. What I&rsquo;d like to do is present a common performance anti-pattern that I see from novice programmers about once every year or so. If I can prevent one person from committing this error, this post will have achieved its goal. I&rsquo;d also like to show how an intuitive understanding of time required by operations in relation to the size of data they operate on can be helpful.</p>
+<p>Say you have a Big List of Things. It doesn&rsquo;t particularly matter what these things are. Often they might be objects or dictionaries of denormalized data. In this example we&rsquo;ll use numbers. Let&rsquo;s generate a list of 1 million integers, each randomly chosen from the first 100 thousand natural numbers:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> random
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>choices <span style="color:#f92672">=</span> range(<span style="color:#ae81ff">100000</span>)
+</span></span><span style="display:flex;"><span>x <span style="color:#f92672">=</span> [random<span style="color:#f92672">.</span>choice(choices) <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">1000000</span>)]
+</span></span></code></pre></div><p>Now say you want to remove (or aggregate, or structure) duplicate data while keeping them <em>in order of appearance</em>. Intuitively, this seems simple enough. A first solution might involve creating a new empty list, iterating over x, and only appending those items that are not already in the new list.</p>
+<h2 id="the-bad-way">The Bad Way</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>order <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> x:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> i <span style="color:#f92672">not</span> <span style="color:#f92672">in</span> order:
+</span></span><span style="display:flex;"><span>        order<span style="color:#f92672">.</span>append(i)
+</span></span></code></pre></div><p>Try running this. What&rsquo;s wrong with it?</p>
+<p>The issue is the conditional on line 3. In the worst case, it could look at every item in the order list for each item in x. If the list is big, as it is in our example, that wastes a lot of cycles. We can reason that we can improve the performance of our code by replacing this conditional with something faster.</p>
+<h2 id="the-good-way">The Good Way</h2>
+<p>Given that sets have near constant time for membership tests, one solution is to create a companion data structure, which we&rsquo;ll call seen. Being a set, it doesn&rsquo;t care about the order of the items, but it will allow us to test for membership quickly.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>order <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>seen <span style="color:#f92672">=</span> set()
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> x:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> i <span style="color:#f92672">not</span> <span style="color:#f92672">in</span> seen:
+</span></span><span style="display:flex;"><span>        seen<span style="color:#f92672">.</span>add(i)
+</span></span><span style="display:flex;"><span>        order<span style="color:#f92672">.</span>append(i)
+</span></span></code></pre></div><p>Now try running this. Better?</p>
+<p>Not that this is the best way to perform this particular action. If you aren&rsquo;t familiar with it, take a look at the <a href="http://docs.python.org/library/itertools.html#itertools.groupby"><code>groupby</code></a> function from <code>itertools</code>, which is what I will sometimes reach for in a case like this.</p>
+]]></content:encoded>
+    </item>
+    
+    <item>
       <title>🎰 Deterministic vs. Stochastic Simulation</title>
       <link>https://ryanjoneil.github.io/posts/2011-06-11-deterministic-vs-stochastic-simulation/</link>
       <pubDate>Sat, 11 Jun 2011 00:00:00 +0000</pubDate>

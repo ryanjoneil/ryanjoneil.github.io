@@ -5,11 +5,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="index, follow">
-<title>🚀 Blogging is back, baby! | adventures in optimization</title>
-<meta name="keywords" content="">
-<meta name="description" content="New adventures in optimization">
+<title>⏳️ Know Your Time Complexities | adventures in optimization</title>
+<meta name="keywords" content="python, algorithms">
+<meta name="description" content="The importance of time complexity in basic programming">
 <meta name="author" content="Ryan O&#39;Neil">
-<link rel="canonical" href="https://ryanjoneil.github.io/posts/2023-09-07-blogging-is-back/">
+<link rel="canonical" href="https://ryanjoneil.github.io/posts/2011-10-25-know-your-time-complexities/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.7c3f0ab5ecc8326dc20e6644afa4081b33304fef3299b2c1179eaee195843a6a.css" integrity="sha256-fD8KtezIMm3CDmZEr6QIGzMwT&#43;8ymbLBF56u4ZWEOmo=" rel="preload stylesheet" as="style">
 <script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
     onload="hljs.initHighlightingOnLoad();"></script>
@@ -86,16 +86,16 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 </script>
 
-<meta property="og:title" content="🚀 Blogging is back, baby!" />
-<meta property="og:description" content="New adventures in optimization" />
+<meta property="og:title" content="⏳️ Know Your Time Complexities" />
+<meta property="og:description" content="The importance of time complexity in basic programming" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://ryanjoneil.github.io/posts/2023-09-07-blogging-is-back/" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2023-09-07T00:00:00+00:00" />
-<meta property="article:modified_time" content="2023-09-07T00:00:00+00:00" />
+<meta property="og:url" content="https://ryanjoneil.github.io/posts/2011-10-25-know-your-time-complexities/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2011-11-25T00:00:00+00:00" />
+<meta property="article:modified_time" content="2011-11-25T00:00:00+00:00" />
 
 <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="🚀 Blogging is back, baby!"/>
-<meta name="twitter:description" content="New adventures in optimization"/>
+<meta name="twitter:title" content="⏳️ Know Your Time Complexities"/>
+<meta name="twitter:description" content="The importance of time complexity in basic programming"/>
 
 
 <script type="application/ld+json">
@@ -112,8 +112,8 @@ document.addEventListener("DOMContentLoaded", function() {
     {
       "@type": "ListItem",
       "position":  2 ,
-      "name": "🚀 Blogging is back, baby!",
-      "item": "https://ryanjoneil.github.io/posts/2023-09-07-blogging-is-back/"
+      "name": "⏳️ Know Your Time Complexities",
+      "item": "https://ryanjoneil.github.io/posts/2011-10-25-know-your-time-complexities/"
     }
   ]
 }
@@ -122,24 +122,24 @@ document.addEventListener("DOMContentLoaded", function() {
 {
   "@context": "https://schema.org",
   "@type": "BlogPosting",
-  "headline": "🚀 Blogging is back, baby!",
-  "name": "🚀 Blogging is back, baby!",
-  "description": "New adventures in optimization",
+  "headline": "⏳️ Know Your Time Complexities",
+  "name": "⏳️ Know Your Time Complexities",
+  "description": "The importance of time complexity in basic programming",
   "keywords": [
-    
+    "python", "algorithms"
   ],
-  "articleBody": "I’ve been a mostly absent blogger for the past few years. I could make excuses. They might sound like, “I was busy finishing my dissertation!” or “I founded a company and have a toddler!” or “The static site generator I used was abandoned!” Whatever they might be, these excuses would certainly end in exclamation points.\nBut, ultimately, for several years it just felt like blogging was dead. Its space was usurped by Tweets, LinkedIn hustle posts, long form Medium content aimed at attracting talent, and other content trends. RSS feeds dried up bit by bit. That beautiful structure somewhere between a college essay and an academic preprint mostly ceased to be. Sad times, indeed.\nThat trend seems to be reversing. I don’t know whether it’s the result of nudges from Substack, or that all the introverts in tech finally gave up baking pandemic, but there is a lot of good content out there again! Fire up your RSS aggregators and get reading.\nThis post is my own reboot of “adventures in optimization,” a blog I’ve written intermittently since 2009. Unfortunately, it will take some time to move over all my old posts to Hugo. I’ll do that slowly as I create new ones. For now, I’ve ported over a couple early posts and put together a list of the active blogs I’m gleefully catching up on.\nSee you soon!\nConstraint Applications Blog by Helmut Simonis Erling’s blog eugeneyan Harlan D. Harris Lil’Log Nathan Brixius Punk Rock Operations Research Shtetl-Optimized Timefold ",
-  "wordCount" : "250",
+  "articleBody": "This is based on a lightning talk I gave at the LA PyLadies October Hackathon.\nI’m actually not going to go into anything much resembling algorithmic complexity here. What I’d like to do is present a common performance anti-pattern that I see from novice programmers about once every year or so. If I can prevent one person from committing this error, this post will have achieved its goal. I’d also like to show how an intuitive understanding of time required by operations in relation to the size of data they operate on can be helpful.\nSay you have a Big List of Things. It doesn’t particularly matter what these things are. Often they might be objects or dictionaries of denormalized data. In this example we’ll use numbers. Let’s generate a list of 1 million integers, each randomly chosen from the first 100 thousand natural numbers:\nimport random choices = range(100000) x = [random.choice(choices) for i in range(1000000)] Now say you want to remove (or aggregate, or structure) duplicate data while keeping them in order of appearance. Intuitively, this seems simple enough. A first solution might involve creating a new empty list, iterating over x, and only appending those items that are not already in the new list.\nThe Bad Way order = [] for i in x: if i not in order: order.append(i) Try running this. What’s wrong with it?\nThe issue is the conditional on line 3. In the worst case, it could look at every item in the order list for each item in x. If the list is big, as it is in our example, that wastes a lot of cycles. We can reason that we can improve the performance of our code by replacing this conditional with something faster.\nThe Good Way Given that sets have near constant time for membership tests, one solution is to create a companion data structure, which we’ll call seen. Being a set, it doesn’t care about the order of the items, but it will allow us to test for membership quickly.\norder = [] seen = set() for i in x: if i not in seen: seen.add(i) order.append(i) Now try running this. Better?\nNot that this is the best way to perform this particular action. If you aren’t familiar with it, take a look at the groupby function from itertools, which is what I will sometimes reach for in a case like this.\n",
+  "wordCount" : "403",
   "inLanguage": "en",
-  "datePublished": "2023-09-07T00:00:00Z",
-  "dateModified": "2023-09-07T00:00:00Z",
+  "datePublished": "2011-11-25T00:00:00Z",
+  "dateModified": "2011-11-25T00:00:00Z",
   "author":{
     "@type": "Person",
     "name": "Ryan O'Neil"
   },
   "mainEntityOfPage": {
     "@type": "WebPage",
-    "@id": "https://ryanjoneil.github.io/posts/2023-09-07-blogging-is-back/"
+    "@id": "https://ryanjoneil.github.io/posts/2011-10-25-know-your-time-complexities/"
   },
   "publisher": {
     "@type": "Organization",
@@ -232,49 +232,75 @@ document.addEventListener("DOMContentLoaded", function() {
   <header class="post-header">
     
     <h1 class="post-title">
-      🚀 Blogging is back, baby!
+      ⏳️ Know Your Time Complexities
     </h1>
     <div class="post-description">
-      New adventures in optimization
+      The importance of time complexity in basic programming
     </div>
-    <div class="post-meta"><span title='2023-09-07 00:00:00 +0000 UTC'>September 7, 2023</span>&nbsp;·&nbsp;Ryan O&#39;Neil
+    <div class="post-meta"><span title='2011-11-25 00:00:00 +0000 UTC'>November 25, 2011</span>&nbsp;·&nbsp;Ryan O&#39;Neil
 
 </div>
-  </header> 
+  </header> <div class="toc">
+    <details  open>
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
 
-  <div class="post-content"><p>I&rsquo;ve been a mostly absent blogger for the past few years. I could make excuses. They might sound like, &ldquo;I was busy finishing my dissertation!&rdquo; or &ldquo;I founded a company and have a toddler!&rdquo; or &ldquo;The <a href="https://github.com/eudicots/Cactus">static site generator</a> I used was abandoned!&rdquo; Whatever they might be, these excuses would certainly end in exclamation points.</p>
-<p>But, ultimately, for several years it just felt like blogging was <em>dead</em>. Its space was usurped by Tweets, LinkedIn hustle posts, long form Medium content aimed at attracting talent, and other content trends. RSS feeds dried up bit by bit. That beautiful structure somewhere between a college essay and an academic preprint mostly ceased to be. Sad times, indeed.</p>
-<p>That trend seems to be reversing. I don&rsquo;t know whether it&rsquo;s the result of nudges from Substack, or that all the introverts in tech finally gave up baking pandemic, but there is a lot of good content out there again! Fire up your <a href="https://www.inoreader.com/">RSS aggregators</a> and get reading.</p>
-<p>This post is my own reboot of &ldquo;adventures in optimization,&rdquo; a blog I&rsquo;ve written intermittently since 2009. Unfortunately, it will take some time to move over all my old posts to Hugo. I&rsquo;ll do that slowly as I create new ones. For now, I&rsquo;ve ported over a couple early posts and put together a list of the active blogs I&rsquo;m gleefully catching up on.</p>
-<p>See you soon!</p>
-<ul>
-<li><a href="https://hsimonis.wordpress.com/">Constraint Applications Blog</a> by Helmut Simonis</li>
-<li><a href="https://erlingdandersen.blogspot.com/">Erling&rsquo;s blog</a></li>
-<li><a href="https://eugeneyan.com/">eugeneyan</a></li>
-<li><a href="https://www.harlan.harris.name/">Harlan D. Harris</a></li>
-<li><a href="https://lilianweng.github.io/">Lil&rsquo;Log</a></li>
-<li><a href="https://nathanbrixius.wordpress.com/">Nathan Brixius</a></li>
-<li><a href="https://punkrockor.com/">Punk Rock Operations Research</a></li>
-<li><a href="https://scottaaronson.blog/">Shtetl-Optimized</a></li>
-<li><a href="https://timefold.ai/blog/">Timefold</a></li>
-</ul>
+        <div class="inner"><ul>
+                <li>
+                    <a href="#the-bad-way" aria-label="The Bad Way">The Bad Way</a></li>
+                <li>
+                    <a href="#the-good-way" aria-label="The Good Way">The Good Way</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><p>This is based on a lightning talk I gave at the LA PyLadies October Hackathon.</p>
+<p>I&rsquo;m actually not going to go into anything much resembling algorithmic complexity here. What I&rsquo;d like to do is present a common performance anti-pattern that I see from novice programmers about once every year or so. If I can prevent one person from committing this error, this post will have achieved its goal. I&rsquo;d also like to show how an intuitive understanding of time required by operations in relation to the size of data they operate on can be helpful.</p>
+<p>Say you have a Big List of Things. It doesn&rsquo;t particularly matter what these things are. Often they might be objects or dictionaries of denormalized data. In this example we&rsquo;ll use numbers. Let&rsquo;s generate a list of 1 million integers, each randomly chosen from the first 100 thousand natural numbers:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> random
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>choices <span style="color:#f92672">=</span> range(<span style="color:#ae81ff">100000</span>)
+</span></span><span style="display:flex;"><span>x <span style="color:#f92672">=</span> [random<span style="color:#f92672">.</span>choice(choices) <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">1000000</span>)]
+</span></span></code></pre></div><p>Now say you want to remove (or aggregate, or structure) duplicate data while keeping them <em>in order of appearance</em>. Intuitively, this seems simple enough. A first solution might involve creating a new empty list, iterating over x, and only appending those items that are not already in the new list.</p>
+<h2 id="the-bad-way">The Bad Way<a hidden class="anchor" aria-hidden="true" href="#the-bad-way">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>order <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> x:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> i <span style="color:#f92672">not</span> <span style="color:#f92672">in</span> order:
+</span></span><span style="display:flex;"><span>        order<span style="color:#f92672">.</span>append(i)
+</span></span></code></pre></div><p>Try running this. What&rsquo;s wrong with it?</p>
+<p>The issue is the conditional on line 3. In the worst case, it could look at every item in the order list for each item in x. If the list is big, as it is in our example, that wastes a lot of cycles. We can reason that we can improve the performance of our code by replacing this conditional with something faster.</p>
+<h2 id="the-good-way">The Good Way<a hidden class="anchor" aria-hidden="true" href="#the-good-way">#</a></h2>
+<p>Given that sets have near constant time for membership tests, one solution is to create a companion data structure, which we&rsquo;ll call seen. Being a set, it doesn&rsquo;t care about the order of the items, but it will allow us to test for membership quickly.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>order <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>seen <span style="color:#f92672">=</span> set()
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> x:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> i <span style="color:#f92672">not</span> <span style="color:#f92672">in</span> seen:
+</span></span><span style="display:flex;"><span>        seen<span style="color:#f92672">.</span>add(i)
+</span></span><span style="display:flex;"><span>        order<span style="color:#f92672">.</span>append(i)
+</span></span></code></pre></div><p>Now try running this. Better?</p>
+<p>Not that this is the best way to perform this particular action. If you aren&rsquo;t familiar with it, take a look at the <a href="http://docs.python.org/library/itertools.html#itertools.groupby"><code>groupby</code></a> function from <code>itertools</code>, which is what I will sometimes reach for in a case like this.</p>
 
 
   </div>
 
   <footer class="post-footer">
     <ul class="post-tags">
+      <li><a href="https://ryanjoneil.github.io/tags/python/">python</a></li>
+      <li><a href="https://ryanjoneil.github.io/tags/algorithms/">algorithms</a></li>
     </ul>
 <nav class="paginav">
-  <a class="prev" href="https://ryanjoneil.github.io/posts/2023-09-13-visualizing-decision-diagrams/">
+  <a class="prev" href="https://ryanjoneil.github.io/posts/2023-09-07-blogging-is-back/">
     <span class="title">« Prev</span>
     <br>
-    <span>🖍 Visualizing Decision Diagrams</span>
+    <span>🚀 Blogging is back, baby!</span>
   </a>
-  <a class="next" href="https://ryanjoneil.github.io/posts/2011-10-25-know-your-time-complexities/">
+  <a class="next" href="https://ryanjoneil.github.io/posts/2011-06-11-deterministic-vs-stochastic-simulation/">
     <span class="title">Next »</span>
     <br>
-    <span>⏳️ Know Your Time Complexities</span>
+    <span>🎰 Deterministic vs. Stochastic Simulation</span>
   </a>
 </nav>
 
