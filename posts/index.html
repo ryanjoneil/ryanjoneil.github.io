@@ -231,6 +231,19 @@ But, ultimately, for several years it just felt like blogging was dead. Its spac
 
 <article class="post-entry"> 
   <header class="entry-header">
+    <h2>⏳️ Know Your Time Complexities - Part 2
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>In response to this post, Ben Bitdiddle inquires:
+I understand the concept of using a companion set to remove duplicates from a list while preserving the order of its elements. But what should I do if these elements are composed of smaller pieces? For instance, say I am generating combinations of numbers in which order is unimportant. How do I make a set recognize that [1,2,3] is the same as [3,2,1] in this case?...</p>
+  </div>
+  <footer class="entry-footer"><span title='2011-11-25 00:00:00 +0000 UTC'>November 25, 2011</span>&nbsp;·&nbsp;Ryan O&#39;Neil</footer>
+  <a class="entry-link" aria-label="post link to ⏳️ Know Your Time Complexities - Part 2" href="https://ryanjoneil.github.io/posts/2011-11-25-know-your-time-complexities-part-2/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
     <h2>⏳️ Know Your Time Complexities
     </h2>
   </header>
@@ -238,7 +251,7 @@ But, ultimately, for several years it just felt like blogging was dead. Its spac
     <p>This is based on a lightning talk I gave at the LA PyLadies October Hackathon.
 I’m actually not going to go into anything much resembling algorithmic complexity here. What I’d like to do is present a common performance anti-pattern that I see from novice programmers about once every year or so. If I can prevent one person from committing this error, this post will have achieved its goal. I’d also like to show how an intuitive understanding of time required by operations in relation to the size of data they operate on can be helpful....</p>
   </div>
-  <footer class="entry-footer"><span title='2011-11-25 00:00:00 +0000 UTC'>November 25, 2011</span>&nbsp;·&nbsp;Ryan O&#39;Neil</footer>
+  <footer class="entry-footer"><span title='2011-10-25 00:00:00 +0000 UTC'>October 25, 2011</span>&nbsp;·&nbsp;Ryan O&#39;Neil</footer>
   <a class="entry-link" aria-label="post link to ⏳️ Know Your Time Complexities" href="https://ryanjoneil.github.io/posts/2011-10-25-know-your-time-complexities/"></a>
 </article>
 
@@ -306,20 +319,6 @@ This JAPH uses a Turing machine. The machine accepts any string that ends in &#3
   </div>
   <footer class="entry-footer"><span title='2011-04-18 00:00:00 +0000 UTC'>April 18, 2011</span>&nbsp;·&nbsp;Ryan O&#39;Neil</footer>
   <a class="entry-link" aria-label="post link to 🐪 Reformed JAPHs: Turing Machine" href="https://ryanjoneil.github.io/posts/2011-04-18-reformed-japhs-turing-machine/"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2>🐪 Reformed JAPHs: Huffman Coding
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>Note: This post was edited for clarity.
-At this point, tricking python into printing strings via indirect means got a little boring. So I switched to obfuscating fundamental computer science algorithms. Here’s a JAPH that takes in a Huffman coded version of &#39;just another python hacker&#39;, decodes, and prints it.
-# Build coding tree def build_tree(scheme): if scheme.startswith(&#39;*&#39;): left, scheme = build_tree(scheme[1:]) right, scheme = build_tree(scheme) return (left, right), scheme else: return scheme[0], scheme[1:] def decode(tree, encoded): ret = &#39;&#39; node = tree for direction in encoded: if direction == &#39;0&#39;: node = node[0] else: node = node[1] if isinstance(node, str): ret &#43;= node node = tree return ret tree = build_tree(&#39;*****ju*sp*er***yct* h**ka*no&#39;)[0] print( decode(tree, bin(10627344201836243859174935587)....</p>
-  </div>
-  <footer class="entry-footer"><span title='2011-04-14 00:00:00 +0000 UTC'>April 14, 2011</span>&nbsp;·&nbsp;Ryan O&#39;Neil</footer>
-  <a class="entry-link" aria-label="post link to 🐪 Reformed JAPHs: Huffman Coding" href="https://ryanjoneil.github.io/posts/2011-04-14-reformed-japhs-huffman-coding/"></a>
 </article>
 <footer class="page-footer">
   <nav class="pagination">

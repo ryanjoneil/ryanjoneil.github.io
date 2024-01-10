@@ -90,8 +90,8 @@ document.addEventListener("DOMContentLoaded", function() {
 <meta property="og:description" content="The importance of time complexity in basic programming" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://ryanjoneil.github.io/posts/2011-10-25-know-your-time-complexities/" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2011-11-25T00:00:00+00:00" />
-<meta property="article:modified_time" content="2011-11-25T00:00:00+00:00" />
+<meta property="article:published_time" content="2011-10-25T00:00:00+00:00" />
+<meta property="article:modified_time" content="2011-10-25T00:00:00+00:00" />
 
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="⏳️ Know Your Time Complexities"/>
@@ -131,8 +131,8 @@ document.addEventListener("DOMContentLoaded", function() {
   "articleBody": "This is based on a lightning talk I gave at the LA PyLadies October Hackathon.\nI’m actually not going to go into anything much resembling algorithmic complexity here. What I’d like to do is present a common performance anti-pattern that I see from novice programmers about once every year or so. If I can prevent one person from committing this error, this post will have achieved its goal. I’d also like to show how an intuitive understanding of time required by operations in relation to the size of data they operate on can be helpful.\nSay you have a Big List of Things. It doesn’t particularly matter what these things are. Often they might be objects or dictionaries of denormalized data. In this example we’ll use numbers. Let’s generate a list of 1 million integers, each randomly chosen from the first 100 thousand natural numbers:\nimport random choices = range(100000) x = [random.choice(choices) for i in range(1000000)] Now say you want to remove (or aggregate, or structure) duplicate data while keeping them in order of appearance. Intuitively, this seems simple enough. A first solution might involve creating a new empty list, iterating over x, and only appending those items that are not already in the new list.\nThe Bad Way order = [] for i in x: if i not in order: order.append(i) Try running this. What’s wrong with it?\nThe issue is the conditional on line 3. In the worst case, it could look at every item in the order list for each item in x. If the list is big, as it is in our example, that wastes a lot of cycles. We can reason that we can improve the performance of our code by replacing this conditional with something faster.\nThe Good Way Given that sets have near constant time for membership tests, one solution is to create a companion data structure, which we’ll call seen. Being a set, it doesn’t care about the order of the items, but it will allow us to test for membership quickly.\norder = [] seen = set() for i in x: if i not in seen: seen.add(i) order.append(i) Now try running this. Better?\nNot that this is the best way to perform this particular action. If you aren’t familiar with it, take a look at the groupby function from itertools, which is what I will sometimes reach for in a case like this.\n",
   "wordCount" : "403",
   "inLanguage": "en",
-  "datePublished": "2011-11-25T00:00:00Z",
-  "dateModified": "2011-11-25T00:00:00Z",
+  "datePublished": "2011-10-25T00:00:00Z",
+  "dateModified": "2011-10-25T00:00:00Z",
   "author":{
     "@type": "Person",
     "name": "Ryan O'Neil"
@@ -237,7 +237,7 @@ document.addEventListener("DOMContentLoaded", function() {
     <div class="post-description">
       The importance of time complexity in basic programming
     </div>
-    <div class="post-meta"><span title='2011-11-25 00:00:00 +0000 UTC'>November 25, 2011</span>&nbsp;·&nbsp;Ryan O&#39;Neil
+    <div class="post-meta"><span title='2011-10-25 00:00:00 +0000 UTC'>October 25, 2011</span>&nbsp;·&nbsp;Ryan O&#39;Neil
 
 </div>
   </header> <div class="toc">
@@ -292,10 +292,10 @@ document.addEventListener("DOMContentLoaded", function() {
       <li><a href="https://ryanjoneil.github.io/tags/algorithms/">algorithms</a></li>
     </ul>
 <nav class="paginav">
-  <a class="prev" href="https://ryanjoneil.github.io/posts/2023-09-07-blogging-is-back/">
+  <a class="prev" href="https://ryanjoneil.github.io/posts/2011-11-25-know-your-time-complexities-part-2/">
     <span class="title">« Prev</span>
     <br>
-    <span>🚀 Blogging is back, baby!</span>
+    <span>⏳️ Know Your Time Complexities - Part 2</span>
   </a>
   <a class="next" href="https://ryanjoneil.github.io/posts/2011-06-11-deterministic-vs-stochastic-simulation/">
     <span class="title">Next »</span>

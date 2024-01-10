@@ -8,9 +8,53 @@
     <language>en</language>
     <lastBuildDate>Fri, 25 Nov 2011 00:00:00 +0000</lastBuildDate><atom:link href="https://ryanjoneil.github.io/tags/algorithms/index.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>⏳️ Know Your Time Complexities - Part 2</title>
+      <link>https://ryanjoneil.github.io/posts/2011-11-25-know-your-time-complexities-part-2/</link>
+      <pubDate>Fri, 25 Nov 2011 00:00:00 +0000</pubDate>
+      
+      <guid>https://ryanjoneil.github.io/posts/2011-11-25-know-your-time-complexities-part-2/</guid>
+      <description>More on the importance of time complexity in basic programming</description>
+      <content:encoded><![CDATA[<p>In response to <a href="../2011-10-25-know-your-time-complexities/">this</a> post, <a href="https://en.wikipedia.org/wiki/Structure_and_Interpretation_of_Computer_Programs">Ben Bitdiddle</a> inquires:</p>
+<blockquote>
+<p>I understand the concept of using a companion set to remove duplicates from a list while preserving the order of its elements. But what should I do if these elements are composed of smaller pieces? For instance, say I am generating <a href="https://en.wikipedia.org/wiki/Combination">combinations</a> of numbers in which order is unimportant. How do I make a set recognize that <code>[1,2,3]</code> is the same as <code>[3,2,1]</code> in this case?</p>
+</blockquote>
+<p>There are a couple points that should help here.</p>
+<p>While lists are unhashable and therefore cannot be put into sets, tuples are perfectly capable of this. Therefore I cannot do this.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>s <span style="color:#f92672">=</span> set()
+</span></span><span style="display:flex;"><span>s<span style="color:#f92672">.</span>add([<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">3</span>])
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>Traceback (most recent call last):
+</span></span><span style="display:flex;"><span> File &#34;&lt;stdin&gt;&#34;, line 1, in &lt;module&gt;
+</span></span><span style="display:flex;"><span>TypeError: unhashable type: &#39;list&#39;
+</span></span></code></pre></div><p>But this works just fine <em>(extra space added for emphasis of tuple parentheses)</em>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>s<span style="color:#f92672">.</span>add( (<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">3</span>) )
+</span></span></code></pre></div><p><code>(3,2,1)</code> and <code>(1,2,3)</code> may not hash to the same thing, but tuples are easily sortable. If I sort them before adding them to a set, they look the same.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>tuple(sorted( (<span style="color:#ae81ff">3</span>,<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">1</span>) ))
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>)
+</span></span></code></pre></div><p>If I want to be a little fancier, I can user <a href="https://docs.python.org/3/library/itertools.html#itertools.combinations"><code>itertools.combinations</code></a>. The following generates all unique 3-digit combinations of integers from 1 to 4:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> itertools <span style="color:#f92672">import</span> combinations
+</span></span><span style="display:flex;"><span>list(combinations(range(<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">5</span>), <span style="color:#ae81ff">3</span>))
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>[(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>), (<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">4</span>), (<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">4</span>), (<span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">4</span>)]
+</span></span></code></pre></div><p>Now say I want to only find those that match some condition. I can add a filter to return, say, only those 3-digit combinations of integers from 1 to 6 that multiply to a number divisible by 10:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>list(filter(
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">lambda</span> x: <span style="color:#f92672">not</span> (x[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">*</span>x[<span style="color:#ae81ff">1</span>]<span style="color:#f92672">*</span>x[<span style="color:#ae81ff">2</span>]) <span style="color:#f92672">%</span> <span style="color:#ae81ff">10</span>,
+</span></span><span style="display:flex;"><span>    combinations(range(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">7</span>), <span style="color:#ae81ff">3</span>)
+</span></span><span style="display:flex;"><span>))
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>[(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">5</span>),
+</span></span><span style="display:flex;"><span> (<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">5</span>),
+</span></span><span style="display:flex;"><span> (<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">6</span>),
+</span></span><span style="display:flex;"><span> (<span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">5</span>),
+</span></span><span style="display:flex;"><span> (<span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">5</span>),
+</span></span><span style="display:flex;"><span> (<span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">6</span>),
+</span></span><span style="display:flex;"><span> (<span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">5</span>),
+</span></span><span style="display:flex;"><span> (<span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">6</span>),
+</span></span><span style="display:flex;"><span> (<span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">6</span>)]
+</span></span></code></pre></div>]]></content:encoded>
+    </item>
+    
+    <item>
       <title>⏳️ Know Your Time Complexities</title>
       <link>https://ryanjoneil.github.io/posts/2011-10-25-know-your-time-complexities/</link>
-      <pubDate>Fri, 25 Nov 2011 00:00:00 +0000</pubDate>
+      <pubDate>Tue, 25 Oct 2011 00:00:00 +0000</pubDate>
       
       <guid>https://ryanjoneil.github.io/posts/2011-10-25-know-your-time-complexities/</guid>
       <description>The importance of time complexity in basic programming</description>
