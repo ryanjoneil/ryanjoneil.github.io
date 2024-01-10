@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>🎰 Deterministic vs. Stochastic Simulation | adventures in optimization</title>
+<meta name="keywords" content="python, simulation">
+<meta name="description" content="The importance of randomness in simulations">
+<meta name="author" content="Ryan O&#39;Neil">
+<link rel="canonical" href="https://ryanjoneil.github.io/posts/2011-06-11-deterministic-vs-stochastic-simulation/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.7c3f0ab5ecc8326dc20e6644afa4081b33304fef3299b2c1179eaee195843a6a.css" integrity="sha256-fD8KtezIMm3CDmZEr6QIGzMwT&#43;8ymbLBF56u4ZWEOmo=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://ryanjoneil.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://ryanjoneil.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://ryanjoneil.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://ryanjoneil.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://ryanjoneil.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css"
+    integrity="sha384-GvrOXuhMATgEsSwCs4smul74iXGOixntILdUW9XmUC6+HX0sLNAK3q71HotJqlAn"
+    crossorigin="anonymous"/>
+<script
+    src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"
+    integrity="sha384-cpW21h6RZv/phavutF+AuVYrr+dA8xD9zs6FwLpaCct6O9ctzYFfFr4dgmgccOTx"
+    crossorigin="anonymous">
+</script>
+
+<script
+    src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"
+    integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05"
+    crossorigin="anonymous"
+    onload="renderMathInElement(document.body);">
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    renderMathInElement(document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "$", right: "$", display: false}
+        ]
+    });
+});
+</script>
+
+<meta property="og:title" content="🎰 Deterministic vs. Stochastic Simulation" />
+<meta property="og:description" content="The importance of randomness in simulations" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://ryanjoneil.github.io/posts/2011-06-11-deterministic-vs-stochastic-simulation/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2011-06-11T00:00:00+00:00" />
+<meta property="article:modified_time" content="2011-06-11T00:00:00+00:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="🎰 Deterministic vs. Stochastic Simulation"/>
+<meta name="twitter:description" content="The importance of randomness in simulations"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://ryanjoneil.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "🎰 Deterministic vs. Stochastic Simulation",
+      "item": "https://ryanjoneil.github.io/posts/2011-06-11-deterministic-vs-stochastic-simulation/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "🎰 Deterministic vs. Stochastic Simulation",
+  "name": "🎰 Deterministic vs. Stochastic Simulation",
+  "description": "The importance of randomness in simulations",
+  "keywords": [
+    "python", "simulation"
+  ],
+  "articleBody": "I find I have to build simulations with increasing frequency in my work and life. Usually this indicates I’m faced with one of the following situations:\nThe need for a quick estimate regarding the quantitative behavior of some situation. The desire to verify the result of a computation or assumption. A situation which is too complex or random to effectively model or understand. Anyone familiar at all with simulation will recognize the last item as the motivating force of the entire field. Simulation models tend to take over when systems become so complex that understanding them is prohibitive in cost and time or entirely infeasible. In a simulation, the modeler can focus on individual interactions between entities while still hoping for useful output in the form of descriptive statistics.\nAs such, simulations are nearly always stochastic. The output of a simulation, whether it be the mean time to service upon entering a queue or the number of fish alive in a pond, is determined by a number of random inputs. It is estimated by looking at a sample of the entire, often infinite, problem space and therefore must be described in terms of mean and variance.\nFor me, simulation building usually follows a process roughly like this:\nWork with a domain expert to understand the process under study. Convert this process into a deterministic simulation (no randomness). Verify the output of the deterministic simulation. Anlyze the inputs of the simulation to determine their probability distributions. Convert the deterministic simulation to a stochastic simulation. The reason for creating a simulation without randomness first is that it can be difficult or impossible to verify its correctness otherwise. Thus one may focus on the simulation logic first before analyzing and adding sources of randomness.\nWhere the procedure breaks down is after the third step. Domain experts are often happy to share their knowledge about systems to aid in designing simulations, and typically can understand the resulting abstractions. They are also invaluable in verifying simulation output. However, they are unlikely to understand why it is necessary to add randomness to a system that they already perceive as functional. Further, doing so can be just as difficult and time consuming as the initial model development and therefore requires justification.\nThis can be a quandary for the model builder. How does one communicate the need to incorporate randomness to decision makers who lack understanding of probability? It is trivially easy to construct simulations that use the same input parameters but yield drastically different outputs. Consider the code below, which simulates two events occurring and counts the number of times event b happens before event a.\nimport random def sim_stochastic(event_a_lambda, event_b_lambda): # Returns 0 if event A arrives first, 1 if event B arrives first # Calculate next arrival time for each event randomly. event_a_arrival = random.expovariate(event_a_lambda) event_b_arrival = random.expovariate(event_b_lambda) return 0.0 if event_a_arrival \u003c= event_b_arrival else 1.0 def sim_deterministic(event_a_lambda, event_b_lambda): # Returns 0 if event A arrives first, 1 if event B arrives first # Calculate next arrival time for each event deterministically. event_a_arrival = 1.0 / event_a_lambda event_b_arrival = 1.0 / event_b_lambda return 0.0 if event_a_arrival \u003c= event_b_arrival else 1.0 if __name__ == '__main__': event_a_lambda = 0.3 event_b_lambda = 0.5 repetitions = 10000 for sim in (sim_stochastic, sim_deterministic): output = [ sim(event_a_lambda, event_b_lambda) for _ in range(repetitions) ] event_b_first = 100.0 * (sum(output) / len(output)) print('event b is first %0.1f%% of the time' % event_b_first) Both simulations use the same input parameter, but the second one is essentially wrong as b will always happen first. In the stochastic version, we use exponential distributions for the inputs and obtain an output that verifies our basic understanding of these distributions.\nevent b is first 63.0% of the time event b is first 100.0% of the time How about you? How do you discuss the need to model a random world with decision makers?\n",
+  "wordCount" : "646",
+  "inLanguage": "en",
+  "datePublished": "2011-06-11T00:00:00Z",
+  "dateModified": "2011-06-11T00:00:00Z",
+  "author":{
+    "@type": "Person",
+    "name": "Ryan O'Neil"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://ryanjoneil.github.io/posts/2011-06-11-deterministic-vs-stochastic-simulation/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "adventures in optimization",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://ryanjoneil.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://ryanjoneil.github.io/" accesskey="h" title="adventures in optimization (Alt + H)">adventures in optimization</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://ryanjoneil.github.io/about" title="about">
+                    <span>about</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://ryanjoneil.github.io/coding" title="coding">
+                    <span>coding</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://ryanjoneil.github.io/posts" title="posting">
+                    <span>posting</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://ryanjoneil.github.io/speaking" title="speaking">
+                    <span>speaking</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://ryanjoneil.github.io/writing" title="writing">
+                    <span>writing</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://ryanjoneil.github.io/search" title="🔍">
+                    <span>🔍</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title">
+      🎰 Deterministic vs. Stochastic Simulation
+    </h1>
+    <div class="post-description">
+      The importance of randomness in simulations
+    </div>
+    <div class="post-meta"><span title='2011-06-11 00:00:00 +0000 UTC'>June 11, 2011</span>&nbsp;·&nbsp;Ryan O&#39;Neil
+
+</div>
+  </header> 
+
+  <div class="post-content"><p>I find I have to build simulations with increasing frequency in my work and life. Usually this indicates I&rsquo;m faced with one of the following situations:</p>
+<ul>
+<li>The need for a quick estimate regarding the quantitative behavior of some situation.</li>
+<li>The desire to verify the result of a computation or assumption.</li>
+<li>A situation which is too complex or random to effectively model or understand.</li>
+</ul>
+<p>Anyone familiar at all with simulation will recognize the last item as the motivating force of the entire field. Simulation models tend to take over when systems become so complex that understanding them is prohibitive in cost and time or entirely infeasible. In a simulation, the modeler can focus on individual interactions between entities while still hoping for useful output in the form of descriptive statistics.</p>
+<p>As such, simulations are nearly always stochastic. The output of a simulation, whether it be the mean time to service upon entering a queue or the number of fish alive in a pond, is determined by a number of random inputs. It is estimated by looking at a sample of the entire, often infinite, problem space and therefore must be described in terms of mean and variance.</p>
+<p>For me, simulation building usually follows a process roughly like this:</p>
+<ul>
+<li>Work with a domain expert to understand the process under study.</li>
+<li>Convert this process into a deterministic simulation (no randomness).</li>
+<li>Verify the output of the deterministic simulation.</li>
+<li>Anlyze the inputs of the simulation to determine their probability distributions.</li>
+<li>Convert the deterministic simulation to a stochastic simulation.</li>
+</ul>
+<p>The reason for creating a simulation without randomness first is that it can be difficult or impossible to verify its correctness otherwise. Thus one may focus on the simulation logic first before analyzing and adding sources of randomness.</p>
+<p>Where the procedure breaks down is after the third step. Domain experts are often happy to share their knowledge about systems to aid in designing simulations, and typically can understand the resulting abstractions. They are also invaluable in verifying simulation output. However, they are unlikely to understand why it is necessary to add randomness to a system that they already perceive as functional. Further, doing so can be just as difficult and time consuming as the initial model development and therefore requires justification.</p>
+<p>This can be a quandary for the model builder. How does one communicate the need to incorporate randomness to decision makers who lack understanding of probability? It is trivially easy to construct simulations that use the same input parameters but yield drastically different outputs. Consider the code below, which simulates two events occurring and counts the number of times event b happens before event a.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> random
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">sim_stochastic</span>(event_a_lambda, event_b_lambda):
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Returns 0 if event A arrives first, 1 if event B arrives first</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Calculate next arrival time for each event randomly.</span>
+</span></span><span style="display:flex;"><span>    event_a_arrival <span style="color:#f92672">=</span> random<span style="color:#f92672">.</span>expovariate(event_a_lambda)
+</span></span><span style="display:flex;"><span>    event_b_arrival <span style="color:#f92672">=</span> random<span style="color:#f92672">.</span>expovariate(event_b_lambda)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0.0</span> <span style="color:#66d9ef">if</span> event_a_arrival <span style="color:#f92672">&lt;=</span> event_b_arrival <span style="color:#66d9ef">else</span> <span style="color:#ae81ff">1.0</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">sim_deterministic</span>(event_a_lambda, event_b_lambda):
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Returns 0 if event A arrives first, 1 if event B arrives first</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Calculate next arrival time for each event deterministically.</span>
+</span></span><span style="display:flex;"><span>    event_a_arrival <span style="color:#f92672">=</span> <span style="color:#ae81ff">1.0</span> <span style="color:#f92672">/</span> event_a_lambda
+</span></span><span style="display:flex;"><span>    event_b_arrival <span style="color:#f92672">=</span> <span style="color:#ae81ff">1.0</span> <span style="color:#f92672">/</span> event_b_lambda
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0.0</span> <span style="color:#66d9ef">if</span> event_a_arrival <span style="color:#f92672">&lt;=</span> event_b_arrival <span style="color:#66d9ef">else</span> <span style="color:#ae81ff">1.0</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;__main__&#39;</span>:
+</span></span><span style="display:flex;"><span>    event_a_lambda <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.3</span>
+</span></span><span style="display:flex;"><span>    event_b_lambda <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.5</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    repetitions <span style="color:#f92672">=</span> <span style="color:#ae81ff">10000</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> sim <span style="color:#f92672">in</span> (sim_stochastic, sim_deterministic):
+</span></span><span style="display:flex;"><span>        output <span style="color:#f92672">=</span> [
+</span></span><span style="display:flex;"><span>            sim(event_a_lambda, event_b_lambda)
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">for</span> _ <span style="color:#f92672">in</span> range(repetitions)
+</span></span><span style="display:flex;"><span>        ]
+</span></span><span style="display:flex;"><span>        event_b_first <span style="color:#f92672">=</span> <span style="color:#ae81ff">100.0</span> <span style="color:#f92672">*</span> (sum(output) <span style="color:#f92672">/</span> len(output))
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">&#39;event b is first </span><span style="color:#e6db74">%0.1f%%</span><span style="color:#e6db74"> of the time&#39;</span> <span style="color:#f92672">%</span> event_b_first)
+</span></span></code></pre></div><p>Both simulations use the same input parameter, but the second one is essentially wrong as b will always happen first. In the stochastic version, we use exponential distributions for the inputs and obtain an output that verifies our basic understanding of these distributions.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>event b is first 63.0% of the time
+</span></span><span style="display:flex;"><span>event b is first 100.0% of the time
+</span></span></code></pre></div><p>How about you? How do you discuss the need to model a random world with decision makers?</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://ryanjoneil.github.io/tags/python/">python</a></li>
+      <li><a href="https://ryanjoneil.github.io/tags/simulation/">simulation</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://ryanjoneil.github.io/posts/2023-09-07-blogging-is-back/">
+    <span class="title">« Prev</span>
+    <br>
+    <span>🚀 Blogging is back, baby!</span>
+  </a>
+  <a class="next" href="https://ryanjoneil.github.io/posts/2011-05-19-networkx-and-python-futures/">
+    <span class="title">Next »</span>
+    <br>
+    <span>🔮 NetworkX and Python Futures</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2024 <a href="https://ryanjoneil.github.io/">adventures in optimization</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

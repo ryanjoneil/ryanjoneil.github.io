@@ -5,11 +5,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="index, follow">
-<title>simulation | adventures in optimization</title>
+<title>Posts | adventures in optimization</title>
 <meta name="keywords" content="">
-<meta name="description" content="">
+<meta name="description" content="Posts - adventures in optimization">
 <meta name="author" content="">
-<link rel="canonical" href="https://ryanjoneil.github.io/tags/simulation/">
+<link rel="canonical" href="https://ryanjoneil.github.io/posts/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.7c3f0ab5ecc8326dc20e6644afa4081b33304fef3299b2c1179eaee195843a6a.css" integrity="sha256-fD8KtezIMm3CDmZEr6QIGzMwT&#43;8ymbLBF56u4ZWEOmo=" rel="preload stylesheet" as="style">
 <link rel="icon" href="https://ryanjoneil.github.io/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="https://ryanjoneil.github.io/favicon-16x16.png">
@@ -18,7 +18,7 @@
 <link rel="mask-icon" href="https://ryanjoneil.github.io/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" type="application/rss+xml" href="https://ryanjoneil.github.io/tags/simulation/index.xml">
+<link rel="alternate" type="application/rss+xml" href="https://ryanjoneil.github.io/posts/index.xml">
 <noscript>
     <style>
         #theme-toggle,
@@ -85,15 +85,30 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 </script>
 
-<meta property="og:title" content="simulation" />
+<meta property="og:title" content="Posts" />
 <meta property="og:description" content="" />
 <meta property="og:type" content="website" />
-<meta property="og:url" content="https://ryanjoneil.github.io/tags/simulation/" />
+<meta property="og:url" content="https://ryanjoneil.github.io/posts/" />
 
 <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="simulation"/>
+<meta name="twitter:title" content="Posts"/>
 <meta name="twitter:description" content=""/>
 
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://ryanjoneil.github.io/posts/"
+    }
+  ]
+}
+</script>
 </head>
 
 <body class="list" id="top">
@@ -148,7 +163,7 @@ document.addEventListener("DOMContentLoaded", function() {
             </li>
             <li>
                 <a href="https://ryanjoneil.github.io/posts" title="posting">
-                    <span>posting</span>
+                    <span class="active">posting</span>
                 </a>
             </li>
             <li>
@@ -172,48 +187,28 @@ document.addEventListener("DOMContentLoaded", function() {
 <main class="main"> 
 <header class="page-header">
   <h1>
-    simulation
+    Posts
   </h1>
 </header>
 
-<article class="post-entry tag-entry"> 
+<article class="post-entry"> 
   <header class="entry-header">
-    <h2>🎰 Deterministic vs. Stochastic Simulation
+    <h2>📐 Uncapacitated Lot Sizing
     </h2>
   </header>
   <div class="entry-content">
-    <p>I find I have to build simulations with increasing frequency in my work and life. Usually this indicates I’m faced with one of the following situations:
-The need for a quick estimate regarding the quantitative behavior of some situation. The desire to verify the result of a computation or assumption. A situation which is too complex or random to effectively model or understand. Anyone familiar at all with simulation will recognize the last item as the motivating force of the entire field....</p>
+    <p>Uncapacitated Lot Sizing (ULS) is a classic OR problem that seeks to minimize the cost of satisfying known demand for a product over time. Demand is subject to varying costs for production, set-up, and storage of the product. Technically, it is a mixed binary integer linear program – the key point separating it from the world of linear optimization being that production cannot occur during any period without paying that period’s fixed costs for set-up....</p>
   </div>
-  <footer class="entry-footer"><span title='2011-06-11 00:00:00 +0000 UTC'>June 11, 2011</span>&nbsp;·&nbsp;Ryan O&#39;Neil</footer>
-  <a class="entry-link" aria-label="post link to 🎰 Deterministic vs. Stochastic Simulation" href="https://ryanjoneil.github.io/posts/2011-06-11-deterministic-vs-stochastic-simulation/"></a>
+  <footer class="entry-footer"><span title='2009-02-20 00:00:00 +0000 UTC'>February 20, 2009</span>&nbsp;·&nbsp;Ryan O&#39;Neil</footer>
+  <a class="entry-link" aria-label="post link to 📐 Uncapacitated Lot Sizing" href="https://ryanjoneil.github.io/posts/2009-02-20-uncapacitated-lot-sizing/"></a>
 </article>
-
-<article class="post-entry tag-entry"> 
-  <header class="entry-header">
-    <h2>📈 Simulating GDP Growth
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>I hope you saw “China’s way to the top” on the Post’s website recently. It’s a very clear presentation of their statement and is certainly worth a look.
-So say you’re an economist and you actually do need to produce a realistic estimate of when China’s GDP surpasses that of the USA. Can you use such an approach? Not really. There are several simplifying assumptions the Post made that are perfectly reasonable....</p>
-  </div>
-  <footer class="entry-footer"><span title='2011-02-23 00:00:00 +0000 UTC'>February 23, 2011</span>&nbsp;·&nbsp;Ryan O&#39;Neil</footer>
-  <a class="entry-link" aria-label="post link to 📈 Simulating GDP Growth" href="https://ryanjoneil.github.io/posts/2011-02-23-simulating-gdp-growth/"></a>
-</article>
-
-<article class="post-entry tag-entry"> 
-  <header class="entry-header">
-    <h2>🐍 Monte Carlo Simulation in Python
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>Note: This post was updated to work with Python 3.
-One of the most useful tools one learns in an Operations Research curriculum is Monte Carlo Simulation. Its utility lies in its simplicity: one can learn vital information about nearly any process, be it deterministic or stochastic, without wading through the grunt work of finding an analytical solution. It can be used for off-the-cuff estimates or as a proper scientific tool....</p>
-  </div>
-  <footer class="entry-footer"><span title='2009-10-08 00:00:00 +0000 UTC'>October 8, 2009</span>&nbsp;·&nbsp;Ryan O&#39;Neil</footer>
-  <a class="entry-link" aria-label="post link to 🐍 Monte Carlo Simulation in Python" href="https://ryanjoneil.github.io/posts/2009-10-08-monte-carlo-simulation-in-python/"></a>
-</article>
+<footer class="page-footer">
+  <nav class="pagination">
+    <a class="prev" href="https://ryanjoneil.github.io/posts/page/2/">
+      «&nbsp;Prev&nbsp;
+    </a>
+  </nav>
+</footer>
     </main>
     
 <footer class="footer">

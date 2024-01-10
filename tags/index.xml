@@ -110,9 +110,19 @@
     <item>
       <title>python</title>
       <link>https://ryanjoneil.github.io/tags/python/</link>
-      <pubDate>Thu, 19 May 2011 00:00:00 +0000</pubDate>
+      <pubDate>Sat, 11 Jun 2011 00:00:00 +0000</pubDate>
       
       <guid>https://ryanjoneil.github.io/tags/python/</guid>
+      <description></description>
+      <content:encoded><![CDATA[]]></content:encoded>
+    </item>
+    
+    <item>
+      <title>simulation</title>
+      <link>https://ryanjoneil.github.io/tags/simulation/</link>
+      <pubDate>Sat, 11 Jun 2011 00:00:00 +0000</pubDate>
+      
+      <guid>https://ryanjoneil.github.io/tags/simulation/</guid>
       <description></description>
       <content:encoded><![CDATA[]]></content:encoded>
     </item>
@@ -153,16 +163,6 @@
       <pubDate>Wed, 20 Apr 2011 00:00:00 +0000</pubDate>
       
       <guid>https://ryanjoneil.github.io/tags/scheme/</guid>
-      <description></description>
-      <content:encoded><![CDATA[]]></content:encoded>
-    </item>
-    
-    <item>
-      <title>simulation</title>
-      <link>https://ryanjoneil.github.io/tags/simulation/</link>
-      <pubDate>Wed, 23 Feb 2011 00:00:00 +0000</pubDate>
-      
-      <guid>https://ryanjoneil.github.io/tags/simulation/</guid>
       <description></description>
       <content:encoded><![CDATA[]]></content:encoded>
     </item>
