@@ -506,14 +506,14 @@ graph LR
       <guid>https://ryanjoneil.github.io/speaking/</guid>
       <description>This is a running list of talks I&amp;rsquo;ve given and am scheduled to give. It probably isn&amp;rsquo;t exhaustive. Some of them have slides or videos available.
 Upcoming talks I don&amp;rsquo;t have any talks scheduled right now. Reach out to me on LinkedIn if you&amp;rsquo;re interested in scheduling one.
-Past talks 2023 December 6, 2023 - PyData Global 2023 - 📄 abstract, 🧑‍💻️ code, 💻 slides
+Past talks 2023 December 6, 2023 - PyData Global 2023 - 📄 abstract, 🧑‍💻️ code, 💻 slides, 🎥 video
 Order up! How do I deliver it?</description>
       <content:encoded><![CDATA[<p>This is a running list of talks I&rsquo;ve given and am scheduled to give. It probably isn&rsquo;t exhaustive. Some of them have slides or videos available.</p>
 <h2 id="upcoming-talks">Upcoming talks</h2>
 <p>I don&rsquo;t have any talks scheduled right now. Reach out to me on LinkedIn if you&rsquo;re interested in scheduling one.</p>
 <h2 id="past-talks">Past talks</h2>
 <h3 id="2023">2023</h3>
-<p>December 6, 2023 - <a href="https://pydata.org/global2023/">PyData Global 2023</a> - <a href="https://global2023.pydata.org/cfp/talk/review/QWNCD3B7EP8MR9BZMN7VVG8PG97ZG3L3">📄 abstract</a>, <a href="https://github.com/ryanjoneil/2023-pydata-global-order-up">🧑‍💻️ code</a>, <a href="/slides/2023-pydata-global.pdf">💻 slides</a><br>
+<p>December 6, 2023 - <a href="https://pydata.org/global2023/">PyData Global 2023</a> - <a href="https://global2023.pydata.org/cfp/talk/review/QWNCD3B7EP8MR9BZMN7VVG8PG97ZG3L3">📄 abstract</a>, <a href="https://github.com/ryanjoneil/2023-pydata-global-order-up">🧑‍💻️ code</a>, <a href="/slides/2023-pydata-global.pdf">💻 slides</a>, <a href="https://www.youtube.com/watch?v=TFSEaJDEQZw">🎥 video</a><br>
 Order up! How do I deliver it? Build on-demand logistics apps with Python, OR-Tools, and DecisionOps</p>
 <p>November 16, 2023 - <a href="https://www.nextmv.io/videos">Nextmv Videos</a> - <a href="https://www.youtube.com/watch?v=XTeit7TAWj4">🎥 video</a><br>
 Forecast, schedule, route: 3 starter models for on-demand logistics</p>
@@ -599,15 +599,21 @@ June 2023 - USPTO - 📄 patent</description>
       <pubDate>Wed, 06 Sep 2023 00:00:00 +0000</pubDate>
       
       <guid>https://ryanjoneil.github.io/about/</guid>
-      <description>I build decision automation and optimization tools. This is a
-By day, I am an operations research analyst optimization engineer, coder, and co-founder of Nextmv. I&amp;rsquo;m interested in hybrid optimization, decision diagrams, and mixed integer programming. My applications skew toward logistics for delivery platforms, with detours into cutting and packing.
+      <description>I build decision automation and optimization tools.
+By day, I am an optimization engineer, coder, and co-founder of Nextmv. I&amp;rsquo;m interested in hybrid optimization, decision diagrams, and mixed integer programming. My applications skew toward logistics for delivery platforms, with detours into cutting and packing.
 For the past several years, I&amp;rsquo;ve worked in real-time optimization for on-demand delivery, scheduling, forecasting, and simulation. I did a MS in Operations Research by night at George Mason University, then a PhD in the same department under the advisement of Karla Hoffman.</description>
       <content:encoded><![CDATA[<p><img loading="lazy" src="/img/ryan.jpg" alt="me"  />
 </p>
-<p>I build decision automation and optimization tools. This is a</p>
-<p>By day, I am an <del>operations research analyst</del> optimization engineer, coder, and co-founder of <a href="https://nextmv.io">Nextmv</a>. I&rsquo;m interested in hybrid optimization, <a href="https://www.andrew.cmu.edu/user/vanhoeve/mdd/">decision diagrams</a>, and <a href="https://en.wikipedia.org/wiki/Integer_programming">mixed integer programming</a>. My applications skew toward logistics for delivery platforms, with detours into <a href="https://www.euro-online.org/websites/esicup/">cutting and packing</a>.</p>
+<p>I build decision automation and optimization tools.</p>
+<p>By day, I am an optimization engineer, coder, and co-founder of <a href="https://nextmv.io">Nextmv</a>. I&rsquo;m interested in hybrid optimization, <a href="https://www.andrew.cmu.edu/user/vanhoeve/mdd/">decision diagrams</a>, and <a href="https://en.wikipedia.org/wiki/Integer_programming">mixed integer programming</a>. My applications skew toward logistics for delivery platforms, with detours into <a href="https://www.euro-online.org/websites/esicup/">cutting and packing</a>.</p>
 <p>For the past several years, I&rsquo;ve worked in real-time optimization for on-demand delivery, scheduling, forecasting, and simulation. I did a MS in Operations Research by night at <a href="https://seor.gmu.edu/">George Mason University</a>, then a PhD in the same department under the advisement of <a href="https://seor.vse.gmu.edu/~khoffman/">Karla Hoffman</a>.</p>
-<p>By night, I am am amateur cellist, and a cat and early music enthusiast. I mentor a bit at the <a href="https://roux.northeastern.edu/entrepreneurship/">Roux Institute</a> and help out <a href="https://www.classicaluprising.org/">Classical Uprising</a> where I can.</p>
+<p>By night, I&rsquo;m an amateur cellist, and a cat and early music enthusiast. I&rsquo;m also&hellip;</p>
+<ul>
+<li>a board member of <a href="https://www.classicaluprising.org/">Classical Uprising</a>,</li>
+<li>a faculty associate at Bucknell University&rsquo;s <a href="https://www.bucknell.edu/academics/freeman-college-management">Freeman College of Management</a>,</li>
+<li>a mentor for startup founders at the <a href="https://roux.northeastern.edu/entrepreneurship/">Roux Institute</a>,</li>
+<li>and on the <a href="https://www.informs.org/About-INFORMS/Governance/Committees/Member-Services-Group/Membership-Committee">membership committee of INFORMS</a>.</li>
+</ul>
 ]]></content:encoded>
     </item>
     
