@@ -8,7 +8,7 @@
     <language>en</language>
     <lastBuildDate>Sun, 26 Nov 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://ryanjoneil.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Gadfly</title>
+      <title>gadfly</title>
       <link>https://ryanjoneil.github.io/tags/gadfly/</link>
       <pubDate>Sun, 26 Nov 2023 00:00:00 +0000</pubDate>
       
@@ -18,7 +18,7 @@
     </item>
     
     <item>
-      <title>Integer Programming</title>
+      <title>integer programming</title>
       <link>https://ryanjoneil.github.io/tags/integer-programming/</link>
       <pubDate>Sun, 26 Nov 2023 00:00:00 +0000</pubDate>
       
@@ -28,7 +28,7 @@
     </item>
     
     <item>
-      <title>Julia</title>
+      <title>julia</title>
       <link>https://ryanjoneil.github.io/tags/julia/</link>
       <pubDate>Sun, 26 Nov 2023 00:00:00 +0000</pubDate>
       
@@ -38,7 +38,7 @@
     </item>
     
     <item>
-      <title>Jump</title>
+      <title>jump</title>
       <link>https://ryanjoneil.github.io/tags/jump/</link>
       <pubDate>Sun, 26 Nov 2023 00:00:00 +0000</pubDate>
       
@@ -48,7 +48,7 @@
     </item>
     
     <item>
-      <title>Modeling</title>
+      <title>modeling</title>
       <link>https://ryanjoneil.github.io/tags/modeling/</link>
       <pubDate>Sun, 26 Nov 2023 00:00:00 +0000</pubDate>
       
@@ -58,7 +58,7 @@
     </item>
     
     <item>
-      <title>Scheduling</title>
+      <title>scheduling</title>
       <link>https://ryanjoneil.github.io/tags/scheduling/</link>
       <pubDate>Sun, 26 Nov 2023 00:00:00 +0000</pubDate>
       
@@ -68,7 +68,7 @@
     </item>
     
     <item>
-      <title>Scip</title>
+      <title>scip</title>
       <link>https://ryanjoneil.github.io/tags/scip/</link>
       <pubDate>Sun, 26 Nov 2023 00:00:00 +0000</pubDate>
       
@@ -78,7 +78,7 @@
     </item>
     
     <item>
-      <title>Decision Diagrams</title>
+      <title>decision diagrams</title>
       <link>https://ryanjoneil.github.io/tags/decision-diagrams/</link>
       <pubDate>Wed, 13 Sep 2023 00:00:00 +0000</pubDate>
       
@@ -88,7 +88,7 @@
     </item>
     
     <item>
-      <title>Graphs</title>
+      <title>graphs</title>
       <link>https://ryanjoneil.github.io/tags/graphs/</link>
       <pubDate>Wed, 13 Sep 2023 00:00:00 +0000</pubDate>
       
@@ -98,7 +98,7 @@
     </item>
     
     <item>
-      <title>Visualization</title>
+      <title>visualization</title>
       <link>https://ryanjoneil.github.io/tags/visualization/</link>
       <pubDate>Wed, 13 Sep 2023 00:00:00 +0000</pubDate>
       
@@ -108,7 +108,17 @@
     </item>
     
     <item>
-      <title>Algorithms</title>
+      <title>python</title>
+      <link>https://ryanjoneil.github.io/tags/python/</link>
+      <pubDate>Thu, 12 Jan 2012 00:00:00 +0000</pubDate>
+      
+      <guid>https://ryanjoneil.github.io/tags/python/</guid>
+      <description></description>
+      <content:encoded><![CDATA[]]></content:encoded>
+    </item>
+    
+    <item>
+      <title>algorithms</title>
       <link>https://ryanjoneil.github.io/tags/algorithms/</link>
       <pubDate>Fri, 25 Nov 2011 00:00:00 +0000</pubDate>
       
@@ -118,17 +128,7 @@
     </item>
     
     <item>
-      <title>Python</title>
-      <link>https://ryanjoneil.github.io/tags/python/</link>
-      <pubDate>Fri, 25 Nov 2011 00:00:00 +0000</pubDate>
-      
-      <guid>https://ryanjoneil.github.io/tags/python/</guid>
-      <description></description>
-      <content:encoded><![CDATA[]]></content:encoded>
-    </item>
-    
-    <item>
-      <title>Simulation</title>
+      <title>simulation</title>
       <link>https://ryanjoneil.github.io/tags/simulation/</link>
       <pubDate>Sat, 11 Jun 2011 00:00:00 +0000</pubDate>
       
@@ -138,7 +138,7 @@
     </item>
     
     <item>
-      <title>R</title>
+      <title>r</title>
       <link>https://ryanjoneil.github.io/tags/r/</link>
       <pubDate>Wed, 27 Apr 2011 00:00:00 +0000</pubDate>
       
@@ -148,7 +148,7 @@
     </item>
     
     <item>
-      <title>Obfuscation</title>
+      <title>obfuscation</title>
       <link>https://ryanjoneil.github.io/tags/obfuscation/</link>
       <pubDate>Wed, 20 Apr 2011 00:00:00 +0000</pubDate>
       
@@ -158,7 +158,7 @@
     </item>
     
     <item>
-      <title>Scheme</title>
+      <title>scheme</title>
       <link>https://ryanjoneil.github.io/tags/scheme/</link>
       <pubDate>Wed, 20 Apr 2011 00:00:00 +0000</pubDate>
       
@@ -168,7 +168,7 @@
     </item>
     
     <item>
-      <title>Data Fitting</title>
+      <title>data fitting</title>
       <link>https://ryanjoneil.github.io/tags/data-fitting/</link>
       <pubDate>Wed, 16 Feb 2011 00:00:00 +0000</pubDate>
       
@@ -178,7 +178,7 @@
     </item>
     
     <item>
-      <title>Regression</title>
+      <title>regression</title>
       <link>https://ryanjoneil.github.io/tags/regression/</link>
       <pubDate>Wed, 16 Feb 2011 00:00:00 +0000</pubDate>
       
@@ -188,7 +188,7 @@
     </item>
     
     <item>
-      <title>Classification</title>
+      <title>classification</title>
       <link>https://ryanjoneil.github.io/tags/classification/</link>
       <pubDate>Tue, 23 Nov 2010 00:00:00 +0000</pubDate>
       
@@ -198,7 +198,7 @@
     </item>
     
     <item>
-      <title>Linear Programming</title>
+      <title>linear programming</title>
       <link>https://ryanjoneil.github.io/tags/linear-programming/</link>
       <pubDate>Tue, 23 Nov 2010 00:00:00 +0000</pubDate>
       
@@ -208,7 +208,7 @@
     </item>
     
     <item>
-      <title>Ampl</title>
+      <title>ampl</title>
       <link>https://ryanjoneil.github.io/tags/ampl/</link>
       <pubDate>Fri, 27 Feb 2009 00:00:00 +0000</pubDate>
       
@@ -218,7 +218,7 @@
     </item>
     
     <item>
-      <title>Tsp</title>
+      <title>tsp</title>
       <link>https://ryanjoneil.github.io/tags/tsp/</link>
       <pubDate>Fri, 27 Feb 2009 00:00:00 +0000</pubDate>
       

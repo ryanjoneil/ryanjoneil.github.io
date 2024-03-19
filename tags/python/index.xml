@@ -1,12 +1,79 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
-    <title>Python on adventures in optimization</title>
+    <title>python on adventures in optimization</title>
     <link>https://ryanjoneil.github.io/tags/python/</link>
-    <description>Recent content in Python on adventures in optimization</description>
+    <description>Recent content in python on adventures in optimization</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Fri, 25 Nov 2011 00:00:00 +0000</lastBuildDate><atom:link href="https://ryanjoneil.github.io/tags/python/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 12 Jan 2012 00:00:00 +0000</lastBuildDate><atom:link href="https://ryanjoneil.github.io/tags/python/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>🔲 Magic Squares and Big-Ms</title>
+      <link>https://ryanjoneil.github.io/posts/2012-01-12-magic-squares-and-big-ms/</link>
+      <pubDate>Thu, 12 Jan 2012 00:00:00 +0000</pubDate>
+      
+      <guid>https://ryanjoneil.github.io/posts/2012-01-12-magic-squares-and-big-ms/</guid>
+      <description>An integer programming formulation of the magic squares problem.</description>
+      <content:encoded><![CDATA[<p><em>Note: This post was updated to work with Python 3 and <a href="https://github.com/scipopt/PySCIPOpt">PySCIPOpt</a>. The original version used Python 2 and <a href="https://pythonhosted.org/python-zibopt/">python-zibopt</a>. It has also been edited for clarity.</em></p>
+<p>Back in October of 2011, I started toying with a model for finding <a href="https://en.wikipedia.org/wiki/Magic_square">magic squares</a> using SCIP. This is a fun modeling exercise and a challenging problem. First one constructs a square matrix of integer-valued variables.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> pyscipopt <span style="color:#f92672">import</span> Model
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># [...snip...]</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>m <span style="color:#f92672">=</span> Model()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>matrix <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(size):
+</span></span><span style="display:flex;"><span>    row <span style="color:#f92672">=</span> [m<span style="color:#f92672">.</span>addVar(vtype<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;I&#34;</span>, lb<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>) <span style="color:#66d9ef">for</span> _ <span style="color:#f92672">in</span> range(size)]
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> x <span style="color:#f92672">in</span> row:
+</span></span><span style="display:flex;"><span>        m<span style="color:#f92672">.</span>addCons(x <span style="color:#f92672">&lt;=</span> M)
+</span></span><span style="display:flex;"><span>    matrix<span style="color:#f92672">.</span>append(row)
+</span></span></code></pre></div><p>Then one adds the following constraints:</p>
+<ul>
+<li>All variables ≥ 1.</li>
+<li>All rows, columns, and the diagonal sum to the same value.</li>
+<li>All variables take different values.</li>
+</ul>
+<p>The first two constraints are trivial to implement, and relatively easy for the solver. What I do is add a single extra variable then set it equal to the sums of each row, column, and the diagonal.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>sum_val <span style="color:#f92672">=</span> m<span style="color:#f92672">.</span>addVar(vtype<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;M&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(size):
+</span></span><span style="display:flex;"><span>    m<span style="color:#f92672">.</span>addCons(sum(matrix[i]) <span style="color:#f92672">==</span> sum_val)
+</span></span><span style="display:flex;"><span>    m<span style="color:#f92672">.</span>addCons(sum(matrix[j][i] <span style="color:#66d9ef">for</span> j <span style="color:#f92672">in</span> range(size)) <span style="color:#f92672">==</span> sum_val)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>m<span style="color:#f92672">.</span>addCons(sum(matrix[i][i] <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(size)) <span style="color:#f92672">==</span> sum_val)
+</span></span></code></pre></div><p>It&rsquo;s the third that messes things up. You can think of this as saying, for every possible pair of integer-valued variables $x$ and $y$:</p>
+<p>$$ x \ge y + 1 \quad \text{or} \quad x \le y - 1 $$</p>
+<p>Why is this hard? Because we can&rsquo;t add both constraints to the model. That would make it infeasible. Instead, we add write them in such a way that exactly one will be active for any any given solution. This requires, for each pair of variables, an additional binary variable $z$ and a (possibly big) constant $M$. Thus we reformulate the above as:</p>
+<p>$$
+x \ge (y + 1) - M z \
+x \le (y - 1) + M (1-z) \
+z \in {0,1}
+$$</p>
+<p>In code this looks like:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> itertools <span style="color:#f92672">import</span> chain
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>all_vars <span style="color:#f92672">=</span> list(chain(<span style="color:#f92672">*</span>matrix))
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> i, x <span style="color:#f92672">in</span> enumerate(all_vars):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> y <span style="color:#f92672">in</span> all_vars[i<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>:]:
+</span></span><span style="display:flex;"><span>        z <span style="color:#f92672">=</span> m<span style="color:#f92672">.</span>addVar(vtype<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;B&#34;</span>)
+</span></span><span style="display:flex;"><span>        m<span style="color:#f92672">.</span>addCons(x <span style="color:#f92672">&gt;=</span> y <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">-</span> M<span style="color:#f92672">*</span>z)
+</span></span><span style="display:flex;"><span>        m<span style="color:#f92672">.</span>addCons(x <span style="color:#f92672">&lt;=</span> y <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">+</span> M<span style="color:#f92672">*</span>(<span style="color:#ae81ff">1</span><span style="color:#f92672">-</span>z))
+</span></span></code></pre></div><p>However, <a href="https://orinanobworld.blogspot.com/2011/07/perils-of-big-m.html">here be dragons</a>. We may not know how big (or small) to make $M$. Generally we want it as small as possible to make the LP relaxation of our integer programming model tighter. Different values of $M$ have unpredictable effects on solution time.</p>
+<p>Which brings us to an interesting idea:</p>
+<p>SCIP now supports bilinear constraints. This means that I can make $M$ a variable in the above model.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> sys
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">try</span>:
+</span></span><span style="display:flex;"><span>    M <span style="color:#f92672">=</span> int(sys<span style="color:#f92672">.</span>argv[<span style="color:#ae81ff">2</span>])
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">except</span> <span style="color:#a6e22e">IndexError</span>:
+</span></span><span style="display:flex;"><span>    M <span style="color:#f92672">=</span> m<span style="color:#f92672">.</span>addVar(vtype<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;M&#34;</span>, lb<span style="color:#f92672">=</span>size <span style="color:#f92672">*</span> size)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">assert</span> M <span style="color:#f92672">&gt;=</span> size <span style="color:#f92672">*</span> size
+</span></span></code></pre></div><p>The magic square model linked to in this post provides both options. The first command line argument it requires is the matrix size. The second one, $M$, is optional. If not given, it leaves $M$ up to the solver.</p>
+<p>An interesting exercise for the reader: Change <a href="/files/2012-01-12-magic-squares-and-big-ms/magic-square.py">the code</a> to search for a <em>minimal</em> magic square, which minimizes either the value of $M$ or the sums of the columns, rows, and diagonal.</p>
+]]></content:encoded>
+    </item>
+    
     <item>
       <title>⏳️ Know Your Time Complexities - Part 2</title>
       <link>https://ryanjoneil.github.io/posts/2011-11-25-know-your-time-complexities-part-2/</link>

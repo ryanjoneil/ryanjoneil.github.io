@@ -5,12 +5,12 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="index, follow">
-<title>Python | adventures in optimization</title>
+<title>python | adventures in optimization</title>
 <meta name="keywords" content="">
 <meta name="description" content="">
 <meta name="author" content="">
 <link rel="canonical" href="https://ryanjoneil.github.io/tags/python/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.99a6052ff261f7441c642a2a8a21bac14d1beae7dc9e2bdedcf3eeffb65181f6.css" integrity="sha256-maYFL/Jh90QcZCoqiiG6wU0b6ufcnive3PPu/7ZRgfY=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.7c3f0ab5ecc8326dc20e6644afa4081b33304fef3299b2c1179eaee195843a6a.css" integrity="sha256-fD8KtezIMm3CDmZEr6QIGzMwT&#43;8ymbLBF56u4ZWEOmo=" rel="preload stylesheet" as="style">
 <link rel="icon" href="https://ryanjoneil.github.io/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="https://ryanjoneil.github.io/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="https://ryanjoneil.github.io/favicon-32x32.png">
@@ -19,7 +19,6 @@
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
 <link rel="alternate" type="application/rss+xml" href="https://ryanjoneil.github.io/tags/python/index.xml">
-<link rel="alternate" hreflang="en" href="https://ryanjoneil.github.io/tags/python/">
 <noscript>
     <style>
         #theme-toggle,
@@ -86,13 +85,13 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 </script>
 
-<meta property="og:title" content="Python" />
+<meta property="og:title" content="python" />
 <meta property="og:description" content="" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://ryanjoneil.github.io/tags/python/" />
 
 <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="Python"/>
+<meta name="twitter:title" content="python"/>
 <meta name="twitter:description" content=""/>
 
 </head>
@@ -134,8 +133,6 @@ document.addEventListener("DOMContentLoaded", function() {
                         <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
                     </svg>
                 </button>
-                <ul class="lang-switch"><li>|</li>
-                </ul>
             </div>
         </div>
         <ul id="menu">
@@ -175,9 +172,23 @@ document.addEventListener("DOMContentLoaded", function() {
 <main class="main"> 
 <header class="page-header">
   <h1>
-    Python
+    python
   </h1>
 </header>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>🔲 Magic Squares and Big-Ms
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Note: This post was updated to work with Python 3 and PySCIPOpt. The original version used Python 2 and python-zibopt. It has also been edited for clarity.
+Back in October of 2011, I started toying with a model for finding magic squares using SCIP. This is a fun modeling exercise and a challenging problem. First one constructs a square matrix of integer-valued variables.
+from pyscipopt import Model # [...snip...] m = Model() matrix = [] for i in range(size): row = [m....</p>
+  </div>
+  <footer class="entry-footer"><span title='2012-01-12 00:00:00 +0000 UTC'>January 12, 2012</span>&nbsp;·&nbsp;Ryan O&#39;Neil</footer>
+  <a class="entry-link" aria-label="post link to 🔲 Magic Squares and Big-Ms" href="https://ryanjoneil.github.io/posts/2012-01-12-magic-squares-and-big-ms/"></a>
+</article>
 
 <article class="post-entry tag-entry"> 
   <header class="entry-header">
@@ -297,19 +308,6 @@ $foo = &#39;whfg nabgure crey unpxre&#39;; $foo =~ y/a-z/n-za-m/; print $foo; Py
   </div>
   <footer class="entry-footer"><span title='2011-04-06 00:00:00 +0000 UTC'>April 6, 2011</span>&nbsp;·&nbsp;Ryan O&#39;Neil</footer>
   <a class="entry-link" aria-label="post link to 🐪 Reformed JAPHs: ROT13" href="https://ryanjoneil.github.io/posts/2011-04-06-reformed-japhs-rot13/"></a>
-</article>
-
-<article class="post-entry tag-entry"> 
-  <header class="entry-header">
-    <h2>🐪 Reformed JAPHs: Ridiculous Anagram
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>Here’s the second in my reformed JAPH series. It takes an anagram of &#39;just another python hacker&#39; and converts it prior to printing. It sorts the anagram by the indices of another string, in order of their associated characters. This is sort of like a pre-digested Schwartzian transform.
-x = &#39;upjohn tehran hectors katy&#39; y = &#39;1D0HG6JFO9P5ICKAM87B24NL3E&#39; print(&#39;&#39;.join(x[i] for i in sorted(range(len(x)), key=lambda p: y[p]))) Obfuscation consists mostly of using silly machinations to construct the string we use to sort the anagram....</p>
-  </div>
-  <footer class="entry-footer"><span title='2011-04-03 00:00:00 +0000 UTC'>April 3, 2011</span>&nbsp;·&nbsp;Ryan O&#39;Neil</footer>
-  <a class="entry-link" aria-label="post link to 🐪 Reformed JAPHs: Ridiculous Anagram" href="https://ryanjoneil.github.io/posts/2011-04-03-reformed-japhs-ridiculous-anagram/"></a>
 </article>
 <footer class="page-footer">
   <nav class="pagination">

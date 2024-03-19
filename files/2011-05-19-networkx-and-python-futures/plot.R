@@ -5,8 +5,8 @@ library(tidyr)
 data <- read_csv("data.csv") |>
   pivot_longer(!"num graphs", names_to = "processes", values_to = "seconds")
 
-data$processes[data$processes == "serial time"] = 1
-data$processes[data$processes == "parallel time"] = 16
+data$processes[data$processes == "serial time"] <- 1
+data$processes[data$processes == "parallel time"] <- 16
 
 p <- ggplot(
   data = data,

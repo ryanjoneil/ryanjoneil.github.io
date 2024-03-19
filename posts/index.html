@@ -10,7 +10,7 @@
 <meta name="description" content="Posts - adventures in optimization">
 <meta name="author" content="">
 <link rel="canonical" href="https://ryanjoneil.github.io/posts/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.99a6052ff261f7441c642a2a8a21bac14d1beae7dc9e2bdedcf3eeffb65181f6.css" integrity="sha256-maYFL/Jh90QcZCoqiiG6wU0b6ufcnive3PPu/7ZRgfY=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.7c3f0ab5ecc8326dc20e6644afa4081b33304fef3299b2c1179eaee195843a6a.css" integrity="sha256-fD8KtezIMm3CDmZEr6QIGzMwT&#43;8ymbLBF56u4ZWEOmo=" rel="preload stylesheet" as="style">
 <link rel="icon" href="https://ryanjoneil.github.io/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="https://ryanjoneil.github.io/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="https://ryanjoneil.github.io/favicon-32x32.png">
@@ -19,7 +19,6 @@
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
 <link rel="alternate" type="application/rss+xml" href="https://ryanjoneil.github.io/posts/index.xml">
-<link rel="alternate" hreflang="en" href="https://ryanjoneil.github.io/posts/">
 <noscript>
     <style>
         #theme-toggle,
@@ -149,8 +148,6 @@ document.addEventListener("DOMContentLoaded", function() {
                         <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
                     </svg>
                 </button>
-                <ul class="lang-switch"><li>|</li>
-                </ul>
             </div>
         </div>
         <ul id="menu">
@@ -234,6 +231,20 @@ But, ultimately, for several years it just felt like blogging was dead. Its spac
 
 <article class="post-entry"> 
   <header class="entry-header">
+    <h2>🔲 Magic Squares and Big-Ms
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Note: This post was updated to work with Python 3 and PySCIPOpt. The original version used Python 2 and python-zibopt. It has also been edited for clarity.
+Back in October of 2011, I started toying with a model for finding magic squares using SCIP. This is a fun modeling exercise and a challenging problem. First one constructs a square matrix of integer-valued variables.
+from pyscipopt import Model # [...snip...] m = Model() matrix = [] for i in range(size): row = [m....</p>
+  </div>
+  <footer class="entry-footer"><span title='2012-01-12 00:00:00 +0000 UTC'>January 12, 2012</span>&nbsp;·&nbsp;Ryan O&#39;Neil</footer>
+  <a class="entry-link" aria-label="post link to 🔲 Magic Squares and Big-Ms" href="https://ryanjoneil.github.io/posts/2012-01-12-magic-squares-and-big-ms/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
     <h2>⏳️ Know Your Time Complexities - Part 2
     </h2>
   </header>
@@ -309,19 +320,6 @@ For the final JAPH in this series, I implemented a simple transpiler that conver
   </div>
   <footer class="entry-footer"><span title='2011-04-20 00:00:00 +0000 UTC'>April 20, 2011</span>&nbsp;·&nbsp;Ryan O&#39;Neil</footer>
   <a class="entry-link" aria-label="post link to 🐪 Reformed JAPHs: Transpiler" href="https://ryanjoneil.github.io/posts/2011-04-18-reformed-japhs-transpiler/"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2>🐪 Reformed JAPHs: Turing Machine
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>Note: This post was edited for clarity.
-This JAPH uses a Turing machine. The machine accepts any string that ends in &#39;\n&#39; and allows side effects. This lets us print the value of the tape as it encounters each character. While the idea of using lambda functions as side effects in a Turing machine is a little bizarre on many levels, we work with what we have. And Python is multi-paradigmatic, so what the heck....</p>
-  </div>
-  <footer class="entry-footer"><span title='2011-04-18 00:00:00 +0000 UTC'>April 18, 2011</span>&nbsp;·&nbsp;Ryan O&#39;Neil</footer>
-  <a class="entry-link" aria-label="post link to 🐪 Reformed JAPHs: Turing Machine" href="https://ryanjoneil.github.io/posts/2011-04-18-reformed-japhs-turing-machine/"></a>
 </article>
 <footer class="page-footer">
   <nav class="pagination">
