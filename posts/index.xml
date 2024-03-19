@@ -724,9 +724,9 @@ graph LR
       <guid>https://ryanjoneil.github.io/posts/2011-04-27-affine-scaling-in-r/</guid>
       <description>Affine scaling for interior point optimization in R</description>
       <content:encoded><![CDATA[<p>I recently stumbled across an implementation of the <a href="https://demonstrations.wolfram.com/AffineScalingInteriorPointMethod/">affine scaling</a> <a href="https://en.wikipedia.org/wiki/Interior_point_method">interior point method</a> for solving linear programs that I&rsquo;d coded up in R once upon a time. I&rsquo;m posting it here in case anyone else finds it useful. There&rsquo;s not a whole lot of thought given to efficiency or numerical stability, just a demonstration of the basic algorithm. Still, sometimes that&rsquo;s exactly what one wants.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>solve.affine <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">function</span>(A, rc, x, tolerance<span style="color:#f92672">=</span><span style="color:#ae81ff">10</span>^<span style="color:#ae81ff">-7</span>, R<span style="color:#f92672">=</span><span style="color:#ae81ff">0.999</span>) {
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>solve.affine <span style="color:#f92672">&lt;-</span> <span style="color:#66d9ef">function</span>(A, rc, x, tolerance<span style="color:#f92672">=</span><span style="color:#ae81ff">10</span>^<span style="color:#ae81ff">-7</span>, R<span style="color:#f92672">=</span><span style="color:#ae81ff">0.999</span>) {
 </span></span><span style="display:flex;"><span>  <span style="color:#75715e"># Affine scaling method</span>
-</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">while </span>(T) {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">while</span> (T) {
 </span></span><span style="display:flex;"><span>    X_diag <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">diag</span>(x)
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Compute (A * X_diag^2 * A^t)-1 using Cholesky factorization.</span>
@@ -747,7 +747,7 @@ graph LR
 </span></span><span style="display:flex;"><span>    x <span style="color:#f92672">&lt;-</span> (x <span style="color:#f92672">+</span> R <span style="color:#f92672">*</span> X_diag^2 <span style="color:#f92672">%*%</span> foo <span style="color:#f92672">/</span> s)[,]
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#75715e"># If s is within our tolerance, stop.</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">if </span>(<span style="color:#a6e22e">abs</span>(s) <span style="color:#f92672">&lt;</span> tolerance) break
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">abs</span>(s) <span style="color:#f92672">&lt;</span> tolerance) <span style="color:#66d9ef">break</span>
 </span></span><span style="display:flex;"><span>  }
 </span></span><span style="display:flex;"><span>  x
 </span></span><span style="display:flex;"><span>}
@@ -1291,7 +1291,7 @@ graph LR
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>gdp <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">read.csv</span>(<span style="color:#e6db74">&#39;gdp.csv&#39;</span>)
 </span></span><span style="display:flex;"><span>gdp<span style="color:#f92672">$</span>USA.growth <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">rep</span>(<span style="color:#66d9ef">NA</span>, <span style="color:#a6e22e">length</span>(gdp<span style="color:#f92672">$</span>USA))
 </span></span><span style="display:flex;"><span>gdp<span style="color:#f92672">$</span>China.growth <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">rep</span>(<span style="color:#66d9ef">NA</span>, <span style="color:#a6e22e">length</span>(gdp<span style="color:#f92672">$</span>China))
-</span></span><span style="display:flex;"><span><span style="color:#a6e22e">for </span>(i in <span style="color:#ae81ff">2</span><span style="color:#f92672">:</span><span style="color:#a6e22e">length</span>(gdp<span style="color:#f92672">$</span>USA)) {
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> (i <span style="color:#66d9ef">in</span> <span style="color:#ae81ff">2</span><span style="color:#f92672">:</span><span style="color:#a6e22e">length</span>(gdp<span style="color:#f92672">$</span>USA)) {
 </span></span><span style="display:flex;"><span>  gdp<span style="color:#f92672">$</span>USA.growth[i] <span style="color:#f92672">&lt;-</span> <span style="color:#ae81ff">100</span> <span style="color:#f92672">*</span> (gdp<span style="color:#f92672">$</span>USA[i] <span style="color:#f92672">-</span> gdp<span style="color:#f92672">$</span>USA[i<span style="color:#ae81ff">-1</span>]) <span style="color:#f92672">/</span> gdp<span style="color:#f92672">$</span>USA[i<span style="color:#ae81ff">-1</span>]
 </span></span><span style="display:flex;"><span>  gdp<span style="color:#f92672">$</span>China.growth[i] <span style="color:#f92672">&lt;-</span> <span style="color:#ae81ff">100</span> <span style="color:#f92672">*</span> (gdp<span style="color:#f92672">$</span>China[i] <span style="color:#f92672">-</span> gdp<span style="color:#f92672">$</span>China[i<span style="color:#ae81ff">-1</span>]) <span style="color:#f92672">/</span> gdp<span style="color:#f92672">$</span>China[i<span style="color:#ae81ff">-1</span>]
 </span></span><span style="display:flex;"><span>}
@@ -1324,12 +1324,12 @@ $$</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>repetitions <span style="color:#f92672">&lt;-</span> <span style="color:#ae81ff">10000</span>
 </span></span></code></pre></div><p>This is the code for our simulation. For each iteration, it starts both countries at their 2009 GDPs. It then iterates, changing GDP randomly until China&rsquo;s GDP is at least the same value as the USA&rsquo;s. When that happens, it records the current year.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>results <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">rep</span>(<span style="color:#66d9ef">NA</span>, repetitions)
-</span></span><span style="display:flex;"><span><span style="color:#a6e22e">for </span>(i in <span style="color:#ae81ff">1</span><span style="color:#f92672">:</span>repetitions) {
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> (i <span style="color:#66d9ef">in</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">:</span>repetitions) {
 </span></span><span style="display:flex;"><span>  usa <span style="color:#f92672">&lt;-</span> gdp<span style="color:#f92672">$</span>USA<span style="color:#a6e22e">[length</span>(gdp<span style="color:#f92672">$</span>USA)]
 </span></span><span style="display:flex;"><span>  china <span style="color:#f92672">&lt;-</span> gdp<span style="color:#f92672">$</span>China<span style="color:#a6e22e">[length</span>(gdp<span style="color:#f92672">$</span>China)]
 </span></span><span style="display:flex;"><span>  year <span style="color:#f92672">&lt;-</span> gdp<span style="color:#f92672">$</span>Year<span style="color:#a6e22e">[length</span>(gdp<span style="color:#f92672">$</span>Year)]
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">while </span>(<span style="color:#66d9ef">TRUE</span>) {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">while</span> (<span style="color:#66d9ef">TRUE</span>) {
 </span></span><span style="display:flex;"><span>    year <span style="color:#f92672">&lt;-</span> year <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    usa.growth <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">rnorm</span>(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">7.00594</span>, <span style="color:#ae81ff">2.889808</span>)
@@ -1338,9 +1338,9 @@ $$</p>
 </span></span><span style="display:flex;"><span>    usa <span style="color:#f92672">&lt;-</span> usa <span style="color:#f92672">*</span> (<span style="color:#ae81ff">1</span> <span style="color:#f92672">+</span> (usa.growth <span style="color:#f92672">/</span> <span style="color:#ae81ff">100</span>))
 </span></span><span style="display:flex;"><span>    china <span style="color:#f92672">&lt;-</span> china <span style="color:#f92672">*</span> (<span style="color:#ae81ff">1</span> <span style="color:#f92672">+</span> (china.growth <span style="color:#f92672">/</span> <span style="color:#ae81ff">100</span>))
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">if </span>(china <span style="color:#f92672">&gt;=</span> usa) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (china <span style="color:#f92672">&gt;=</span> usa) {
 </span></span><span style="display:flex;"><span>      results[i] <span style="color:#f92672">&lt;-</span> year
-</span></span><span style="display:flex;"><span>      break
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">break</span>
 </span></span><span style="display:flex;"><span>     }
 </span></span><span style="display:flex;"><span>  }
 </span></span><span style="display:flex;"><span>}

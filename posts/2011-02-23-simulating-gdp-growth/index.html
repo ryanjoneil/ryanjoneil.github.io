@@ -10,7 +10,7 @@
 <meta name="description" content="Writing and interpreting simulations about GDP growth in R">
 <meta name="author" content="Ryan O&#39;Neil">
 <link rel="canonical" href="https://ryanjoneil.github.io/posts/2011-02-23-simulating-gdp-growth/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.7c3f0ab5ecc8326dc20e6644afa4081b33304fef3299b2c1179eaee195843a6a.css" integrity="sha256-fD8KtezIMm3CDmZEr6QIGzMwT&#43;8ymbLBF56u4ZWEOmo=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.99a6052ff261f7441c642a2a8a21bac14d1beae7dc9e2bdedcf3eeffb65181f6.css" integrity="sha256-maYFL/Jh90QcZCoqiiG6wU0b6ufcnive3PPu/7ZRgfY=" rel="preload stylesheet" as="style">
 <script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
     onload="hljs.initHighlightingOnLoad();"></script>
 <link rel="icon" href="https://ryanjoneil.github.io/favicon.ico">
@@ -20,6 +20,7 @@
 <link rel="mask-icon" href="https://ryanjoneil.github.io/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="https://ryanjoneil.github.io/posts/2011-02-23-simulating-gdp-growth/">
 <noscript>
     <style>
         #theme-toggle,
@@ -190,6 +191,8 @@ document.addEventListener("DOMContentLoaded", function() {
                         <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
                     </svg>
                 </button>
+                <ul class="lang-switch"><li>|</li>
+                </ul>
             </div>
         </div>
         <ul id="menu">
@@ -249,7 +252,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>gdp <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">read.csv</span>(<span style="color:#e6db74">&#39;gdp.csv&#39;</span>)
 </span></span><span style="display:flex;"><span>gdp<span style="color:#f92672">$</span>USA.growth <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">rep</span>(<span style="color:#66d9ef">NA</span>, <span style="color:#a6e22e">length</span>(gdp<span style="color:#f92672">$</span>USA))
 </span></span><span style="display:flex;"><span>gdp<span style="color:#f92672">$</span>China.growth <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">rep</span>(<span style="color:#66d9ef">NA</span>, <span style="color:#a6e22e">length</span>(gdp<span style="color:#f92672">$</span>China))
-</span></span><span style="display:flex;"><span><span style="color:#a6e22e">for </span>(i in <span style="color:#ae81ff">2</span><span style="color:#f92672">:</span><span style="color:#a6e22e">length</span>(gdp<span style="color:#f92672">$</span>USA)) {
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> (i <span style="color:#66d9ef">in</span> <span style="color:#ae81ff">2</span><span style="color:#f92672">:</span><span style="color:#a6e22e">length</span>(gdp<span style="color:#f92672">$</span>USA)) {
 </span></span><span style="display:flex;"><span>  gdp<span style="color:#f92672">$</span>USA.growth[i] <span style="color:#f92672">&lt;-</span> <span style="color:#ae81ff">100</span> <span style="color:#f92672">*</span> (gdp<span style="color:#f92672">$</span>USA[i] <span style="color:#f92672">-</span> gdp<span style="color:#f92672">$</span>USA[i<span style="color:#ae81ff">-1</span>]) <span style="color:#f92672">/</span> gdp<span style="color:#f92672">$</span>USA[i<span style="color:#ae81ff">-1</span>]
 </span></span><span style="display:flex;"><span>  gdp<span style="color:#f92672">$</span>China.growth[i] <span style="color:#f92672">&lt;-</span> <span style="color:#ae81ff">100</span> <span style="color:#f92672">*</span> (gdp<span style="color:#f92672">$</span>China[i] <span style="color:#f92672">-</span> gdp<span style="color:#f92672">$</span>China[i<span style="color:#ae81ff">-1</span>]) <span style="color:#f92672">/</span> gdp<span style="color:#f92672">$</span>China[i<span style="color:#ae81ff">-1</span>]
 </span></span><span style="display:flex;"><span>}
@@ -282,12 +285,12 @@ $$</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>repetitions <span style="color:#f92672">&lt;-</span> <span style="color:#ae81ff">10000</span>
 </span></span></code></pre></div><p>This is the code for our simulation. For each iteration, it starts both countries at their 2009 GDPs. It then iterates, changing GDP randomly until China&rsquo;s GDP is at least the same value as the USA&rsquo;s. When that happens, it records the current year.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>results <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">rep</span>(<span style="color:#66d9ef">NA</span>, repetitions)
-</span></span><span style="display:flex;"><span><span style="color:#a6e22e">for </span>(i in <span style="color:#ae81ff">1</span><span style="color:#f92672">:</span>repetitions) {
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> (i <span style="color:#66d9ef">in</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">:</span>repetitions) {
 </span></span><span style="display:flex;"><span>  usa <span style="color:#f92672">&lt;-</span> gdp<span style="color:#f92672">$</span>USA<span style="color:#a6e22e">[length</span>(gdp<span style="color:#f92672">$</span>USA)]
 </span></span><span style="display:flex;"><span>  china <span style="color:#f92672">&lt;-</span> gdp<span style="color:#f92672">$</span>China<span style="color:#a6e22e">[length</span>(gdp<span style="color:#f92672">$</span>China)]
 </span></span><span style="display:flex;"><span>  year <span style="color:#f92672">&lt;-</span> gdp<span style="color:#f92672">$</span>Year<span style="color:#a6e22e">[length</span>(gdp<span style="color:#f92672">$</span>Year)]
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">while </span>(<span style="color:#66d9ef">TRUE</span>) {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">while</span> (<span style="color:#66d9ef">TRUE</span>) {
 </span></span><span style="display:flex;"><span>    year <span style="color:#f92672">&lt;-</span> year <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    usa.growth <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">rnorm</span>(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">7.00594</span>, <span style="color:#ae81ff">2.889808</span>)
@@ -296,9 +299,9 @@ $$</p>
 </span></span><span style="display:flex;"><span>    usa <span style="color:#f92672">&lt;-</span> usa <span style="color:#f92672">*</span> (<span style="color:#ae81ff">1</span> <span style="color:#f92672">+</span> (usa.growth <span style="color:#f92672">/</span> <span style="color:#ae81ff">100</span>))
 </span></span><span style="display:flex;"><span>    china <span style="color:#f92672">&lt;-</span> china <span style="color:#f92672">*</span> (<span style="color:#ae81ff">1</span> <span style="color:#f92672">+</span> (china.growth <span style="color:#f92672">/</span> <span style="color:#ae81ff">100</span>))
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">if </span>(china <span style="color:#f92672">&gt;=</span> usa) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (china <span style="color:#f92672">&gt;=</span> usa) {
 </span></span><span style="display:flex;"><span>      results[i] <span style="color:#f92672">&lt;-</span> year
-</span></span><span style="display:flex;"><span>      break
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">break</span>
 </span></span><span style="display:flex;"><span>     }
 </span></span><span style="display:flex;"><span>  }
 </span></span><span style="display:flex;"><span>}
@@ -329,8 +332,8 @@ $$</p>
 
   <footer class="post-footer">
     <ul class="post-tags">
-      <li><a href="https://ryanjoneil.github.io/tags/simulation/">simulation</a></li>
-      <li><a href="https://ryanjoneil.github.io/tags/r/">r</a></li>
+      <li><a href="https://ryanjoneil.github.io/tags/simulation/">Simulation</a></li>
+      <li><a href="https://ryanjoneil.github.io/tags/r/">R</a></li>
     </ul>
 <nav class="paginav">
   <a class="prev" href="https://ryanjoneil.github.io/posts/2011-04-01-reformed-japhs-alphabetic-indexing/">

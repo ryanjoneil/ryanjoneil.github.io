@@ -10,7 +10,7 @@
 <meta name="description" content="Affine scaling for interior point optimization in R">
 <meta name="author" content="Ryan O&#39;Neil">
 <link rel="canonical" href="https://ryanjoneil.github.io/posts/2011-04-27-affine-scaling-in-r/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.7c3f0ab5ecc8326dc20e6644afa4081b33304fef3299b2c1179eaee195843a6a.css" integrity="sha256-fD8KtezIMm3CDmZEr6QIGzMwT&#43;8ymbLBF56u4ZWEOmo=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.99a6052ff261f7441c642a2a8a21bac14d1beae7dc9e2bdedcf3eeffb65181f6.css" integrity="sha256-maYFL/Jh90QcZCoqiiG6wU0b6ufcnive3PPu/7ZRgfY=" rel="preload stylesheet" as="style">
 <script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
     onload="hljs.initHighlightingOnLoad();"></script>
 <link rel="icon" href="https://ryanjoneil.github.io/favicon.ico">
@@ -20,6 +20,7 @@
 <link rel="mask-icon" href="https://ryanjoneil.github.io/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="https://ryanjoneil.github.io/posts/2011-04-27-affine-scaling-in-r/">
 <noscript>
     <style>
         #theme-toggle,
@@ -190,6 +191,8 @@ document.addEventListener("DOMContentLoaded", function() {
                         <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
                     </svg>
                 </button>
+                <ul class="lang-switch"><li>|</li>
+                </ul>
             </div>
         </div>
         <ul id="menu">
@@ -243,9 +246,9 @@ document.addEventListener("DOMContentLoaded", function() {
   </header> 
 
   <div class="post-content"><p>I recently stumbled across an implementation of the <a href="https://demonstrations.wolfram.com/AffineScalingInteriorPointMethod/">affine scaling</a> <a href="https://en.wikipedia.org/wiki/Interior_point_method">interior point method</a> for solving linear programs that I&rsquo;d coded up in R once upon a time. I&rsquo;m posting it here in case anyone else finds it useful. There&rsquo;s not a whole lot of thought given to efficiency or numerical stability, just a demonstration of the basic algorithm. Still, sometimes that&rsquo;s exactly what one wants.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>solve.affine <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">function</span>(A, rc, x, tolerance<span style="color:#f92672">=</span><span style="color:#ae81ff">10</span>^<span style="color:#ae81ff">-7</span>, R<span style="color:#f92672">=</span><span style="color:#ae81ff">0.999</span>) {
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>solve.affine <span style="color:#f92672">&lt;-</span> <span style="color:#66d9ef">function</span>(A, rc, x, tolerance<span style="color:#f92672">=</span><span style="color:#ae81ff">10</span>^<span style="color:#ae81ff">-7</span>, R<span style="color:#f92672">=</span><span style="color:#ae81ff">0.999</span>) {
 </span></span><span style="display:flex;"><span>  <span style="color:#75715e"># Affine scaling method</span>
-</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">while </span>(T) {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">while</span> (T) {
 </span></span><span style="display:flex;"><span>    X_diag <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">diag</span>(x)
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Compute (A * X_diag^2 * A^t)-1 using Cholesky factorization.</span>
@@ -266,7 +269,7 @@ document.addEventListener("DOMContentLoaded", function() {
 </span></span><span style="display:flex;"><span>    x <span style="color:#f92672">&lt;-</span> (x <span style="color:#f92672">+</span> R <span style="color:#f92672">*</span> X_diag^2 <span style="color:#f92672">%*%</span> foo <span style="color:#f92672">/</span> s)[,]
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#75715e"># If s is within our tolerance, stop.</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">if </span>(<span style="color:#a6e22e">abs</span>(s) <span style="color:#f92672">&lt;</span> tolerance) break
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">abs</span>(s) <span style="color:#f92672">&lt;</span> tolerance) <span style="color:#66d9ef">break</span>
 </span></span><span style="display:flex;"><span>  }
 </span></span><span style="display:flex;"><span>  x
 </span></span><span style="display:flex;"><span>}
@@ -308,8 +311,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
   <footer class="post-footer">
     <ul class="post-tags">
-      <li><a href="https://ryanjoneil.github.io/tags/algorithms/">algorithms</a></li>
-      <li><a href="https://ryanjoneil.github.io/tags/r/">r</a></li>
+      <li><a href="https://ryanjoneil.github.io/tags/algorithms/">Algorithms</a></li>
+      <li><a href="https://ryanjoneil.github.io/tags/r/">R</a></li>
     </ul>
 <nav class="paginav">
   <a class="prev" href="https://ryanjoneil.github.io/posts/2011-05-19-networkx-and-python-futures/">
